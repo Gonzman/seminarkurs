@@ -15,7 +15,7 @@ const router = createRouter({
       path: '/wire',
       name: 'wire',
       component: MatchTheWire,
-      props: { level: Level.EASY },
+      props: { level: Level.SUPER_HARD },
     },
     {
       path: '/caeser',

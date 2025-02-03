@@ -59,6 +59,15 @@
   font-weight: normal;
 }
 
+@font-face {
+  font-family: 'Pixel';
+  src:  url("./fonts/QuinqueFive.ttf") format('truetype'),
+        url("./fonts/QuinqueFive.woff") format('woff'),
+        url("./fonts/QuinqueFive.woff2") format('woff2'),
+        url("./fonts/QuinqueFive.otf") format('opentype');
+  font-display: swap;
+}
+
 body {
   min-height: 100vh;
   color: var(--color-text);
@@ -79,7 +88,8 @@ body {
     'Fira Sans',
     'Droid Sans',
     'Helvetica Neue',
-    sans-serif;
+    sans-serif,
+    'Pixel';
   font-size: 15px;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
