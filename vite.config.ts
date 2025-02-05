@@ -16,6 +16,6 @@ export default defineConfig({
     },
   },
   server: {
-    allowedHosts: ['sk.tobi.tintuc.de'],
+    allowedHosts: ['sk.tobi.tintuc.de', 'sk2.tobi.tintuc.de'],
   },
 })
