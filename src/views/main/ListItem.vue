@@ -2,8 +2,8 @@
 
 </template>
 <script setup lang="ts">
-import status from './status'
-const props = defineProps<{ name: string, status: status }>()
+import { Status } from './status'
+const props = defineProps<{ name: string, status: Status }>()
 
 
 </script>

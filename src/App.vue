@@ -30,7 +30,7 @@ onUnmounted(() => {
     <escapeView></escapeView>
   </div>
 
-  <Graph></Graph>
+  <RouterView></RouterView>
 </template>
 
 <style scoped>
