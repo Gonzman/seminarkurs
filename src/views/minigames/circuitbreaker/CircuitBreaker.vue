@@ -437,7 +437,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped>
+<style>
 .base-div {
     --bcolor: rgb(8, 42, 30);
     --fcolor: rgb(15, 49, 37);
