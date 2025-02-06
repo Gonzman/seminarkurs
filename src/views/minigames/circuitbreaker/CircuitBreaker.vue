@@ -19,12 +19,13 @@
 <script setup lang="ts">
 import { defineProps, onMounted, onUnmounted, ref } from 'vue';
 
-const { sizeX, sizeY, startX, startY, startDirection, map } = defineProps<{
+const { sizeX, sizeY, startX, startY, startDirection, speed, map } = defineProps<{
     sizeX: number
     sizeY: number
     startX: number
     startY: number
     startDirection: Direction
+    speed: number
     map: string
 }>()
 
@@ -302,7 +303,6 @@ type Point = {
 let points: Point[] = [{ x: startX, y: startY }];
 let pointsString = `${startX},${startY}`;
 let lastPoint: Point = { x: startX, y: startY };
-const speed = 0.18;
 let running = false;
 let gameEnd = false;
 
