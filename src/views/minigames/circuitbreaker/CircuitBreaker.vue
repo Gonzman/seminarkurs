@@ -1,14 +1,14 @@
 <template>
-    <div class="base-div" ref="baseContainer">
-        <div class="content-div" ref="contentContainer">
-            <div class="game-div" ref="gameContainer">
-                <div class="grid" ref="gridContainer">
-                    <div v-for="index in totalCells" :key="index" class="cell bcell"></div>
+    <div class="cb-base-div" ref="baseContainer">
+        <div class="cb-content-div" ref="contentContainer">
+            <div class="cb-game-div" ref="gameContainer">
+                <div class="cb-grid" ref="gridContainer">
+                    <div v-for="index in totalCells" :key="index" class="cb-cell cb-bcell"></div>
                 </div>
-                <div class="vingette"></div>
-                <div class="laser-div" ref="laserContainer">
-                    <svg class="laser-svg" ref="laserSvg" width="1" height="1" xmlns="http://www.w3.org/2000/svg">
-                        <polyline class="laser-polyline" ref="laserPolyline" points="" />
+                <div class="cb-vingette"></div>
+                <div class="cb-laser-div" ref="laserContainer">
+                    <svg class="cb-laser-svg" ref="laserSvg" width="1" height="1" xmlns="http://www.w3.org/2000/svg">
+                        <polyline class="cb-laser-polyline" ref="laserPolyline" points="" />
                     </svg>
                 </div>
             </div>
@@ -46,10 +46,10 @@ let gridResizeObserver: ResizeObserver;
 const simpleOffsets = [{ x: -1, y: 0 }, { x: 1, y: 0 }, { x: 0, y: -1 }, { x: 0, y: 1 }];
 
 const borderClassNames = [
-    'fcell-left',
-    'fcell-right',
-    'fcell-top',
-    'fcell-bottom',
+    'cb-fcell-left',
+    'cb-fcell-right',
+    'cb-fcell-top',
+    'cb-fcell-bottom',
 ];
 
 const grid = Array.from({ length: sizeX }, () => Array(sizeY).fill(0));
@@ -80,7 +80,7 @@ const createGrid = () => {
             for (let j = 0; j < bits.length; j++) {
                 const bit = Number(bits[j]);
                 const cell = document.createElement('div');
-                cell.classList.add('cell', bit === 1 ? 'fcell' : 'bcell');
+                cell.classList.add('cb-cell', bit === 1 ? 'cb-fcell' : 'cb-bcell');
                 gridContainer.value.appendChild(cell);
                 if (bit === 1) {
                     grid[index % sizeX][Math.floor(index / sizeX)] = 1;
@@ -93,7 +93,7 @@ const createGrid = () => {
         if (index < totalCells) {
             for (; index < totalCells; index++) {
                 const cell = document.createElement('div');
-                cell.classList.add('cell', 'bcell');
+                cell.classList.add('cb-cell', 'cb-bcell');
                 gridContainer.value.appendChild(cell);
             }
         }
@@ -207,17 +207,17 @@ const createBackground = () => {
         const addTrack = (index: number, diffX: number, diffY: number, long: boolean) => {
             if (gridContainer.value) {
                 const trackDiv = document.createElement('div');
-                trackDiv.classList.add('track-div');
+                trackDiv.classList.add('cb-track-div');
                 const trackPart = document.createElement('div');
-                trackPart.classList.add('track-part');
+                trackPart.classList.add('cb-track-part');
                 if (diffX == -1) {
-                    long ? trackPart.classList.add('track-part-horizontal') : trackPart.classList.add('track-part-left');
+                    long ? trackPart.classList.add('cb-track-part-horizontal') : trackPart.classList.add('cb-track-part-left');
                 } else if (diffX == 1) {
-                    long ? trackPart.classList.add('track-part-horizontal') : trackPart.classList.add('track-part-right');
+                    long ? trackPart.classList.add('cb-track-part-horizontal') : trackPart.classList.add('cb-track-part-right');
                 } else if (diffY == -1) {
-                    long ? trackPart.classList.add('track-part-vertical') : trackPart.classList.add('track-part-top');
+                    long ? trackPart.classList.add('cb-track-part-vertical') : trackPart.classList.add('cb-track-part-top');
                 } else {
-                    long ? trackPart.classList.add('track-part-vertical') : trackPart.classList.add('track-part-bottom');
+                    long ? trackPart.classList.add('cb-track-part-vertical') : trackPart.classList.add('cb-track-part-bottom');
                 }
                 trackDiv.appendChild(trackPart);
                 gridContainer.value.children[index].appendChild(trackDiv);
@@ -232,7 +232,7 @@ const createBackground = () => {
             for (let j = 0; j < path.length; j++) {
                 const current = path[j];
                 const index = current.y * sizeX + current.x;
-                if (gridContainer.value.children[index].classList.contains('fcell')) {
+                if (gridContainer.value.children[index].classList.contains('cb-fcell')) {
                     continue;
                 }
                 if (j == 0 || j == path.length - 1) {
@@ -263,18 +263,18 @@ const createBackground = () => {
         let index = 0;
         for (let y = 0; y < sizeY; y++) {
             for (let x = 0; x < sizeX; x++) {
-                if (grid[x][y] === 2 && gridContainer.value.children[index].classList.contains('bcell')) {
+                if (grid[x][y] === 2 && gridContainer.value.children[index].classList.contains('cb-bcell')) {
                     const viaDiv = document.createElement('div');
-                    viaDiv.classList.add('via-div');
+                    viaDiv.classList.add('cb-via-div');
                     const viaRingDiv = document.createElement('div');
-                    viaRingDiv.classList.add('via-ring-div');
+                    viaRingDiv.classList.add('cb-via-ring-div');
                     const viaRing = document.createElement('div');
-                    viaRing.classList.add('via-ring');
+                    viaRing.classList.add('cb-via-ring');
                     viaRingDiv.appendChild(viaRing);
                     const viaHoleDiv = document.createElement('div');
-                    viaHoleDiv.classList.add('via-hole-div');
+                    viaHoleDiv.classList.add('cb-via-hole-div');
                     const viaHole = document.createElement('div');
-                    viaHole.classList.add('via-hole');
+                    viaHole.classList.add('cb-via-hole');
                     viaHoleDiv.appendChild(viaHole);
                     viaDiv.appendChild(viaRingDiv);
                     viaDiv.appendChild(viaHoleDiv);
@@ -438,7 +438,7 @@ onUnmounted(() => {
 </script>
 
 <style>
-.base-div {
+.cb-base-div {
     --bcolor: rgb(8, 42, 30);
     --fcolor: rgb(15, 49, 37);
     --fbcolor: rgb(11, 77, 56);
@@ -454,7 +454,7 @@ onUnmounted(() => {
     align-items: center;
 }
 
-.content-div {
+.cb-content-div {
     width: 100%;
     display: flex;
     justify-content: center;
@@ -463,7 +463,7 @@ onUnmounted(() => {
     padding: var(--content-padding);
 }
 
-.game-div {
+.cb-game-div {
     /* --aspect-ratio gets overridden from code */
     --aspect-ratio: 0px;
     position: relative;
@@ -474,7 +474,7 @@ onUnmounted(() => {
     background-color: var(--bcolor);
 }
 
-.laser-div {
+.cb-laser-div {
     position: absolute;
     top: 0;
     left: 0;
@@ -486,7 +486,7 @@ onUnmounted(() => {
     z-index: 5;
 }
 
-.laser-svg {
+.cb-laser-svg {
     /* --svg-scale gets overridden from code */
     --svg-scale: 100%;
     position: absolute;
@@ -495,13 +495,13 @@ onUnmounted(() => {
     transform: translate(-50%, -50%) scale(var(--svg-scale), var(--svg-scale));
 }
 
-.laser-polyline {
+.cb-laser-polyline {
     stroke: var(--lcolor);
     stroke-width: 0.1;
     fill: none;
 }
 
-.grid {
+.cb-grid {
     position: absolute;
     top: 0;
     left: 0;
@@ -518,7 +518,7 @@ onUnmounted(() => {
     --shadow-alpha: calc(var(--shadow-strength) / var(--shadow-count));
 }
 
-.vingette {
+.cb-vingette {
     position: absolute;
     top: 0;
     left: 0;
@@ -529,19 +529,19 @@ onUnmounted(() => {
     z-index: 3;
 }
 
-.cell {
+.cb-cell {
     width: 100%;
     height: 100%;
 }
 
-.bcell {
+.cb-bcell {
     position: relative;
     width: 100%;
     height: 100%;
     display: flex;
 }
 
-.fcell {
+.cb-fcell {
     border-radius: 25%;
     background-color: var(--fbcolor);
     box-shadow:
@@ -550,27 +550,27 @@ onUnmounted(() => {
     z-index: 4;
 }
 
-.fcell-bottom {
+.cb-fcell-bottom {
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.fcell-top {
+.cb-fcell-top {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
 
-.fcell-right {
+.cb-fcell-right {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
 
-.fcell-left {
+.cb-fcell-left {
     border-top-left-radius: 0;
     border-bottom-left-radius: 0;
 }
 
-.via-div {
+.cb-via-div {
     position: absolute;
     top: 0;
     left: 0;
@@ -579,8 +579,8 @@ onUnmounted(() => {
     z-index: 1;
 }
 
-.via-ring-div,
-.via-hole-div {
+.cb-via-ring-div,
+.cb-via-hole-div {
     position: absolute;
     top: 0;
     left: 0;
@@ -592,29 +592,29 @@ onUnmounted(() => {
     align-items: center;
 }
 
-.via-ring-div {
+.cb-via-ring-div {
     z-index: 1;
 }
 
-.via-hole-div {
+.cb-via-hole-div {
     z-index: 2;
 }
 
-.via-ring {
+.cb-via-ring {
     width: 50%;
     height: 50%;
     border-radius: 50%;
     background-color: var(--fcolor);
 }
 
-.via-hole {
+.cb-via-hole {
     width: 30%;
     height: 30%;
     border-radius: 50%;
     background-color: var(--bcolor);
 }
 
-.track-div {
+.cb-track-div {
     position: absolute;
     top: 0;
     left: 0;
@@ -622,7 +622,7 @@ onUnmounted(() => {
     height: 100%;
 }
 
-.track-part {
+.cb-track-part {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -636,27 +636,27 @@ onUnmounted(() => {
     background-color: var(--fcolor);
 }
 
-.track-part-left {
+.cb-track-part-left {
     transform: scale(var(--track-length), var(--track-width)) translate(var(--track-offset-neg), 0);
 }
 
-.track-part-right {
+.cb-track-part-right {
     transform: scale(var(--track-length), var(--track-width)) translate(var(--track-offset), 0);
 }
 
-.track-part-horizontal {
+.cb-track-part-horizontal {
     transform: scale(var(--track-length-long), var(--track-width));
 }
 
-.track-part-top {
+.cb-track-part-top {
     transform: scale(var(--track-width), var(--track-length)) translate(0, var(--track-offset-neg));
 }
 
-.track-part-bottom {
+.cb-track-part-bottom {
     transform: scale(var(--track-width), var(--track-length)) translate(0, var(--track-offset));
 }
 
-.track-part-vertical {
+.cb-track-part-vertical {
     transform: scale(var(--track-width), var(--track-length-long));
 }
 </style>
