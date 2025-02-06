@@ -29,7 +29,7 @@ onUnmounted(() => {
     <div v-if="escapeStore.state" class="overlay">
         <escapeView></escapeView>
     </div>
-    <Graph></Graph>
+    <RouterView></RouterView>
 </template>
 
 <style scoped>
