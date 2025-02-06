@@ -3,6 +3,7 @@ enum Status {
     OFFLINE,
     ONLINE,
     START,
+    UNKNOWN,
 }
 
 function getColor(status: Status): string {
@@ -15,9 +16,24 @@ function getColor(status: Status): string {
             return 'red'
         case Status.START:
             return 'magenta'
-        default:
+        case Status.UNKNOWN:
             return 'gray'
     }
 }
 
-export { Status, getColor }
+function getStatusString(status: Status): string {
+    switch (status) {
+        case Status.HACKED:
+            return 'Hacked'
+        case Status.OFFLINE:
+            return 'OFFLINE'
+        case Status.ONLINE:
+            return 'Online'
+        case Status.START:
+            return 'Start'
+        case Status.UNKNOWN:
+            return 'Unbekannt'
+    }
+}
+
+export { Status, getColor, getStatusString }

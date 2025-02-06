@@ -9,41 +9,40 @@ import { RouterView } from 'vue-router'
 const escapeStore = useEscapeStore()
 
 const handleKeyPress = (e: KeyboardEvent) => {
-  if (e.code === 'Escape') {
-    escapeStore.state = !escapeStore.state
-  }
+    if (e.code === 'Escape') {
+        escapeStore.state = !escapeStore.state
+    }
 }
 
 const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
 
 onMounted(() => {
-  document.addEventListener('keydown', handleKeyPress)
+    document.addEventListener('keydown', handleKeyPress)
 })
 
 onUnmounted(() => {
-  document.removeEventListener('keydown', handleKeyPress)
+    document.removeEventListener('keydown', handleKeyPress)
 })
 </script>
 
 <template>
-  <div v-if="escapeStore.state" class="overlay">
-    <escapeView></escapeView>
-  </div>
-
-  <RouterView></RouterView>
+    <div v-if="escapeStore.state" class="overlay">
+        <escapeView></escapeView>
+    </div>
+    <Graph></Graph>
 </template>
 
 <style scoped>
 .overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
-  z-index: 1000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 </style>

@@ -22,7 +22,7 @@
   --green: hsla(160, 100%, 37%, 1);
 }
 
-/* semantic color variables for this project*/
+/* semantic color variables for this project
 :root {
   --color-background: var(--vt-c-white);
   --color-background-soft: var(--vt-c-white-soft);
@@ -35,21 +35,21 @@
   --color-text: var(--vt-c-text-light-1);
 
   --section-gap: 160px;
+}*/
+
+/*@media (prefers-color-scheme: dark) {*/
+:root {
+  --color-background: var(--vt-c-black);
+  --color-background-soft: var(--vt-c-black-soft);
+  --color-background-mute: var(--vt-c-black-mute);
+
+  --color-border: var(--vt-c-divider-dark-2);
+  --color-border-hover: var(--vt-c-divider-dark-1);
+
+  --color-heading: var(--vt-c-text-dark-1);
+  --color-text: var(--vt-c-text-dark-2);
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
-  }
-}
+/*}*/
 
 *,
 *::before,
@@ -61,10 +61,11 @@
 
 @font-face {
   font-family: 'Pixel';
-  src:  url("./fonts/QuinqueFive.ttf") format('truetype'),
-        url("./fonts/QuinqueFive.woff") format('woff'),
-        url("./fonts/QuinqueFive.woff2") format('woff2'),
-        url("./fonts/QuinqueFive.otf") format('opentype');
+  src:
+    url('./fonts/QuinqueFive.ttf') format('truetype'),
+    url('./fonts/QuinqueFive.woff') format('woff'),
+    url('./fonts/QuinqueFive.woff2') format('woff2'),
+    url('./fonts/QuinqueFive.otf') format('opentype');
   font-display: swap;
 }
 
