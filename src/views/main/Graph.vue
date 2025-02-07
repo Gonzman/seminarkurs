@@ -8,6 +8,7 @@ import {
 } from 'v-network-graph/lib/force-layout'
 import { computed, reactive, ref, watch } from 'vue'
 import * as Status from './status'
+import { useMouse } from '@vueuse/core'
 
 const graph = ref<vNG.Instance | null>(null)
 const tooltip = ref<HTMLDivElement | null>(null)
@@ -116,16 +117,14 @@ function fisherYatesShuffle(array: any[]): void {
         ;[array[i], array[j]] = [array[j], array[i]]
     }
 }
-
+const { x, y, sourceType } = useMouse()
 watch(
-    () => [targetNodePos.value, tooltipOpacity.value],
+    [x, y],
     () => {
         if (!graph.value || !tooltip.value) return
-
-        const domPoint = graph.value.translateFromSvgToDomCoordinates(targetNodePos.value)
         tooltipPos.value = {
-            left: `${domPoint.x - tooltip.value.offsetWidth + 250}px`,
-            top: `${domPoint.y}px`,
+            left: `${x.value + 15}px`,
+            top: `${y.value}px`,
         }
     },
     { deep: true },

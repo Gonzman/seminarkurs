@@ -5,6 +5,7 @@ import Encryption from '@/views/minigames/encryption/Encryption.vue'
 import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
 import Graph from '@/views/main/Graph.vue'
+import Test from '@/views/minigames/wire/Test.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,7 +18,7 @@ const router = createRouter({
         {
             path: '/wire',
             name: 'wire',
-            component: MatchTheWire,
+            component: Test,
             props: { level: Level.SUPER_HARD },
         },
         {
