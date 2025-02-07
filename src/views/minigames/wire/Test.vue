@@ -2,9 +2,40 @@
 import { useMouse } from '@vueuse/core'
 import { ref, watch, useTemplateRef } from 'vue'
 import Timer from '../Timer.vue'
+import Level from '../level'
 
-const colors = ['red', 'green', 'blue', 'purple']
+const props = defineProps<{ level: Level }>()
+
+let colors: string[] = []
+let start: number
+
+switch (props.level) {
+    case Level.EASY:
+        colors = ['red', 'green', 'blue', 'purple']
+        start = 25
+        break
+    case Level.MEDIUM:
+        colors = ['red', 'green', 'blue', 'purple']
+        start = 20
+        break
+
+    case Level.HARD:
+        colors = ['red', 'green', 'blue', 'purple', 'yellow']
+        start = 15
+        break
+
+    case Level.SUPER_HARD:
+        colors = ['red', 'green', 'blue', 'purple', 'yellow', 'teal']
+        start = 15
+        break
+    default:
+        break
+}
+
+let space = 100 / (colors.length + 1)
+
 const rect = '4vh'
+const spacing = (index: number) => (index + 1) * space
 
 let colorsL = [...colors]
 let colorsR = [...colors]
@@ -37,7 +68,7 @@ const mouse = useMouse()
 function selectLeftBox(index: number, color: string) {
     selectedBox.value = {
         x: '10%',
-        y: (index + 1) * 20 + '%',
+        y: spacing(index) + '%',
         color: color,
     }
 
@@ -58,7 +89,7 @@ function connectToRightBox(index: number, color: string) {
     if (tempLine.value!.color !== color) {
         tempLine.value = {
             x1: '10%',
-            y1: (index + 1) * 20 + '%',
+            y1: spacing(index) + '%',
             x2: '0',
             y2: '0',
             color: 'none',
@@ -69,20 +100,20 @@ function connectToRightBox(index: number, color: string) {
         x1: selectedBox.value!.x,
         y1: selectedBox.value!.y,
         x2: '90%',
-        y2: (index + 1) * 20 + '%',
+        y2: spacing(index) + '%',
         color,
     })
 
     tempLine.value = {
         x1: '10%',
-        y1: (index + 1) * 20 + '%',
+        y1: spacing(index) + '%',
         x2: '0',
         y2: '0',
         color: 'none',
     }
     selectedBox.value = null
 
-    if (lines.value.length === color.length) {
+    if (lines.value.length === colors.length) {
         alert('Gewonnen')
     }
 }
@@ -105,7 +136,7 @@ function timerFertig() {
 </script>
 
 <template>
-    <Timer :sekunden="200" @time-over="timerFertig"></Timer>
+    <Timer :sekunden="start" @time-over="timerFertig"></Timer>
     <div class="svg-container">
         <svg ref="svg">
             <line
@@ -134,7 +165,7 @@ function timerFertig() {
                 :key="'L-' + index"
                 @click="selectLeftBox(index, color)"
                 x="10%"
-                :y="`${20 * (index + 1)}%`"
+                :y="`${spacing(index)}%`"
                 :width="rect"
                 :height="rect"
                 :fill="color"
@@ -146,7 +177,7 @@ function timerFertig() {
                 :key="'R-' + index"
                 @click="connectToRightBox(index, color)"
                 x="90%"
-                :y="`${20 * (index + 1)}%`"
+                :y="`${spacing(index)}%`"
                 :width="rect"
                 :height="rect"
                 :fill="color"
