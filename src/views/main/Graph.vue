@@ -138,6 +138,9 @@ const eventHandlers: vNG.EventHandlers = {
     'node:pointerout': () => {
         tooltipOpacity.value = 0
     },
+    'node:dragend': () => {
+        tooltipOpacity.value = 0
+    },
 }
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextEdgeIndex = ref(Object.keys(edges).length + 1)

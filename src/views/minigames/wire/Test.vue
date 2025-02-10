@@ -29,13 +29,17 @@ switch (props.level) {
         start = 15
         break
     default:
+        colors = ['red', 'green', 'blue', 'purple']
+        start = 25
         break
 }
 
 let space = 100 / (colors.length + 1)
 
-const rect = '4vh'
+const rect = '4dvh'
 const spacing = (index: number) => (index + 1) * space
+
+const spacingLine = (index: number) => (index + 1) * space
 
 let colorsL = [...colors]
 let colorsR = [...colors]
@@ -68,7 +72,7 @@ const mouse = useMouse()
 function selectLeftBox(index: number, color: string) {
     selectedBox.value = {
         x: '10%',
-        y: spacing(index) + '%',
+        y: spacingLine(index) + '%',
         color: color,
     }
 
@@ -85,28 +89,33 @@ function selectLeftBox(index: number, color: string) {
 function connectToRightBox(index: number, color: string) {
     useTemp.value = false
 
-    if (!selectedBox.value || selectedBox.value.color !== color) return
-    if (tempLine.value!.color !== color) {
+    if (
+        !selectedBox.value ||
+        selectedBox.value.color !== color ||
+        lines.value.find((line) => line.color === color) ||
+        tempLine.value!.color !== color
+    ) {
         tempLine.value = {
             x1: '10%',
-            y1: spacing(index) + '%',
+            y1: spacingLine(index) + '%',
             x2: '0',
             y2: '0',
             color: 'none',
         }
+        return
     }
 
     lines.value.push({
         x1: selectedBox.value!.x,
         y1: selectedBox.value!.y,
         x2: '90%',
-        y2: spacing(index) + '%',
+        y2: spacingLine(index) + '%',
         color,
     })
 
     tempLine.value = {
         x1: '10%',
-        y1: spacing(index) + '%',
+        y1: spacingLine(index) + '%',
         x2: '0',
         y2: '0',
         color: 'none',
