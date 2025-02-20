@@ -45,6 +45,14 @@ const router = createRouter({
                 map: '/4B+AeM//8z/gAAB4z//zP+eABgDP//M/5//mAA8YwD/j///ADxjAP+MAf9wPGAA/4AB//A8AAP///gB8fwHA///+AHx/AcD////+fH8f+P////58fx/4AB///nwPH/gAH//+fAAf+AAAP8B8AB/+AAA/wH/ADP4AAD/P/8AM/gB+AA//wAz+AH4AD/w58PgAfgAP/Dnw+AB///gAP/D5/+P/8AA/8Pn/4/wA3j/w+f/gfMDeP/A5+GB/wNw/A4A4AH/AwH8D+AA/H8PcfwP4AD8f49x8A/gAPx/j3BwD/wA/h+PYHAP/OD+AABgcADA4AAB4GADgMDhwMf/fwPwA+HAx/9/A/4P//j3/38D/g8=',
             },
         },
+        {
+            path: '/finger',
+            name: 'finger',
+            // route level code-splitting
+            // this generates a separate chunk (About.[hash].js) for this route
+            // which is lazy-loaded when the route is visited.
+            component: () => import('../views/minigames/finger/FingerCopy.vue'),
+        },
 
         {
             path: '/about',

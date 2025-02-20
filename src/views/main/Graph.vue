@@ -16,19 +16,24 @@ const targetNodeId = ref<string>('')
 const tooltipOpacity = ref(0)
 const tooltipPos = ref({ left: '0px', top: '0px' })
 
-const edges = reactive<Edges>({
-    edge1: { source: 'node1', target: 'node2' },
-    edge2: { source: 'node1', target: 'node3' },
-    edge3: { source: 'node1', target: 'node4' },
-    edge4: { source: 'node4', target: 'node5' },
-    edge5: { source: 'node4', target: 'node6' },
-})
-
 interface Node extends vNG.Node {
     icon: string
     status: Status.Status
     draggable?: boolean
 }
+
+interface Edge extends vNG.Edge {
+    color?: string
+    dashed?: boolean
+}
+
+const edges = reactive<Record<string, Edge>>({
+    edge1: { source: 'node1', target: 'node2', color: '#dbf77c', dashed: true },
+    edge2: { source: 'node1', target: 'node3' },
+    edge3: { source: 'node1', target: 'node4' },
+    edge4: { source: 'node4', target: 'node5' },
+    edge5: { source: 'node4', target: 'node6' },
+})
 
 const layouts = ref<Layouts>({
     nodes: {
@@ -67,6 +72,16 @@ const configs = reactive(
                 lineHeight: 1.1,
                 color: '#FFFFFF',
                 fontFamily: 'Pixel',
+            },
+        },
+        edge: {
+            normal: {
+                color: (edge) => edge.color ?? '#4466cc',
+                dasharray: (edge) => (edge.dashed ? '6' : '0'),
+                width: 5,
+            },
+            hover: {
+                color: (edge) => edge.color ?? '#4466cc',
             },
         },
 
