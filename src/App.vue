@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, reactive } from 'vue'
 import Graph from '@/views/main/Graph.vue'
-import escapeView from './views/overlays/escapeView.vue'
+import EscapeView from './views/overlays/EscapeView.vue'
 import { useEscapeStore } from './stores/escape'
 import { RouterView } from 'vue-router'
+import Stevie from '@/components/Stevie.vue'
 
 // Make 'esc' reactive
 const escapeStore = useEscapeStore()
@@ -23,13 +24,42 @@ onMounted(() => {
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyPress)
 })
+
+// Draggable functionality
+const stevieRef = ref<HTMLElement | null>(null)
+let offsetX = 0
+let offsetY = 0
+
+const onDragStart = (e: MouseEvent) => {
+    if (stevieRef.value) {
+        offsetX = e.clientX - stevieRef.value.getBoundingClientRect().left
+        offsetY = e.clientY - stevieRef.value.getBoundingClientRect().top
+        document.addEventListener('mousemove', onDrag)
+        document.addEventListener('mouseup', onDragEnd)
+    }
+}
+
+const onDrag = (e: MouseEvent) => {
+    if (stevieRef.value) {
+        stevieRef.value.style.left = `${e.clientX - offsetX}px`
+        stevieRef.value.style.top = `${e.clientY - offsetY}px`
+    }
+}
+
+const onDragEnd = () => {
+    document.removeEventListener('mousemove', onDrag)
+    document.removeEventListener('mouseup', onDragEnd)
+}
 </script>
 
 <template>
     <div v-if="escapeStore.state" class="overlay">
-        <escapeView></escapeView>
+        <EscapeView></EscapeView>
     </div>
     <RouterView></RouterView>
+    <div ref="stevieRef" class="stevie" @mousedown="onDragStart">
+        <Stevie />
+    </div>
 </template>
 
 <style scoped>
@@ -44,5 +74,13 @@ onUnmounted(() => {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.stevie {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: grab;
 }
 </style>
