@@ -21,8 +21,6 @@ const props = defineProps({
     }
 })
 
-
-
 const position = ref(0)
 let animationFrame: number | null = null
 const startTime = ref(performance.now())
@@ -46,11 +44,22 @@ onUnmounted(() => {
     if (animationFrame) cancelAnimationFrame(animationFrame)
 })
 
-const backgroundStyle = computed(() => ({
-    backgroundAttachment: 'fixed',
-    backgroundPosition: 'center',
-    backgroundSize: 'cover'
-}))
+const backgroundStyle = computed(() => {
+    const transformValue = {
+        up: `translateY(${position.value / 2}%)`,
+        down: `translateY(${-position.value / 2}%)`,
+        left: `translateX(${position.value / 2}%)`,
+        right: `translateX(${-position.value / 2}%)`
+    }[props.direction] || 'none'
+
+    return {
+        backgroundAttachment: 'fixed',
+        backgroundPosition: 'center',
+        backgroundSize: 'cover',
+        transform: transformValue,
+        transition: `transform ${duration * 2}s linear`
+    }
+})
 
 const contentStyle = computed(() => {
     const transformValue = {
@@ -62,7 +71,8 @@ const contentStyle = computed(() => {
 
     return {
         transform: transformValue,
-        willChange: 'transform'
+        willChange: 'transform',
+        textAlign: 'center'
     }
 })
 </script>
@@ -70,7 +80,10 @@ const contentStyle = computed(() => {
 <template>
     <div class="parallax-container">
         <div class="parallax-background" :style="backgroundStyle">
-            <slot name="background"></slot>
+            <!-- Flex centering any background slot content -->
+            <div class="background-inner">
+                <slot name="background"></slot>
+            </div>
         </div>
         <div class="parallax-content" :style="contentStyle">
             <slot name="content"></slot>
@@ -85,8 +98,12 @@ const contentStyle = computed(() => {
     width: 100vw;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
+/* Remove the transform from here and add flex centering */
 .parallax-background {
     position: absolute;
     top: 0;
@@ -96,11 +113,24 @@ const contentStyle = computed(() => {
     z-index: 1;
 }
 
+/* New inner wrapper to center background slot content */
+.background-inner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+}
+
 .parallax-content {
     position: relative;
     z-index: 2;
-    padding: 20px;
     color: white;
     transition: transform linear;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 </style>

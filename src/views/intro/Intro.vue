@@ -4,26 +4,41 @@ import { onMounted, ref } from 'vue';
 
 const timer = ref(0);
 
-
 onMounted(() => {
     timer.value = setInterval(() => {
         console.log('Timer');
     }, 1000);
 });
-
 </script>
 
 <template>
-    <IntroComp text="Hallo" direction="right">
-        <template #content>
-            <h1>Intro</h1>
-            <p>Das ist ein Intro</p>
-        </template>
-        <template #background>
-            <img src="/src/assets/intro/image.png" alt="Background" />
-        </template>
-    </IntroComp>
+    <div class="container intro">
+        <IntroComp text="Hallo" direction="right" :animation-duration="30" :anmation-stop="5">
+            <template #content>
+                <img src="/src/assets/intro/image.png" alt="Background" />
+            </template>
+            <template #background>
+                <img src="/src/assets/intro/FC3EB5B1-EAD7-49E2-BC28-C6391DF64CAA_1_201_a.jpeg" alt="Background" />
+            </template>
+        </IntroComp>
+    </div>
 </template>
 
+<style lang="css" scoped>
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+}
 
-<style lang="css" scoped></style>
+.intro {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+</style>
