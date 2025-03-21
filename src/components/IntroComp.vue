@@ -5,7 +5,7 @@ const props = defineProps({
     direction: {
         type: String,
         default: 'right',
-        validator: (value: string) => ['up', 'down', 'left', 'right'].includes(value)
+        validator: (value: string) => ['up', 'down', 'left', 'right'].includes(value) //todo: position the text dependent on the direction
     },
     text: {
         type: String,
@@ -19,8 +19,9 @@ const props = defineProps({
         type: Number,
         default: 90
     }
-
 })
+
+
 
 const position = ref(0)
 let animationFrame: number | null = null
@@ -81,8 +82,9 @@ const contentStyle = computed(() => {
 <style scoped>
 .parallax-container {
     position: relative;
+    width: 100vw;
+    height: 100vh;
     overflow: hidden;
-    height: 400px;
 }
 
 .parallax-background {
