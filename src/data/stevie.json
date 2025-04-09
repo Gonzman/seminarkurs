@@ -1,0 +1,8 @@
+[
+  {
+    "id": 0,
+    "message": "Hello, I'm Stevie! I love to help people with their coding problems. What can I assist you with today?",
+    "gameState": "selectScreen",
+    "stevieState": "happy"
+  }
+]

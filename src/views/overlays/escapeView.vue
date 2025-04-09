@@ -3,7 +3,7 @@
 
 
         <div v-if="state == State.SELECT">
-            <button @click="escapeStore.state = false" class="back up">&#8249;</button>
+            <button @click="escapeStore.escapeState = false" class="back up">&#8249;</button>
             <div class="list">
                 <button @click="state = State.KNOWLEDGE" class="select">Informationen</button>
                 <button @click="state = State.INTRODUCTION" class="select">Anleitung</button>
@@ -23,10 +23,10 @@
 <script setup lang="ts">
 import Instrocution from '@/components/overlays/Introduction.vue';
 import Knowledge from '@/components/overlays/Knowledge.vue';
-import { useEscapeStore } from '@/stores/escape';
+import { useGameStore } from '@/stores/game';
 import { ref } from 'vue';
 
-const escapeStore = useEscapeStore();
+const escapeStore = useGameStore();
 
 enum State {
     SELECT,

@@ -6,9 +6,10 @@ import {
     type ForceNodeDatum,
     type ForceEdgeDatum,
 } from 'v-network-graph/lib/force-layout'
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref, watch } from 'vue'
 import * as Status from './status'
 import { useMouse } from '@vueuse/core'
+import { useGameStore } from '@/stores/game'
 
 const graph = ref<vNG.Instance | null>(null)
 const tooltip = ref<HTMLDivElement | null>(null)
@@ -129,7 +130,7 @@ const targetNodePos = computed(() => {
 function fisherYatesShuffle(array: any[]): void {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[array[i], array[j]] = [array[j], array[i]]
+            ;[array[i], array[j]] = [array[j], array[i]]
     }
 }
 const { x, y, sourceType } = useMouse()
@@ -233,20 +234,20 @@ function nameToIP(name: string): string {
     return `10.${ipParts.join('.')}`
 }
 
+const gameStore = useGameStore();
+
+onMounted(() => {
+    gameStore.gameState = 'selectScreen'
+});
+
 defineExpose({ addRandomNode })
 </script>
 
 <template>
     <div class="graph">
         <button @click="addRandomNode">12</button>
-        <v-network-graph
-            ref="graph"
-            v-model:layouts="layouts"
-            :nodes="nodes"
-            :edges="edges"
-            :configs="configs"
-            :event-handlers="eventHandlers"
-        />
+        <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="nodes" :edges="edges" :configs="configs"
+            :event-handlers="eventHandlers" />
         <div ref="tooltip" class="tooltip" :style="{ ...tooltipPos, opacity: tooltipOpacity }">
             <div>Name: {{ nodes[targetNodeId]?.name ?? '' }}</div>
             <div>Status: {{ Status.getStatusString(nodes[targetNodeId]?.status) }}</div>
@@ -263,6 +264,7 @@ defineExpose({ addRandomNode })
     height: 100%;
     width: 100%;
 }
+
 .tooltip {
     color: white;
     font-family: 'Pixel';

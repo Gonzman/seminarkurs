@@ -1,17 +1,15 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive } from 'vue'
-import Graph from '@/views/main/Graph.vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import EscapeView from './views/overlays/EscapeView.vue'
-import { useEscapeStore } from './stores/escape'
+import { useGameStore } from './stores/game'
 import { RouterView } from 'vue-router'
-import Stevie from '@/components/Stevie.vue'
-
+import Stevie from './components/Stevie.vue'
 // Make 'esc' reactive
-const escapeStore = useEscapeStore()
+const gameStore = useGameStore()
 
 const handleKeyPress = (e: KeyboardEvent) => {
     if (e.code === 'Escape') {
-        escapeStore.state = !escapeStore.state
+        gameStore.toggleEscape()
     }
 }
 
@@ -53,12 +51,12 @@ const onDragEnd = () => {
 </script>
 
 <template>
-    <div v-if="escapeStore.state" class="overlay">
+    <div v-if="gameStore.escapeState" class="overlay">
         <EscapeView></EscapeView>
     </div>
     <RouterView></RouterView>
     <div ref="stevieRef" class="stevie" @mousedown="onDragStart">
-        <Stevie />
+        <Stevie v-if="gameStore.gameState != 'intro'"></Stevie>
     </div>
 </template>
 
