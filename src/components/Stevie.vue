@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
     <div @click="handleClick()">
-        <speechBubble v-if="speeachText != ''">{{ speeachText}}</speechBubble>
-        stevie
+        <speechBubble v-if="speeachText != ''">{{ speeachText }}</speechBubble>
+        <img :src="imagePath" class="pixel-art" width="auto" height="200px" />
     </div>
 </template>
 
@@ -16,9 +16,18 @@ import stevie from '@/data/stevie.json';
 const gameStore = useGameStore();
 const stevieStore = useStevieStore();
 
-
-
 const speeachText = ref('Hello, I am Stevie!');
+
+const count = ref(0); // Changed to a number
+const folder = ref('idle');
+
+const imagePath = ref(`/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
+
+// Import all images from @/assets/stevie/ and its subfolders
+const images = import.meta.glob('/src/assets/stevie/idle/*.png', { eager: true }) as Record<string, string>;
+
+// Log the keys of the images object to debug
+console.log(Object.keys(images));
 
 function handleClick() {
     speeachText.value = 'You clicked me!';
@@ -27,8 +36,8 @@ function handleClick() {
     const gameState = gameStore.getGameState();
 
     const message = stevie.ideen.find((item) => {
-        if(item.gameState == gameState.value && item.stevieState == stevieState.value) {
-           return item;
+        if (item.gameState == gameState.value && item.stevieState == stevieState.value) {
+            return item;
         }
     });
 
@@ -42,6 +51,56 @@ function handleClick() {
     setTimeout(() => {
         speeachText.value = '';
     }, message.duration * 1000);
+}
+
+async function startCounter() {
+    try {
+        while (true) {
+            await idleAnim(); // Run idle animation
+            await handyAnim(); // Run handy animation
+            await idleAnim(); // Run idle animation again
+        }
+    } catch (error) {
+        console.error('Animation error:', error);
+    }
+}
+
+function handyAnim() {
+    return new Promise((resolve) => {
+        let currentCount = 0;
+        const interval = 2000 / 12;
+        folder.value = 'handy'; // Set the folder name here
+        const counterInterval = setInterval(() => {
+            count.value = currentCount;
+            imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
+
+            if (currentCount >= 11) {
+                clearInterval(counterInterval);
+                resolve(); // Resolve the Promise when the animation ends
+            } else {
+                currentCount++;
+            }
+        }, interval);
+    });
+}
+
+function idleAnim() {
+    return new Promise((resolve) => {
+        let currentCount = 0;
+        const interval = 1000 / 6;
+        folder.value = 'idle'; // Set the folder name here
+        const counterInterval = setInterval(() => {
+            count.value = currentCount;
+            imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
+
+            if (currentCount >= 5) {
+                clearInterval(counterInterval);
+                resolve(); // Resolve the Promise when the animation ends
+            } else {
+                currentCount++;
+            }
+        }, interval);
+    });
 }
 
 async function triggerMonolog(title: string) {
@@ -64,9 +123,16 @@ async function triggerMonolog(title: string) {
     speeachText.value = '';
 }
 
+startCounter()
+
 defineExpose({
     triggerMonolog,
+    startCounter, // Expose the startCounter function
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.pixel-art {
+    image-rendering: pixelated;
+}
+</style>

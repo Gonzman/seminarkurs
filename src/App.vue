@@ -30,6 +30,7 @@ const posX = ref(100) // initial X position
 const posY = ref(100) // initial Y position
 let offsetX = 0
 let offsetY = 0
+let animationFrameId: number | null = null
 
 const onDragStart = (e: MouseEvent) => {
     if (stevieRef.value) {
@@ -41,13 +42,22 @@ const onDragStart = (e: MouseEvent) => {
 }
 
 const onDrag = (e: MouseEvent) => {
-    posX.value = e.clientX - offsetX
-    posY.value = e.clientY - offsetY
+    if (animationFrameId === null) {
+        animationFrameId = requestAnimationFrame(() => {
+            posX.value = e.clientX - offsetX
+            posY.value = e.clientY - offsetY
+            animationFrameId = null
+        })
+    }
 }
 
 const onDragEnd = () => {
     document.removeEventListener('mousemove', onDrag)
     document.removeEventListener('mouseup', onDragEnd)
+    if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId)
+        animationFrameId = null
+    }
 }
 </script>
 
@@ -56,12 +66,7 @@ const onDragEnd = () => {
         <EscapeView></EscapeView>
     </div>
     <RouterView></RouterView>
-    <div
-        ref="stevieRef"
-        class="stevie"
-        @mousedown="onDragStart"
-        :style="{ top: posY + 'px', left: posX + 'px' }"
-    >
+    <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
         <Stevie v-if="gameStore.gameState != 'intro'" />
     </div>
 </template>
