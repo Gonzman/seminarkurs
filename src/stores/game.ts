@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 
@@ -14,7 +15,15 @@ export const useGameStore = defineStore('game', () => {
         return escapeState
     }
 
-    return { escapeState, toggleEscape, getEscape, gameState }
+    function setGameState(value: GameStateType) {
+        gameState.value = value
+    }
+
+    function getGameState() {
+        return gameState
+    }
+
+    return { escapeState, toggleEscape, getEscape, gameState, setGameState, getGameState, watchedIntro}
 })
 const gameStateArray = [
     'intro',

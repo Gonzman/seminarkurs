@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 
@@ -5,15 +6,16 @@ export const useStevieStore = defineStore('stevie', () => {
     const stevieState: Ref<StevieStateType> = ref('normal')
     const watchedIntro = ref(false)
 
-    function getStevie() {
-        return stevieState
-    }
 
     function setStevie(value: StevieStateType) {
         stevieState.value = value
     }
 
-    return { getStevie, setStevie }
+    function getStevie() {
+        return stevieState
+    }
+
+    return { stevieState, setStevie, getStevie, watchedIntro }
 })
 
 const stevieStateArray = ['normal', 'angry', 'happy', 'sad', 'confused', 'scared'] as const

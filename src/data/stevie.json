@@ -1,8 +1,25 @@
-[
-  {
-    "id": 0,
-    "message": "Hello, I'm Stevie! I love to help people with their coding problems. What can I assist you with today?",
-    "gameState": "selectScreen",
-    "stevieState": "happy"
-  }
-]
+{
+    "ideen":[
+        {
+            "message": "Hallo, ich bin Stevie! Ich liebe es, Menschen bei ihren Programmierproblemen zu helfen. Womit kann ich Ihnen heute helfen?",
+            "gameState": "selectScreen",
+            "stevieState": "normal",
+            "duration": 3
+        }
+    ],
+    "monolog": [
+        {
+            "title": "test",
+            "messages": [
+                {
+                    "message": "Hallo, ich bin Stevie! Ich liebe es, Menschen bei ihren Programmierproblemen zu helfen. Womit kann ich Ihnen heute helfen?",
+                    "duration": 3
+                },
+                {
+                    "message": "Ich kann Ihnen bei einer Vielzahl von Programmierproblemen helfen, von der Fehlersuche bis hin zum Entwurf von Algorithmen. Lassen Sie mich einfach wissen, was Sie brauchen!",
+                    "duration": 3
+                }
+            ]
+        }
+    ]
+}
