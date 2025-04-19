@@ -1,12 +1,18 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import EscapeView from './views/overlays/escapeView.vue'
 import { useGameStore } from './stores/game'
-import { RouterView } from 'vue-router'
+import { RouterView, useRoute } from 'vue-router'
 import Stevie from './components/Stevie.vue'
 
 const gameStore = useGameStore()
+const route = useRoute()
+
+// Compute transition name based on route meta
+const transitionName = computed(() => {
+    return route.meta.transition || 'fade'
+})
 
 const handleKeyPress = (e: KeyboardEvent) => {
     if (e.code === 'Escape') {
@@ -65,7 +71,9 @@ const onDragEnd = () => {
     <div v-if="gameStore.escapeState" class="overlay">
         <EscapeView></EscapeView>
     </div>
-    <RouterView></RouterView>
+    <transition name="fade" mode="out-in">
+        <router-view></router-view>
+    </transition>
     <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
         <Stevie v-if="gameStore.gameState != 'intro'" />
     </div>
@@ -90,5 +98,63 @@ const onDragEnd = () => {
     z-index: 1000;
     cursor: grab;
     transition: top 0.05s ease-out, left 0.05s ease-out;
+}
+
+/* Fade transition */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+/* Slide left transition */
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-left-enter-from {
+    transform: translateX(100%);
+}
+.slide-left-leave-to {
+    transform: translateX(-100%);
+}
+
+/* Slide right transition */
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-right-enter-from {
+    transform: translateX(-100%);
+}
+.slide-right-leave-to {
+    transform: translateX(100%);
+}
+
+/* Slide up transition */
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-up-enter-from {
+    transform: translateY(100%);
+}
+.slide-up-leave-to {
+    transform: translateY(-100%);
+}
+
+/* Slide down transition */
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-down-enter-from {
+    transform: translateY(-100%);
+}
+.slide-down-leave-to {
+    transform: translateY(100%);
 }
 </style>

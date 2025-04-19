@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import MatchTheWire from '@/views/minigames/wire/MatchTheWire.vue'
 import Encryption from '@/views/minigames/encryption/Encryption.vue'
 import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
@@ -25,6 +24,7 @@ const router = createRouter({
             name: 'wire',
             component: Test,
             props: { level: Level.HARD },
+            meta: { transition: 'slide-left' },
         },
         {
             path: '/caeser',

@@ -26,6 +26,7 @@
     /* Ensure long words break properly */
     line-height: 1.5;
     /* Improve text spacing */
+    user-select: none;
 }
 
 .speech-bubble:after {

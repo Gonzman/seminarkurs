@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-    <div @click="handleClick()">
+    <div @click="handleClick()" class="stevie">
         <speechBubble v-if="speeachText != ''">{{ speeachText }}</speechBubble>
         <img :src="imagePath" class="pixel-art" width="auto" height="200px" />
     </div>
@@ -66,7 +66,7 @@ async function startCounter() {
 }
 
 function handyAnim() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
         let currentCount = 0;
         const interval = 2000 / 12;
         folder.value = 'handy'; // Set the folder name here
@@ -85,7 +85,7 @@ function handyAnim() {
 }
 
 function idleAnim() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
         let currentCount = 0;
         const interval = 1000 / 6;
         folder.value = 'idle'; // Set the folder name here
@@ -134,5 +134,9 @@ defineExpose({
 <style scoped>
 .pixel-art {
     image-rendering: pixelated;
+}
+
+.stevie{
+    user-select: none;
 }
 </style>
