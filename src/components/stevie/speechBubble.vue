@@ -10,36 +10,33 @@
 <style lang="css" scoped>
 .speech-bubble {
     position: relative;
-    padding: 15px;
-    /* Reduced padding for better text fit */
-    margin: 1em 0 0em;
+    padding: 20px;
     color: #000;
     background: linear-gradient(#ffffff, #ffffff);
-    border-radius: 10px;
-    max-width: 20rem;
-    /* Adjusted max-width for better responsiveness */
+    border-radius: 15px;
+    min-width: 250px; /* Set a minimum width */
+    max-width: 350px; /* Increase max width */
     width: auto;
-    /* Allow width to adjust based on content */
     font-size: 1rem;
-    /* Adjust font size for better readability */
     word-wrap: break-word;
-    /* Ensure long words break properly */
-    line-height: 1.5;
-    /* Improve text spacing */
+    line-height: 1.6;
     user-select: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    display: block; /* Changed from inline-block to block */
+    text-align: center; /* Center text in the bubble */
+    white-space: normal; /* Ensure text wraps properly */
 }
 
 .speech-bubble:after {
     content: "";
     position: absolute;
     bottom: -15px;
-    left: 50px;
+    left: 50%; /* Center the pointer */
+    transform: translateX(-50%); /* Ensure proper centering */
     display: block;
     width: 0;
     height: 0;
-
     border-top: 15px solid #ffffff;
-
     border-left: 15px solid transparent;
     border-right: 15px solid transparent;
 }
