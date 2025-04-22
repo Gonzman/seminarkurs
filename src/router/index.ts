@@ -5,6 +5,7 @@ import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
 import Graph from '@/views/main/Graph.vue'
 import Test from '@/views/minigames/wire/Test.vue'
+import FingerGame from '@/views/minigames/finger/FingerGame.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -53,12 +54,33 @@ const router = createRouter({
         {
             path: '/finger',
             name: 'finger',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import('../views/minigames/finger/FingerCopy.vue'),
+            component: FingerGame,
+            props: { level: Level.MEDIUM },
         },
-
+        {
+            path: '/finger-easy',
+            name: 'finger-easy',
+            component: FingerGame,
+            props: { level: Level.EASY },
+        },
+        {
+            path: '/finger-medium',
+            name: 'finger-medium',
+            component: FingerGame,
+            props: { level: Level.MEDIUM },
+        },
+        {
+            path: '/finger-hard',
+            name: 'finger-hard',
+            component: FingerGame,
+            props: { level: Level.HARD },
+        },
+        {
+            path: '/finger-super-hard',
+            name: 'finger-super-hard',
+            component: FingerGame,
+            props: { level: Level.SUPER_HARD },
+        },
         {
             path: '/about',
             name: 'about',
