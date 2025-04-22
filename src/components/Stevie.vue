@@ -1,8 +1,16 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-    <div @click="handleClick()">
-        <speechBubble v-if="speeachText != ''">{{ speeachText }}</speechBubble>
-        <img :src="imagePath" class="pixel-art" width="auto" height="200px" />
+    <div
+        @click="handleClick()"
+        class="stevie">
+        <speechBubble v-if="speeachText != ''" class="speech-bubble-container">{{ speeachText }}</speechBubble>
+        <img
+            :src="imagePath"
+            class="pixel-art"
+            width="auto"
+            height="200px"
+            draggable="false"
+            @dragstart.prevent />
     </div>
 </template>
 
@@ -30,6 +38,7 @@ const images = import.meta.glob('/src/assets/stevie/idle/*.png', { eager: true }
 console.log(Object.keys(images));
 
 function handleClick() {
+
     speeachText.value = 'You clicked me!';
 
     const stevieState = stevieStore.getStevie();
@@ -169,5 +178,19 @@ defineExpose({
 <style scoped>
 .pixel-art {
     image-rendering: pixelated;
+}
+
+.stevie{
+    user-select: none;
+    position: relative; /* Add position relative as container reference */
+}
+
+.speech-bubble-container {
+    position: absolute;
+    bottom: 100%; /* Position above the Stevie character */
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
+    margin-bottom: 15px; /* Add some space between bubble and character */
+    z-index: 10; /* Ensure it appears above other elements */
 }
 </style>

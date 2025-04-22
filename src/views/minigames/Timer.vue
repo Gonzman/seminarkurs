@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game'
 import { onUnmounted, ref } from 'vue'

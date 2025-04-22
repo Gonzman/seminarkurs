@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { useMouse } from '@vueuse/core'
 import { ref, watch, useTemplateRef } from 'vue'
@@ -10,10 +11,12 @@ let colors: string[] = []
 let start: number
 
 switch (props.level) {
+    default:
     case Level.EASY:
         colors = ['red', 'green', 'blue', 'purple']
         start = 25
         break
+
     case Level.MEDIUM:
         colors = ['red', 'green', 'blue', 'purple']
         start = 20
@@ -28,26 +31,33 @@ switch (props.level) {
         colors = ['red', 'green', 'blue', 'purple', 'yellow', 'teal']
         start = 15
         break
-    default:
-        colors = ['red', 'green', 'blue', 'purple']
-        start = 25
-        break
 }
 
-let space = 100 / (colors.length + 1)
+const space = 100 / (colors.length + 1)
 
 const rect = '4dvh'
 const spacing = (index: number) => (index + 1) * space
 
 const spacingLine = (index: number) => (index + 1) * space
 
-let colorsL = [...colors]
-let colorsR = [...colors]
+// Calculate center coordinates for boxes
+function getBoxCenter(xPosition: string, yPosition: number) {
+    // Assuming rect is in 'dvh' units and needs to be converted approximately for calculations
+    // This is an approximation as exact pixel values would depend on actual rendering
+    const rectNumeric = parseInt(rect)
+    return {
+        x: xPosition,
+        y: `${yPosition + rectNumeric/2}%`
+    }
+}
+
+const colorsL = [...colors]
+const colorsR = [...colors]
 
 fisherYatesShuffle(colorsL)
 fisherYatesShuffle(colorsR)
 
-function fisherYatesShuffle(array: any[]): void {
+function fisherYatesShuffle(array: unknown[]): void {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
         ;[array[i], array[j]] = [array[j], array[i]]
@@ -70,15 +80,19 @@ const useTemp = ref<boolean>(false)
 const mouse = useMouse()
 
 function selectLeftBox(index: number, color: string) {
+    // Get center of the left box
+    const leftCenter = getBoxCenter('10%', spacingLine(index))
+
     selectedBox.value = {
-        x: '10%',
-        y: spacingLine(index) + '%',
+        x: leftCenter.x,
+        y: leftCenter.y,
         color: color,
     }
 
+    // Start the temporary line from the box center
     tempLine.value = {
-        x1: mouse.x.value.toString(),
-        y1: (mouse.y.value - 42).toString(),
+        x1: leftCenter.x,
+        y1: leftCenter.y,
         x2: mouse.x.value.toString(),
         y2: (mouse.y.value - 42).toString(),
         color: color,
@@ -89,12 +103,16 @@ function selectLeftBox(index: number, color: string) {
 function connectToRightBox(index: number, color: string) {
     useTemp.value = false
 
+    // Get center of the right box
+    const rightCenter = getBoxCenter('90%', spacingLine(index))
+
     if (
         !selectedBox.value ||
         selectedBox.value.color !== color ||
         lines.value.find((line) => line.color === color) ||
         tempLine.value!.color !== color
     ) {
+        // Reset temporary line when connection fails
         tempLine.value = {
             x1: '10%',
             y1: spacingLine(index) + '%',
@@ -105,14 +123,16 @@ function connectToRightBox(index: number, color: string) {
         return
     }
 
+    // Add the permanent line from left box center to right box center
     lines.value.push({
         x1: selectedBox.value!.x,
         y1: selectedBox.value!.y,
-        x2: '90%',
-        y2: spacingLine(index) + '%',
+        x2: rightCenter.x,
+        y2: rightCenter.y,
         color,
     })
 
+    // Reset the temporary line
     tempLine.value = {
         x1: '10%',
         y1: spacingLine(index) + '%',

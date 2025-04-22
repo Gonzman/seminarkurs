@@ -62,7 +62,7 @@ type Line = {
   color: string // Add color to Line type
 }
 
-function fisherYatesShuffle(array: any[]): void {
+function fisherYatesShuffle(array: unknown[]): void {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[array[i], array[j]] = [array[j], array[i]]
@@ -73,8 +73,8 @@ const canvasRef = ref<HTMLCanvasElement | null>(null)
 const ctx = ref<CanvasRenderingContext2D | null>(null)
 
 const total = colors.length
-let colorsL = JSON.parse(JSON.stringify(colors))
-let colorsR = JSON.parse(JSON.stringify(colors))
+const colorsL = JSON.parse(JSON.stringify(colors))
+const colorsR = JSON.parse(JSON.stringify(colors))
 fisherYatesShuffle(colorsL)
 fisherYatesShuffle(colorsR)
 
