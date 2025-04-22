@@ -1,17 +1,22 @@
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, reactive } from 'vue'
-import Graph from '@/views/main/Graph.vue'
-import EscapeView from './views/overlays/EscapeView.vue'
-import { useEscapeStore } from './stores/escape'
-import { RouterView } from 'vue-router'
-import Stevie from '@/components/Stevie.vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import EscapeView from './views/overlays/escapeView.vue'
+import { useGameStore } from './stores/game'
+import { RouterView, useRoute } from 'vue-router'
+import Stevie from './components/Stevie.vue'
 
-// Make 'esc' reactive
-const escapeStore = useEscapeStore()
+const gameStore = useGameStore()
+const route = useRoute()
+
+// Compute transition name based on route meta
+const transitionName = computed(() => {
+    return route.meta.transition || 'fade'
+})
 
 const handleKeyPress = (e: KeyboardEvent) => {
     if (e.code === 'Escape') {
-        escapeStore.state = !escapeStore.state
+        gameStore.toggleEscape()
     }
 }
 
@@ -27,8 +32,11 @@ onUnmounted(() => {
 
 // Draggable functionality
 const stevieRef = ref<HTMLElement | null>(null)
+const posX = ref(100) // initial X position
+const posY = ref(100) // initial Y position
 let offsetX = 0
 let offsetY = 0
+let animationFrameId: number | null = null
 
 const onDragStart = (e: MouseEvent) => {
     if (stevieRef.value) {
@@ -40,25 +48,34 @@ const onDragStart = (e: MouseEvent) => {
 }
 
 const onDrag = (e: MouseEvent) => {
-    if (stevieRef.value) {
-        stevieRef.value.style.left = `${e.clientX - offsetX}px`
-        stevieRef.value.style.top = `${e.clientY - offsetY}px`
+    if (animationFrameId === null) {
+        animationFrameId = requestAnimationFrame(() => {
+            posX.value = e.clientX - offsetX
+            posY.value = e.clientY - offsetY
+            animationFrameId = null
+        })
     }
 }
 
 const onDragEnd = () => {
     document.removeEventListener('mousemove', onDrag)
     document.removeEventListener('mouseup', onDragEnd)
+    if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId)
+        animationFrameId = null
+    }
 }
 </script>
 
 <template>
-    <div v-if="escapeStore.state" class="overlay">
+    <div v-if="gameStore.escapeState" class="overlay">
         <EscapeView></EscapeView>
     </div>
-    <RouterView></RouterView>
-    <div ref="stevieRef" class="stevie" @mousedown="onDragStart">
-        <Stevie />
+    <transition name="fade" mode="out-in">
+        <router-view></router-view>
+    </transition>
+    <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
+        <Stevie v-if="gameStore.gameState != 'intro'" />
     </div>
 </template>
 
@@ -77,10 +94,67 @@ const onDragEnd = () => {
 }
 
 .stevie {
-    position: absolute;
-    bottom: 20px;
-    right: 20px;
+    position: fixed;
     z-index: 1000;
     cursor: grab;
+    transition: top 0.05s ease-out, left 0.05s ease-out;
+}
+
+/* Fade transition */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+/* Slide left transition */
+.slide-left-enter-active,
+.slide-left-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-left-enter-from {
+    transform: translateX(100%);
+}
+.slide-left-leave-to {
+    transform: translateX(-100%);
+}
+
+/* Slide right transition */
+.slide-right-enter-active,
+.slide-right-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-right-enter-from {
+    transform: translateX(-100%);
+}
+.slide-right-leave-to {
+    transform: translateX(100%);
+}
+
+/* Slide up transition */
+.slide-up-enter-active,
+.slide-up-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-up-enter-from {
+    transform: translateY(100%);
+}
+.slide-up-leave-to {
+    transform: translateY(-100%);
+}
+
+/* Slide down transition */
+.slide-down-enter-active,
+.slide-down-leave-active {
+    transition: transform 0.5s ease;
+}
+.slide-down-enter-from {
+    transform: translateY(-100%);
+}
+.slide-down-leave-to {
+    transform: translateY(100%);
 }
 </style>

@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import Encryption from '@/views/minigames/encryption/Encryption.vue'
+import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
+import Graph from '@/views/main/Graph.vue'
+import Test from '@/views/minigames/wire/Test.vue'
+import FingerCopy from '@/views/minigames/finger/FingerCopy.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -20,6 +25,7 @@ const router = createRouter({
             name: 'wire',
             component: () => import('../views/minigames/wire/Test.vue'),
             props: { level: Level.HARD },
+            meta: { transition: 'slide-left' },
         },
         {
             path: '/caeser',
@@ -48,12 +54,32 @@ const router = createRouter({
         {
             path: '/finger',
             name: 'finger',
-            component: () => import('../views/minigames/finger/Finger.vue'),
+            component: FingerCopy,
+            props: { level: Level.MEDIUM },
         },
         {
-            path: '/infotinder',
-            name: 'infotinder',
-            component: () => import('../views/minigames/infotinder/InfoTinder.vue'),
+            path: '/finger-easy',
+            name: 'finger-easy',
+            component: FingerCopy,
+            props: { level: Level.EASY },
+        },
+        {
+            path: '/finger-medium',
+            name: 'finger-medium',
+            component: FingerCopy,
+            props: { level: Level.MEDIUM },
+        },
+        {
+            path: '/finger-hard',
+            name: 'finger-hard',
+            component: FingerCopy,
+            props: { level: Level.HARD },
+        },
+        {
+            path: '/finger-super-hard',
+            name: 'finger-super-hard',
+            component: FingerCopy,
+            props: { level: Level.SUPER_HARD },
         },
         {
             path: '/about',

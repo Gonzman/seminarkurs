@@ -1,5 +1,6 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
-import { useEscapeStore } from '@/stores/escape'
+import { useGameStore } from '@/stores/game'
 import { onUnmounted, ref } from 'vue'
 const props = defineProps<{ sekunden: number }>()
 const emits = defineEmits(['timeOver'])
@@ -7,13 +8,13 @@ const timer = ref<number>(props.sekunden)
 let interval: number
 const max: number = props.sekunden
 let firstClick: boolean = false
-const escapeStore = useEscapeStore()
+const escapeStore = useGameStore()
 
 function clickEvent() {
     if (!firstClick) {
         firstClick = !firstClick
         interval = setInterval(() => {
-            if (!escapeStore.state) {
+            if (!escapeStore.escapeState) {
                 timer.value--
             }
 

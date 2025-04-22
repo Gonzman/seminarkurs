@@ -1,6 +1,3 @@
-MatchTheWire:
-    Nicht mehr windows.innerWidth benutzen sondern eine andere lösung zu finden 
-
 CircuitBreaker:
     Use more SVG
     implement front pcb design
