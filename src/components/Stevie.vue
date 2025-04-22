@@ -57,7 +57,8 @@ async function startCounter() {
     try {
         while (true) {
             await idleAnim(); // Run idle animation
-            await handyAnim(); // Run handy animation
+            //await handyAnim(); // Run handy animation
+            await anim(2000, 'handy'); // Run another animation
             await idleAnim(); // Run idle animation again
         }
     } catch (error) {
@@ -66,7 +67,7 @@ async function startCounter() {
 }
 
 function handyAnim() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
         let currentCount = 0;
         const interval = 2000 / 12;
         folder.value = 'handy'; // Set the folder name here
@@ -85,8 +86,9 @@ function handyAnim() {
 }
 
 function idleAnim() {
-    return new Promise((resolve) => {
+    return new Promise<void>((resolve) => {
         let currentCount = 0;
+
         const interval = 1000 / 6;
         folder.value = 'idle'; // Set the folder name here
         const counterInterval = setInterval(() => {
@@ -94,6 +96,39 @@ function idleAnim() {
             imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
 
             if (currentCount >= 5) {
+                clearInterval(counterInterval);
+                resolve(); // Resolve the Promise when the animation ends
+            } else {
+                currentCount++;
+            }
+        }, interval);
+    });
+}
+
+const allImages = import.meta.glob('/src/assets/stevie/*/*.png', { eager: true }) as Record<string, string>;
+
+function anim(sec: number, folder: string) {
+    return new Promise<void>((resolve) => {
+        let currentCount = 0;
+
+        // Preload all images from all folders
+
+        // Filter images based on the folder
+        const imagesList = Object.keys(allImages).filter((path) => path.includes(`/stevie/${folder}/`));
+        const imageCount = imagesList.length;
+
+        if (imageCount === 0) {
+            console.error(`No images found for folder: ${folder}`);
+            resolve();
+            return;
+        }
+
+        const interval = sec / imageCount;
+        const counterInterval = setInterval(() => {
+            count.value = currentCount;
+            imagePath.value = imagesList[currentCount];
+
+            if (currentCount >= (imageCount - 1)) {
                 clearInterval(counterInterval);
                 resolve(); // Resolve the Promise when the animation ends
             } else {
