@@ -1,10 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import Encryption from '@/views/minigames/encryption/Encryption.vue'
-import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
-import Graph from '@/views/main/Graph.vue'
-import Test from '@/views/minigames/wire/Test.vue'
 import FingerCopy from '@/views/minigames/finger/FingerCopy.vue'
 
 const router = createRouter({
@@ -13,7 +8,7 @@ const router = createRouter({
         {
             path: '/',
             name: 'home',
-            component: HomeView,
+            component: () => import('../views/HomeView.vue'),
         },
         {
             path: '/intro',
@@ -50,12 +45,6 @@ const router = createRouter({
                 speed: 0.18,
                 map: '/4B+AeM//8z/gAAB4z//zP+eABgDP//M/5//mAA8YwD/j///ADxjAP+MAf9wPGAA/4AB//A8AAP///gB8fwHA///+AHx/AcD////+fH8f+P////58fx/4AB///nwPH/gAH//+fAAf+AAAP8B8AB/+AAA/wH/ADP4AAD/P/8AM/gB+AA//wAz+AH4AD/w58PgAfgAP/Dnw+AB///gAP/D5/+P/8AA/8Pn/4/wA3j/w+f/gfMDeP/A5+GB/wNw/A4A4AH/AwH8D+AA/H8PcfwP4AD8f49x8A/gAPx/j3BwD/wA/h+PYHAP/OD+AABgcADA4AAB4GADgMDhwMf/fwPwA+HAx/9/A/4P//j3/38D/g8=',
             },
-        },
-        {
-            path: '/finger',
-            name: 'finger',
-            component: FingerCopy,
-            props: { level: Level.MEDIUM },
         },
         {
             path: '/finger-easy',

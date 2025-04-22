@@ -1,7 +1,7 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed } from 'vue'
-import EscapeView from './views/overlays/escapeView.vue'
+import EscapeView from './views/overlays/EscapeView.vue'
 import { useGameStore } from './stores/game'
 import { RouterView, useRoute } from 'vue-router'
 import Stevie from './components/Stevie.vue'
