@@ -4,11 +4,11 @@
             <h2>Match The Finger</h2>
 
             <div v-if="!gameWon" class="game-status">
-                <p>Adjust your finger on the left to match the target finger on the right!</p>
+                <p>Passen Sie Ihren Finger auf der linken Seite dem Zielfinger auf der rechten Seite an!</p>
             </div>
 
             <div v-else class="game-won">
-                <p>Congratulations! Your finger matches the target!</p>
+                <p>Herzlichen Glückwunsch! Ihr Finger stimmt mit dem Zielfinger überein!</p>
             </div>
 
             <div class="game-area">
@@ -24,8 +24,7 @@
                                 :alt="`Finger part ${partIndex}`" />
                             <div class="selection-controls">
                                 <button @click.stop="cyclePart(currentFingerIndex, partIndex - 1, -1)">◀</button>
-                                <span>{{ selected && selected[currentFingerIndex] ?
-                                    selected[currentFingerIndex][partIndex - 1] : 1 }}</span>
+
                                 <button @click.stop="cyclePart(currentFingerIndex, partIndex - 1, 1)">▶</button>
                             </div>
                         </div>

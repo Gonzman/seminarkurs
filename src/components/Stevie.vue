@@ -3,7 +3,7 @@
     <div
         @click="handleClick()"
         class="stevie">
-        <speechBubble v-if="speeachText != ''" class="speech-bubble-container">{{ speeachText }}</speechBubble>
+        <speechBubble v-if="speeachText != ''" class="speech-bubble-container"><p>{{ speeachText }}</p></speechBubble>
         <img
             :src="imagePath"
             class="pixel-art"
@@ -192,5 +192,11 @@ defineExpose({
     transform: translateX(-50%); /* Center horizontally */
     margin-bottom: 15px; /* Add some space between bubble and character */
     z-index: 10; /* Ensure it appears above other elements */
+}
+
+p {
+    font-size: 12px;
+    font-family: Pixel;
+    text-rendering: optimizeLegibility;
 }
 </style>
