@@ -5,7 +5,7 @@ import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
 import Graph from '@/views/main/Graph.vue'
 import Test from '@/views/minigames/wire/Test.vue'
-import FingerGame from '@/views/minigames/finger/FingerGame.vue'
+import FingerCopy from '@/views/minigames/finger/FingerCopy.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -54,31 +54,31 @@ const router = createRouter({
         {
             path: '/finger',
             name: 'finger',
-            component: FingerGame,
+            component: FingerCopy,
             props: { level: Level.MEDIUM },
         },
         {
             path: '/finger-easy',
             name: 'finger-easy',
-            component: FingerGame,
+            component: FingerCopy,
             props: { level: Level.EASY },
         },
         {
             path: '/finger-medium',
             name: 'finger-medium',
-            component: FingerGame,
+            component: FingerCopy,
             props: { level: Level.MEDIUM },
         },
         {
             path: '/finger-hard',
             name: 'finger-hard',
-            component: FingerGame,
+            component: FingerCopy,
             props: { level: Level.HARD },
         },
         {
             path: '/finger-super-hard',
             name: 'finger-super-hard',
-            component: FingerGame,
+            component: FingerCopy,
             props: { level: Level.SUPER_HARD },
         },
         {
