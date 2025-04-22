@@ -1,11 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import MatchTheWire from '@/views/minigames/wire/MatchTheWire.vue'
-import Encryption from '@/views/minigames/encryption/Encryption.vue'
-import CircuitBreaker from '@/views/minigames/circuitbreaker/CircuitBreaker.vue'
 import Level from '@/views/minigames/level'
-import Graph from '@/views/main/Graph.vue'
-import Test from '@/views/minigames/wire/Test.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,23 +18,23 @@ const router = createRouter({
         {
             path: '/wire',
             name: 'wire',
-            component: Test,
+            component: () => import('../views/minigames/wire/Test.vue'),
             props: { level: Level.HARD },
         },
         {
             path: '/caeser',
             name: 'caeser',
-            component: Encryption,
+            component: () => import('../views/minigames/encryption/Encryption.vue'),
         },
         {
             path: '/graph',
             name: 'Graph',
-            component: Graph,
+            component: () => import('../views/main/Graph.vue'),
         },
         {
             path: '/circuitbreaker',
             name: 'circuitbreaker',
-            component: CircuitBreaker,
+            component: () => import('../views/minigames/circuitbreaker/CircuitBreaker.vue'),
             props: {
                 sizeX: 64,
                 sizeY: 34,
@@ -53,18 +48,16 @@ const router = createRouter({
         {
             path: '/finger',
             name: 'finger',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import('../views/minigames/finger/FingerCopy.vue'),
+            component: () => import('../views/minigames/finger/Finger.vue'),
         },
-
+        {
+            path: '/infotinder',
+            name: 'infotinder',
+            component: () => import('../views/minigames/infotinder/InfoTinder.vue'),
+        },
         {
             path: '/about',
             name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
             component: () => import('../views/AboutView.vue'),
         },
     ],
