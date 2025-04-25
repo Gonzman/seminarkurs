@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-    <Timer :sekunden="start" :fertig="finished" />
+    <Timer :sekunden="start" :fertig="finished" ref="timer" />
     <div class="encryption-container">
         <h1>{{ encryptSelectedWord }}</h1>
         <fieldset>
@@ -17,9 +17,14 @@
             </div>
         </fieldset>
 
-        <button @click="reset" style="display: flex; text-align: center; align-self: center">
-            reset
-        </button>
+        <div class="button-container">
+            <button class="reset-button" @click="reset">
+                <p style="font-family: 'Pixel'; color: white;">Reset</p>
+            </button>
+            <button class="confirm-button" @click="checkAnswer">
+                <p style="font-family: 'Pixel'; color: black;">Confirm</p>
+            </button>
+        </div>
     </div>
 </template>
 
@@ -28,6 +33,9 @@ import { ref } from 'vue'
 import Timer from '../Timer.vue'
 
 const inputs = ref<HTMLInputElement[]>([]) // Array of input elements
+const finished = ref(false)
+const timer = ref<InstanceType<typeof Timer> | null>(null)
+const start: number = 100
 
 function caesarCipher(str: string, shift: number, decrypt: boolean = false): string {
     const s = decrypt ? (26 - shift) % 26 : shift
@@ -37,6 +45,7 @@ function caesarCipher(str: string, shift: number, decrypt: boolean = false): str
             const c = str.charCodeAt(i)
             if (c >= 65 && c <= 90) return String.fromCharCode(((c - 65 + n) % 26) + 65)
             if (c >= 97 && c <= 122) return String.fromCharCode(((c - 97 + n) % 26) + 97)
+            if (c >= 48 && c <= 57) return l // Keep numbers unchanged
             return l
         })
         .join('')
@@ -50,30 +59,28 @@ function reset() {
     inputs.value[0].focus()
 }
 
-let finished: boolean = false
-
 function onInputChange(event: Event, index: number) {
     const input = event.target as HTMLInputElement
-    input.value = input.value.replace(/[^a-zA-Z]/g, '') // Allow only letters
+    input.value = input.value.replace(/[^a-zA-Z0-9]/g, '') // Allow letters and numbers
 
     // Move focus to the next input if the input has a value
     if (input.value && inputs.value[index + 1]) {
         inputs.value[index + 1].focus()
     }
-
-    if (index === inputs.value.length - 1) {
-        let userInput: string = ''
-        for (const inputElement of inputs.value) {
-            userInput += inputElement.value // Concatenate the values of all input elements
-        }
-        if (userInput == selectedWord) {
-            finished = true
-            alert('Entschlüsselt')
-        }
-    }
 }
 
-const start: number = 100
+function checkAnswer() {
+    let userInput: string = ''
+    for (const inputElement of inputs.value) {
+        userInput += inputElement.value // Concatenate the values of all input elements
+    }
+    if (userInput == selectedWord) {
+        finished.value = true
+        alert('Entschlüsselt')
+    } else if (timer.value) {
+        timer.value.addTime(-5)
+    }
+}
 
 const wordList: string[] = ['WhoAreYou', 'DDoS', 'Overflow']
 
@@ -153,17 +160,18 @@ input[type='number'] {
     color: var(--green);
 }
 
+.button-container {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
 button {
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 10mm;
     padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    color: white;
     font-size: 1rem;
     font-weight: bold;
     cursor: pointer;
@@ -172,6 +180,16 @@ button {
     transition:
         transform 0.2s,
         box-shadow 0.2s;
+}
+
+.reset-button {
+    background-color: red;
+    color: white;
+}
+
+.confirm-button {
+    background-color: var(--green);
+    color: black;
 }
 
 button:hover {
