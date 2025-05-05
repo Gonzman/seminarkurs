@@ -14,7 +14,6 @@ const progressPercentage = computed(() => {
   return (timer.value / max) * 100
 })
 
-// Add time to the timer (used for penalties)
 function addTime(seconds: number) {
   timer.value += seconds
 }
@@ -40,7 +39,6 @@ document.addEventListener('keypress', clickEvent)
 
 onUnmounted(() => clearInterval(interval))
 
-// Expose the addTime method
 defineExpose({
   addTime
 })
@@ -77,7 +75,6 @@ defineExpose({
     border: 2px solid;
     margin-top: 10px;
     border-color: #808080 #fff #fff #808080;
-    /*background-color: #c0c0c0;*/
     padding: 1px;
     position: relative;
     overflow: hidden;

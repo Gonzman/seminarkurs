@@ -12,7 +12,6 @@
             </div>
 
             <div class="game-area">
-                <!-- User's finger to adjust (left side) -->
                 <div class="finger-section user-finger">
                     <h3>Your Finger</h3>
                     <div class="finger-parts">
@@ -31,7 +30,6 @@
                     </div>
                 </div>
 
-                <!-- Target finger to match (right side) -->
                 <div class="finger-section target-finger">
                     <h3>Target Finger</h3>
                     <div class="finger-parts target-container">
@@ -53,32 +51,33 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import Level from '../level'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 const props = defineProps<{ level?: Level }>();
 
 const images = import.meta.glob('@/assets/minigames/finger/*.webp', { eager: true })
 
 const groupedImages: Record<string, string[]> = {}
-const targetFingerImages: Record<string, string> = {} // Store target finger images (with single number)
-const correctPositions = ref<number[][]>([]) // Correct positions for each finger
-const selected = ref<number[][]>([]) // User's selected positions
-const currentFingerIndex = ref(0) // Currently active finger index
-const gameWon = ref(false) // Whether the current finger is matched correctly
-const activeFingers = ref<number[]>([]) // Fingers that are active based on level
+const targetFingerImages: Record<string, string> = {}
+const correctPositions = ref<number[][]>([])
+const selected = ref<number[][]>([])
+const currentFingerIndex = ref(0)
+const gameWon = ref(false)
+const activeFingers = ref<number[]>([])
 
-// Process the images and organize them
 Object.entries(images).forEach(([path, data]) => {
     const fileName = path.split('/').pop() || ''
     const match = fileName.match(/finger-(\d+)(?:-(\d+))?\.webp/)
 
     if (match) {
-        const groupIndex = match[1] // e.g., "1", "2"
-        const subIndex = match[2] // e.g., "0", "1", "2" (or undefined for main image)
+        const groupIndex = match[1]
+        const subIndex = match[2]
 
         const imgPath = (data as any).default
 
         if (!subIndex) {
-            // This is a single-number image (e.g., finger-1.webp) - use for target
             targetFingerImages[groupIndex] = imgPath
             return;
         }
@@ -87,14 +86,11 @@ Object.entries(images).forEach(([path, data]) => {
             groupedImages[groupIndex] = []
         }
 
-        // Use the actual path to the image
-        // Skip index 0 by adding 1 to the position (now starts from 1 instead of 0)
         const position = parseInt(subIndex) + 1
         groupedImages[groupIndex][position] = imgPath
     }
 })
 
-// Get the number of fingers to use based on level
 const getFingersCountByLevel = () => {
     switch (props.level) {
         case Level.EASY:
@@ -106,30 +102,24 @@ const getFingersCountByLevel = () => {
         case Level.SUPER_HARD:
             return 4;
         default:
-            return 1; // Default to EASY if no level provided
+            return 1;
     }
 }
 
-// Convert object to a sorted 2D array
 const imagesArray = computed(() => {
     return Object.keys(groupedImages)
         .sort((a, b) => Number(a) - Number(b))
         .map((key) => groupedImages[key])
 })
 
-// Helper function to safely get user's image source
 const getImageSrc = (fingerIndex: number, partIndex: number) => {
     if (!selected.value || !selected.value[fingerIndex]) return ''
 
-    // For HARD and SUPER_HARD, we might use images from other fingers for some parts
     const selectedValue = selected.value[fingerIndex][partIndex]
 
-    // The fingerIndex from the active fingers array
     const actualFingerIndex = activeFingers.value[fingerIndex];
 
-    // Use mixed images for HARD and SUPER_HARD levels
     if ((props.level === Level.HARD || props.level === Level.SUPER_HARD) && partIndex % 2 === 1) {
-        // For every second part, use an image from a different finger
         const differentFingerIndex = (actualFingerIndex + 1) % imagesArray.value.length;
         return imagesArray.value[differentFingerIndex] && imagesArray.value[differentFingerIndex][selectedValue]
             ? imagesArray.value[differentFingerIndex][selectedValue]
@@ -141,29 +131,23 @@ const getImageSrc = (fingerIndex: number, partIndex: number) => {
         : ''
 }
 
-// Helper function to get target image source
 const getTargetImageSrc = () => {
-    // Get the actual finger index from our active fingers array
     const actualFingerIndex = activeFingers.value[currentFingerIndex.value];
     const fingerIndex = (actualFingerIndex + 1).toString();
     return targetFingerImages[fingerIndex] || ''
 }
 
-// Check if target image is available
 const isTargetImageAvailable = () => {
     const actualFingerIndex = activeFingers.value[currentFingerIndex.value];
     const fingerIndex = (actualFingerIndex + 1).toString();
     return !!targetFingerImages[fingerIndex]
 }
 
-// Check if user image is available
 const isImageAvailable = (fingerIndex: number, partIndex: number) => {
     if (!selected.value || !selected.value[fingerIndex]) return false
 
-    // The actual finger index from our active fingers array
     const actualFingerIndex = activeFingers.value[fingerIndex];
 
-    // If using mixed images for hard difficulties
     if ((props.level === Level.HARD || props.level === Level.SUPER_HARD) && partIndex % 2 === 1) {
         const differentFingerIndex = (actualFingerIndex + 1) % imagesArray.value.length;
         const selectedValue = selected.value[fingerIndex][partIndex]
@@ -175,48 +159,38 @@ const isImageAvailable = (fingerIndex: number, partIndex: number) => {
 }
 
 const initializeGame = () => {
-    // Get the finger count for this level
     const fingersCount = getFingersCountByLevel();
 
-    // Select random fingers to use (based on difficulty)
     const totalFingerOptions = Object.keys(groupedImages).length;
     activeFingers.value = [];
 
-    // Create an array of all possible finger indices
     const allFingerIndices = Array.from({ length: totalFingerOptions }, (_, i) => i);
 
-    // Shuffle the array
     for (let i = allFingerIndices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [allFingerIndices[i], allFingerIndices[j]] = [allFingerIndices[j], allFingerIndices[i]];
     }
 
-    // Take the first n fingers based on level
     activeFingers.value = allFingerIndices.slice(0, fingersCount);
 
-    // Initialize the selected parts randomly but start from 1 (skip index 0)
     selected.value = Array.from({ length: fingersCount }, () =>
-        Array.from({ length: 5 }, () => Math.floor(Math.random() * 4) + 1) // Values 1-4 instead of 0-4
+        Array.from({ length: 5 }, () => Math.floor(Math.random() * 4) + 1)
     )
 
-    // Set correct positions for target fingers
     correctPositions.value = [];
     for (let i = 0; i < fingersCount; i++) {
-        // For each finger, set a random but consistent target configuration
         const fingerParts = [];
         for (let j = 0; j < 5; j++) {
-            fingerParts.push(j + 1); // Start from 1 instead of 0
+            fingerParts.push(j + 1);
         }
         correctPositions.value.push(fingerParts);
     }
 
-    // Start with the first finger
     currentFingerIndex.value = 0;
     gameWon.value = false;
 }
 
 const selectPart = (fingerIndex: number, partIndex: number) => {
-    // This is called when a user clicks on a part
     cyclePart(fingerIndex, partIndex, 1)
 }
 
@@ -226,11 +200,10 @@ const cyclePart = (fingerIndex: number, partIndex: number, direction: number) =>
         return
     }
 
-    const minOption = 1 // Start from 1 now (skipping 0)
-    const maxOptions = 5 // Still 5 options but now 1-5 instead of 0-4
+    const minOption = 1
+    const maxOptions = 5
     let newValue = selected.value[fingerIndex][partIndex] + direction
 
-    // Wrap around the selection
     if (newValue < minOption) newValue = maxOptions
     if (newValue > maxOptions) newValue = minOption
 
@@ -238,16 +211,13 @@ const cyclePart = (fingerIndex: number, partIndex: number, direction: number) =>
 }
 
 const checkCorrect = (fingerIndex: number, partIndex: number) => {
-    // Add safety checks to prevent TypeError
     if (!selected.value || !correctPositions.value) return false
     if (!selected.value[fingerIndex] || !correctPositions.value[fingerIndex]) return false
 
-    // Only show correct visual indication in EASY mode
     if (props.level === Level.EASY) {
         return selected.value[fingerIndex][partIndex] === correctPositions.value[fingerIndex][partIndex]
     }
 
-    // For other difficulties, don't visually indicate correct selections
     return false
 }
 
@@ -258,7 +228,6 @@ const checkSolution = () => {
     const currIndex = currentFingerIndex.value
 
     for (let j = 0; j < 5; j++) {
-        // Check if the selected value matches the correct value
         if (selected.value[currIndex][j] !== correctPositions.value[currIndex][j]) {
             allCorrect = false
             break
@@ -266,10 +235,66 @@ const checkSolution = () => {
     }
 
     gameWon.value = allCorrect
+    completeGame()
+}
+
+const completeGame = () => {
+    const allFingersComplete = currentFingerIndex.value === activeFingers.value.length - 1 && gameWon.value;
+
+    if (allFingersComplete) {
+        const currentMinigame = localStorage.getItem('current-minigame');
+        if (currentMinigame) {
+            try {
+                const minigameData = JSON.parse(currentMinigame);
+
+                const completedData = {
+                    nodeId: minigameData.nodeId,
+                    minigame: minigameData.minigame,
+                    success: true,
+                    timestamp: Date.now()
+                };
+
+                localStorage.setItem('completed-minigame', JSON.stringify(completedData));
+
+                localStorage.removeItem('current-minigame');
+
+                console.log('Game completed successfully!', completedData);
+
+                setTimeout(() => {
+                    router.push('/graph');
+                }, 2000);
+            } catch (e) {
+                console.error('Error processing minigame completion:', e);
+            }
+        } else {
+            console.log('Game completed, but no current minigame data found.');
+
+            const completedData = {
+                nodeId: 'node2',
+                minigame: {
+                    title: "Finger Game",
+                    knowledge: {
+                        id: Date.now(),
+                        title: "Finger Manipulation",
+                        description: "The ability to precisely manipulate and match finger patterns is essential for biometric authentication systems.",
+                        image: ""
+                    },
+                    newStatus: 3
+                },
+                success: true,
+                timestamp: Date.now()
+            };
+
+            localStorage.setItem('completed-minigame', JSON.stringify(completedData));
+
+            setTimeout(() => {
+                router.push('/graph');
+            }, 2000);
+        }
+    }
 }
 
 const nextFinger = () => {
-    // Move to the next finger if available
     currentFingerIndex.value = (currentFingerIndex.value + 1) % activeFingers.value.length
     gameWon.value = false
 }
@@ -278,12 +303,10 @@ const resetGame = () => {
     initializeGame()
 }
 
-// Initialize the game on component mount
 onMounted(() => {
     initializeGame()
 })
 
-// Watch for changes to selected and check if game is won
 watch(selected, () => {
     checkSolution()
 }, { deep: true })
@@ -421,7 +444,6 @@ h3 {
 
 .target-finger .finger-part {
     cursor: default;
-    /* No cursor change on target finger parts */
 }
 
 .game-controls {

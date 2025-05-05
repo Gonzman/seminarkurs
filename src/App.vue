@@ -9,7 +9,6 @@ import Stevie from './components/Stevie.vue'
 const gameStore = useGameStore()
 const route = useRoute()
 
-// Compute transition name based on route meta
 const transitionName = computed(() => {
     return route.meta.transition || 'fade'
 })
@@ -30,10 +29,9 @@ onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyPress)
 })
 
-// Draggable functionality
 const stevieRef = ref<HTMLElement | null>(null)
-const posX = ref(100) // initial X position
-const posY = ref(100) // initial Y position
+const posX = ref(100)
+const posY = ref(100)
 let offsetX = 0
 let offsetY = 0
 let animationFrameId: number | null = null
@@ -100,7 +98,6 @@ const onDragEnd = () => {
     transition: top 0.05s ease-out, left 0.05s ease-out;
 }
 
-/* Fade transition */
 .fade-enter-active,
 .fade-leave-active {
     transition: opacity 0.3s ease;
@@ -110,7 +107,6 @@ const onDragEnd = () => {
     opacity: 0;
 }
 
-/* Slide left transition */
 .slide-left-enter-active,
 .slide-left-leave-active {
     transition: transform 0.5s ease;
@@ -122,7 +118,6 @@ const onDragEnd = () => {
     transform: translateX(-100%);
 }
 
-/* Slide right transition */
 .slide-right-enter-active,
 .slide-right-leave-active {
     transition: transform 0.5s ease;
@@ -134,7 +129,6 @@ const onDragEnd = () => {
     transform: translateX(100%);
 }
 
-/* Slide up transition */
 .slide-up-enter-active,
 .slide-up-leave-active {
     transition: transform 0.5s ease;
@@ -146,7 +140,6 @@ const onDragEnd = () => {
     transform: translateY(-100%);
 }
 
-/* Slide down transition */
 .slide-down-enter-active,
 .slide-down-leave-active {
     transition: transform 0.5s ease;

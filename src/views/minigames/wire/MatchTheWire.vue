@@ -1,19 +1,23 @@
 <template>
-  <Timer :sekunden="start" :fertig="finished" @time-over="timeOver" />
-  <div>
-    <canvas
-      ref="canvasRef"
-      @mousedown="handleMouseDown"
-      @mouseup="handleMouseUp"
-      @mousemove="handleMouseMove"
-    ></canvas>
-  </div>
+
+    <MinigameWrapper :onComplete="() => finished">
+    <Timer :sekunden="start" :fertig="finished" @time-over="timeOver" />
+    <div>
+        <canvas
+        ref="canvasRef"
+        @mousedown="handleMouseDown"
+        @mouseup="handleMouseUp"
+        @mousemove="handleMouseMove"
+        ></canvas>
+    </div>
+    </MinigameWrapper>
 </template>
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
 import Timer from '../Timer.vue'
 import Level from '../level'
+import { useKnowledgeStore } from '@/stores/knowledge';
 
 const props = defineProps<{ level: Level }>()
 
@@ -59,7 +63,7 @@ type Line = {
   b: number
   c: number
   d: number
-  color: string // Add color to Line type
+  color: string
 }
 
 function fisherYatesShuffle(array: unknown[]): void {
@@ -117,7 +121,7 @@ const initBoxes = () => {
   }
 }
 
-let finished: boolean = false
+let finished= ref(false)
 
 const draw = () => {
   const canvas = canvasRef.value
@@ -126,15 +130,13 @@ const draw = () => {
 
     ctx.value.translate(0, vertOffset.value)
 
-    // Draw boxes
     ;[...leftBoxes, ...rightBoxes].forEach((box) => {
       ctx.value!.fillStyle = box.color
       ctx.value!.fillRect(box.x, box.y, box.w, box.w)
     })
 
-    // Draw permanent lines
     lines.forEach((line) => {
-      ctx.value!.strokeStyle = line.color // Use the line's color
+      ctx.value!.strokeStyle = line.color
       ctx.value!.lineWidth = 4
       ctx.value!.beginPath()
       ctx.value!.moveTo(line.a, line.b)
@@ -143,11 +145,10 @@ const draw = () => {
     })
 
     if (lines.length == colors.length) {
-      finished = true
+      finished.value = true
       alert('Richtig')
     }
 
-    // Draw temporary line
     if (tempLine.active) {
       ctx.value!.strokeStyle = tempLine.color
       ctx.value!.lineWidth = 4
@@ -204,7 +205,7 @@ const handleMouseUp = () => {
       b: tempLine.b,
       c: targetBox.x + targetBox.w / 2,
       d: targetBox.y + targetBox.w / 2,
-      color: tempLine.color, // Store the color of the line
+      color: tempLine.color,
     })
   }
 

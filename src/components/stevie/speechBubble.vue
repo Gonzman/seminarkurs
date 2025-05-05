@@ -14,25 +14,25 @@
     color: #000;
     background: linear-gradient(#ffffff, #ffffff);
     border-radius: 15px;
-    min-width: 250px; /* Set a minimum width */
-    max-width: 350px; /* Increase max width */
+    min-width: 250px;
+    max-width: 350px;
     width: auto;
     font-size: 1rem;
     word-wrap: break-word;
     line-height: 1.6;
     user-select: none;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    display: block; /* Changed from inline-block to block */
-    text-align: center; /* Center text in the bubble */
-    white-space: normal; /* Ensure text wraps properly */
+    display: block;
+    text-align: center;
+    white-space: normal;
 }
 
 .speech-bubble:after {
     content: "";
     position: absolute;
     bottom: -15px;
-    left: 50%; /* Center the pointer */
-    transform: translateX(-50%); /* Ensure proper centering */
+    left: 50%;
+    transform: translateX(-50%);
     display: block;
     width: 0;
     height: 0;

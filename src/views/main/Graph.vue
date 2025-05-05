@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { defineConfigs, type Edges, type Layouts, type Nodes } from 'v-network-graph'
+import { defineConfigs, type Layouts, type Nodes } from 'v-network-graph'
 import * as vNG from 'v-network-graph'
 import {
     ForceLayout,
@@ -10,23 +10,73 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import * as Status from './status'
 import { useMouse } from '@vueuse/core'
 import { useGameStore } from '@/stores/game'
+import { useKnowledgeStore, type KnowledgeItem, games } from '@/stores/knowledge'
+import { useRouter } from 'vue-router'
+import Level from '@/views/minigames/level';
+// Import interface types from GraphCreator
+import { type Node, type Edge, type GraphData } from './GraphCreator.vue'
+import knowledgeData from '@/data/knowledge.json'
+// Import default graph data
+import defaultGraphData from '@/data/graph.json'
 
+const router = useRouter()
+const gameStore = useGameStore()
+const knowledgeStore = useKnowledgeStore()
 const graph = ref<vNG.Instance | null>(null)
 const tooltip = ref<HTMLDivElement | null>(null)
 const targetNodeId = ref<string>('')
 const tooltipOpacity = ref(0)
 const tooltipPos = ref({ left: '0px', top: '0px' })
+const savedGraphs = ref<Array<{ name: string, data: GraphData }>>([])
+const selectedGraph = ref<string>('')
+const showGraphLoader = ref(false)
+const showNodeInteraction = ref(false)
+const interactionNode = ref<string | null>(null)
 
-interface Node extends vNG.Node {
-    icon: string
-    status: Status.Status
-    draggable?: boolean
+// Define minigame associations with node statuses
+interface NodeMinigame {
+    title: string
+    route: string
+    description: string
+    knowledge: Partial<KnowledgeItem> | null
+    requiredStatus?: Status.Status
+    newStatus?: Status.Status
+    difficulty?: Level // Add optional difficulty
 }
 
-interface Edge extends vNG.Edge {
-    color?: string
-    dashed?: boolean
-}
+// Define nodeMinigames based on status
+const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
+    [Status.Status.START]: [],
+    [Status.Status.HACKED]: [],
+    [Status.Status.ONLINE]: [
+        {
+            title: "Finger Game",
+            route: "/finger",
+            description: "Test your reflexes in this coordination game.",
+            knowledge: null, // No knowledge defined in minigame - will get from node
+            difficulty: Level.EASY,
+            newStatus: Status.Status.HACKED
+        },
+        {
+            title: "Circuit Breaker",
+            route: "/circuitbreaker",
+            description: "Bypass the circuit protection system.",
+            knowledge: null, // No knowledge defined in minigame - will get from node
+            difficulty: Level.MEDIUM,
+            newStatus: Status.Status.HACKED
+        }
+    ],
+    [Status.Status.OFFLINE]: [],
+    [Status.Status.UNKNOWN]: [
+        {
+            title: "Scan Node",
+            route: "/infotinder",
+            description: "Scan the node to gather information.",
+            knowledge: null, // No knowledge defined in minigame - will get from node
+            newStatus: Status.Status.ONLINE
+        }
+    ]
+};
 
 const edges = reactive<Record<string, Edge>>({
     edge1: { source: 'node1', target: 'node2', color: '#dbf77c', dashed: true },
@@ -42,17 +92,91 @@ const layouts = ref<Layouts>({
     },
 })
 
-const nodes = reactive<Record<string, Node>>({
-    node1: {
-        name: 'start',
-        icon: '&#xe320',
-        status: Status.Status.START,
-        draggable: false,
-    },
-    node2: { name: 'N2 12', icon: '&#xe328', status: Status.Status.ONLINE },
-    node3: { name: 'N3', icon: '&#xe331', status: Status.Status.ONLINE },
-    node4: { name: 'N4', icon: '&#xe331', status: Status.Status.ONLINE },
-})
+const nodes = reactive<Record<string, Node>>({})
+
+// Available minigames for the selected node
+const availableMinigames = computed(() => {
+    if (!interactionNode.value || !nodes[interactionNode.value]) {
+        return [];
+    }
+
+    const node = nodes[interactionNode.value];
+    const minigameList: NodeMinigame[] = []; // Ensure type
+
+    // If the node has a specifically assigned minigame, prioritize it
+    if (node.minigame !== undefined) {
+        const gameType = node.minigame;
+        // Determine difficulty: Node override > Default (lookup needed) > EASY
+        let difficulty = node.difficulty ?? Level.EASY; // Default to EASY if no specific or status default
+        let routeBase = "";
+        let title = "";
+        let description = "";
+
+        // Find default difficulty for this game type if node doesn't specify
+        if (node.difficulty === undefined) {
+            // Search through nodeMinigames for a match to get default difficulty
+            // Since we no longer use game property in knowledge, we'll use a switch statement directly
+            difficulty = Level.EASY; // Default fallback
+        }
+
+        // Set appropriate details based on the game type
+        switch (gameType) {
+            case games.FINGER:
+                routeBase = "/finger";
+                title = "Finger Game";
+                description = "Test your reflexes in this finger coordination game.";
+                break;
+            case games.CIRCUITBREAKER:
+                routeBase = "/circuitbreaker";
+                title = "Circuit Breaker";
+                description = "Bypass the circuit protection system.";
+                break;
+            case games.ENCRYPTION:
+                routeBase = "/caeser"; // Assuming caeser is the route base
+                title = "Encryption Challenge";
+                description = "Break the encryption to access node data.";
+                break;
+            case games.WIRE:
+                routeBase = "/wire";
+                title = "Wire Connection";
+                description = "Connect the wires to establish a network connection.";
+                break;
+            default:
+                // Handle unknown game type if necessary
+                return [];
+        }
+
+        // Get the correct difficulty name (EASY, MEDIUM, etc.)
+        const difficultyName = Level[difficulty].toLowerCase();
+
+        minigameList.push({
+            title,
+            route: `${routeBase}/${difficultyName}`, // Append lowercase difficulty name to route
+            description,
+            knowledge: {
+                title: title,
+                description: description
+            },
+            difficulty: difficulty // Pass difficulty along
+        });
+
+        // Return only the specifically assigned minigame
+        return minigameList;
+    }
+
+    // Otherwise fall back to status-based minigames
+    const statusMinigames = nodeMinigames[node.status] || [];
+    return statusMinigames.map((mg: NodeMinigame) => {
+        // Get the lowercase difficulty name if available
+        const difficultyName = mg.difficulty !== undefined ? Level[mg.difficulty].toLowerCase() : 'easy';
+
+        return {
+            ...mg,
+            // Construct route with difficulty
+            route: `${mg.route}/${difficultyName}`
+        };
+    });
+});
 
 const configs = reactive(
     defineConfigs({
@@ -78,8 +202,41 @@ const configs = reactive(
         edge: {
             normal: {
                 color: (edge) => edge.color ?? '#4466cc',
-                dasharray: (edge) => (edge.dashed ? '6' : '0'),
+                dasharray: (edge) => {
+                    // Check if source and target nodes exist
+                    if (!edge.source || !edge.target || !nodes[edge.source] || !nodes[edge.target]) {
+                        return edge.dashed ? '6' : '0';
+                    }
+
+                    // Check if source node is START or HACKED
+                    const sourceNode = nodes[edge.source];
+                    const targetNode = nodes[edge.target];
+
+                    // Only animate edges from START or HACKED nodes to ONLINE or HACKED nodes
+                    const shouldAnimate =
+                        (sourceNode.status === Status.Status.START) ||
+                        (sourceNode.status === Status.Status.HACKED &&
+                         (targetNode.status === Status.Status.ONLINE ||
+                          targetNode.status === Status.Status.HACKED));
+
+                    return shouldAnimate ? '6' : (edge.dashed ? '6' : '0');
+                },
                 width: 5,
+                animate: (edge) => {
+                    // Check if source and target nodes exist
+                    if (!edge.source || !edge.target || !nodes[edge.source] || !nodes[edge.target]) {
+                        return false;
+                    }
+
+                    // Apply animation to the same edges that have dasharray
+                    const sourceNode = nodes[edge.source];
+                    const targetNode = nodes[edge.target];
+
+                    return (sourceNode.status === Status.Status.START) ||
+                           (sourceNode.status === Status.Status.HACKED &&
+                            (targetNode.status === Status.Status.ONLINE ||
+                             targetNode.status === Status.Status.HACKED));
+                }
             },
             hover: {
                 color: (edge) => edge.color ?? '#4466cc',
@@ -107,16 +264,6 @@ const configs = reactive(
                         .force('charge', d3.forceManyBody().strength(-800))
                         .force('center', d3.forceCenter().strength(0.008))
                         .alphaMin(0.001)
-
-                    // * The following are the default parameters for the simulation.
-                    // const forceLink = d3.forceLink<ForceNodeDatum, ForceEdgeDatum>(edges).id(d => d.id)
-                    // return d3
-                    //   .forceSimulation(nodes)
-                    //   .force("edge", forceLink.distance(100))
-                    //   .force("charge", d3.forceManyBody())
-                    //   .force("collide", d3.forceCollide(50).strength(0.2))
-                    //   .force("center", d3.forceCenter().strength(0.05))
-                    //   .alphaMin(0.001)
                 },
             }),
         },
@@ -157,6 +304,20 @@ const eventHandlers: vNG.EventHandlers = {
     'node:dragend': () => {
         tooltipOpacity.value = 0
     },
+    'node:click': ({ node }) => {
+        if (!node || !nodes[node]) return
+
+        // Don't show interaction for start node
+        if (nodes[node].status === Status.Status.START) return
+
+        interactionNode.value = node
+        showNodeInteraction.value = true
+    },
+    'view:click': () => {
+        // Hide interaction panel when clicking elsewhere
+        if (!showNodeInteraction.value) return
+        showNodeInteraction.value = false
+    }
 }
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextEdgeIndex = ref(Object.keys(edges).length + 1)
@@ -234,35 +395,489 @@ function nameToIP(name: string): string {
     return `10.${ipParts.join('.')}`
 }
 
-const gameStore = useGameStore();
+function startMinigame(minigame: NodeMinigame) {
+    if (!interactionNode.value || !nodes[interactionNode.value]) {
+        console.error("No node selected for minigame");
+        return;
+    }
+
+    const node = nodes[interactionNode.value];
+
+    // Get the node's name for reference
+    const nodeName = node.name || interactionNode.value;
+
+    // Remove knowledge from the minigame to ensure it's not used
+    // We'll use the node's knowledgeIds instead
+    const cleanMinigame = {
+        ...minigame,
+        knowledge: null // Explicitly set knowledge to null
+    };
+
+    // Store current node and minigame information in localStorage
+    localStorage.setItem('current-minigame', JSON.stringify({
+        nodeId: interactionNode.value,
+        nodeName: nodeName,
+        minigame: cleanMinigame,
+        timestamp: Date.now()
+    }));
+
+    // Navigate to the minigame
+    router.push(minigame.route);
+    showNodeInteraction.value = false;
+}
+
+// Add a function to check for completed minigames and update knowledge store
+function checkCompletedMinigames() {
+    const minigameData = localStorage.getItem('completed-minigame');
+    if (!minigameData) return;
+
+    try {
+        const data = JSON.parse(minigameData);
+        const { nodeId, success } = data;
+
+        // Only process if the minigame was completed successfully
+        if (success && nodeId && nodes[nodeId]) {
+            console.log(`Processing completed minigame for node ${nodeId}`);
+            const node = nodes[nodeId];
+
+            // Update node status if specified in the minigame data
+            if (data.minigame?.newStatus !== undefined) {
+                node.status = data.minigame.newStatus;
+            }
+
+            // Get knowledge directly from the node if it has knowledgeIds
+            if (node.knowledgeIds && node.knowledgeIds.length > 0) {
+                // Find the knowledge items from the store
+                node.knowledgeIds.forEach(knowledgeId => {
+                    // First check if this knowledge already exists in the knowledge store
+                    const knowledgeItem = knowledgeStore.knowledges.find(item => item.id === knowledgeId);
+
+                    if (knowledgeItem) {
+                        // Knowledge already exists, make sure it has this node as a source
+                        if (!knowledgeItem.sources) {
+                            knowledgeItem.sources = [node.name || nodeId];
+                        } else if (!knowledgeItem.sources.includes(node.name || nodeId)) {
+                            knowledgeItem.sources.push(node.name || nodeId);
+                        }
+                    } else {
+                        // Need to find the knowledge item from the imported knowledge data
+                        const knowledgeFromData = knowledgeData.find((k: any) => k.id === knowledgeId);
+
+                        if (knowledgeFromData) {
+                            // Create a complete knowledge item
+                            const newKnowledgeItem: KnowledgeItem = {
+                                id: knowledgeId,
+                                title: knowledgeFromData.title || `Knowledge ${knowledgeId}`,
+                                description: knowledgeFromData.description || 'No description available.',
+                                image: knowledgeFromData.image || '',
+                                sources: [node.name || nodeId]
+                            };
+
+                            // Add to knowledge store
+                            knowledgeStore.addKnowledge(newKnowledgeItem);
+                            console.log('Added knowledge from node:', newKnowledgeItem);
+                        }
+                    }
+                });
+            }
+
+            // Clear the completed minigame data
+            localStorage.removeItem('completed-minigame');
+
+            // Save the updated graph state
+            saveCurrentGraph();
+        }
+    } catch (e) {
+        console.error('Error processing completed minigame:', e);
+    }
+}
+
+// Function to load graph from a file
+function loadGraphFromFile(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Check if file is a JSON file
+    if (!file.name.toLowerCase().endsWith('.json')) {
+        alert('Please select a JSON file');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const jsonData = JSON.parse(e.target.result);
+
+            // Validate the structure of the imported data
+            if (!jsonData.nodes || !jsonData.edges) {
+                alert('Invalid graph file format. File must contain nodes and edges objects.');
+                return;
+            }
+
+            // Load the graph data
+            loadGraphData({
+                nodes: jsonData.nodes,
+                edges: jsonData.edges,
+                layouts: jsonData.layouts || {}
+            });
+
+            // Save the imported graph
+            const graphName = file.name.replace(/\.json$/, '') || 'imported';
+
+            // Check if a graph with this name already exists
+            const existingIndex = savedGraphs.value.findIndex(g => g.name === graphName);
+            if (existingIndex >= 0) {
+                // Ask for confirmation before overwriting
+                if (confirm(`A graph named "${graphName}" already exists. Do you want to overwrite it?`)) {
+                    savedGraphs.value[existingIndex].data = {
+                        nodes: { ...nodes },
+                        edges: { ...edges },
+                        layouts: { ...layouts.value }
+                    };
+                } else {
+                    // Generate unique name
+                    const uniqueName = `${graphName}_${Date.now()}`;
+                    savedGraphs.value.push({
+                        name: uniqueName,
+                        data: {
+                            nodes: { ...nodes },
+                            edges: { ...edges },
+                            layouts: { ...layouts.value }
+                        }
+                    });
+                    selectedGraph.value = uniqueName;
+                }
+            } else {
+                // Add as a new graph
+                savedGraphs.value.push({
+                    name: graphName,
+                    data: {
+                        nodes: { ...nodes },
+                        edges: { ...edges },
+                        layouts: { ...layouts.value }
+                    }
+                });
+                selectedGraph.value = graphName;
+            }
+
+            // Save to localStorage
+            localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
+
+            // Close the graph loader
+            showGraphLoader.value = false;
+
+            // Show success message
+            alert(`Graph "${graphName}" has been loaded successfully.`);
+        } catch (error) {
+            console.error('Error loading graph from file:', error);
+            alert('Failed to parse the JSON file. Please check the file format.');
+        }
+    };
+
+    reader.onerror = () => {
+        alert('Failed to read the file. Please try again.');
+    };
+
+    reader.readAsText(file);
+}
+
+// Save current graph to localStorage
+function saveCurrentGraph() {
+    const graphData: GraphData = {
+        nodes: { ...nodes },
+        edges: { ...edges },
+        layouts: { ...layouts.value }
+    };
+
+    // Get existing saved graphs
+    const existing = savedGraphs.value || [];
+
+    // Check if "current" graph exists and update it
+    const currentIndex = existing.findIndex(g => g.name === "current");
+    if (currentIndex >= 0) {
+        existing[currentIndex].data = graphData;
+    } else {
+        // Add new "current" graph
+        existing.push({
+            name: "current",
+            data: graphData
+        });
+    }
+
+    // Save updated graphs
+    localStorage.setItem('saved-graphs', JSON.stringify(existing));
+    savedGraphs.value = existing;
+}
+
+// Add missing functions needed for graph loading
+
+// Toggle graph loader visibility
+function toggleGraphLoader() {
+    showGraphLoader.value = !showGraphLoader.value;
+}
+
+// Load saved graphs from localStorage
+function loadSavedGraphs() {
+    const savedData = localStorage.getItem('saved-graphs');
+    if (savedData) {
+        try {
+            const parsed = JSON.parse(savedData);
+            savedGraphs.value = parsed;
+        } catch (e) {
+            console.error('Failed to parse saved graphs', e);
+        }
+    }
+}
+
+// Load the first graph in the list (or "current" if it exists)
+function loadFirstGraph() {
+    if (savedGraphs.value.length === 0) {
+        return;
+    }
+
+    // Look for a graph named "current" first
+    const currentGraph = savedGraphs.value.find(g => g.name === "current");
+
+    if (currentGraph) {
+        loadGraphData(currentGraph.data);
+        selectedGraph.value = "current";
+    } else {
+        // Otherwise load the first graph
+        loadGraphData(savedGraphs.value[0].data);
+        selectedGraph.value = savedGraphs.value[0].name;
+    }
+}
+
+// Load a graph by name
+function loadGraph() {
+    if (!selectedGraph.value) {
+        return;
+    }
+
+    const graph = savedGraphs.value.find(g => g.name === selectedGraph.value);
+    if (!graph) {
+        console.error('Graph not found:', selectedGraph.value);
+        return;
+    }
+
+    loadGraphData(graph.data);
+    showGraphLoader.value = false;
+}
+
+// Load graph data (nodes, edges, and layouts)
+function loadGraphData(graphData: GraphData) {
+    if (!graphData) return;
+
+    // Clear existing graph
+    Object.keys(nodes).forEach(key => delete nodes[key]);
+    Object.keys(edges).forEach(key => delete edges[key]);
+
+    // Load nodes
+    if (graphData.nodes) {
+        Object.entries(graphData.nodes).forEach(([id, node]) => {
+            nodes[id] = { ...node };
+        });
+    }
+
+    // Load edges
+    if (graphData.edges) {
+        Object.entries(graphData.edges).forEach(([id, edge]) => {
+            edges[id] = { ...edge };
+        });
+    }
+
+    // Load layouts
+    if (graphData.layouts) {
+        layouts.value = { ...graphData.layouts };
+    }
+
+    // Update next indices to prevent ID conflicts
+    nextNodeIndex.value = Math.max(
+        ...Object.keys(nodes).map(id => {
+            const match = id.match(/node(\d+)/);
+            return match ? parseInt(match[1]) : 0;
+        }),
+        1
+    ) + 1;
+
+    nextEdgeIndex.value = Math.max(
+        ...Object.keys(edges).map(id => {
+            const match = id.match(/edge(\d+)/);
+            return match ? parseInt(match[1]) : 0;
+        }),
+        1
+    ) + 1;
+}
 
 onMounted(() => {
     gameStore.gameState = 'selectScreen'
-});
+    loadSavedGraphs()
+
+    try {
+        loadGraphData(defaultGraphData);
+        console.log('Default graph loaded from graph.json file');
+
+        const defaultExists = savedGraphs.value.findIndex(g => g.name === "default");
+        if (defaultExists === -1) {
+            savedGraphs.value.push({
+                name: "default",
+                data: {
+                    nodes: { ...nodes },
+                    edges: { ...edges },
+                    layouts: { ...layouts.value }
+                }
+            });
+            localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
+        }
+
+        selectedGraph.value = "default";
+    } catch (error) {
+        console.error('Failed to load default graph:', error);
+        loadFirstGraph();
+    }
+
+    checkCompletedMinigames()
+})
 
 defineExpose({ addRandomNode })
 </script>
 
 <template>
+    <button @click="toggleGraphLoader" class="btn primary">
+        {{ showGraphLoader ? 'Hide Loader' : 'Load Graph' }}
+    </button>
     <div class="graph">
-        <button @click="addRandomNode">12</button>
-        <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="nodes" :edges="edges" :configs="configs"
-            :event-handlers="eventHandlers" />
-        <div ref="tooltip" class="tooltip" :style="{ ...tooltipPos, opacity: tooltipOpacity }">
-            <div>Name: {{ nodes[targetNodeId]?.name ?? '' }}</div>
-            <div>Status: {{ Status.getStatusString(nodes[targetNodeId]?.status) }}</div>
-            <div>Ip: {{ nameToIP(nodes[targetNodeId]?.name ?? '') }}</div>
+
+        <div class="content">
+            <!-- Graph Container -->
+            <div class="graph-container">
+                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="nodes" :edges="edges" :configs="configs"
+                    :event-handlers="eventHandlers" />
+                <div ref="tooltip" class="tooltip" :style="{ ...tooltipPos, opacity: tooltipOpacity }">
+                    <div>Name: {{ nodes[targetNodeId]?.name ?? '' }}</div>
+                    <div>Status: {{ Status.getStatusString(nodes[targetNodeId]?.status) }}</div>
+                    <div>IP: {{ nameToIP(nodes[targetNodeId]?.name ?? '') }}</div>
+                </div>
+            </div>
         </div>
+
+        <!-- Graph Loader Panel -->
+        <div v-if="showGraphLoader" class="panel graph-loader">
+            <div class="panel-section">
+                <h3>Load Graph</h3>
+                <div class="form-group">
+                    <label for="graph-select">Select Graph:</label>
+                    <select id="graph-select" v-model="selectedGraph">
+                        <option value="">-- Select a Graph --</option>
+                        <option v-for="graph in savedGraphs" :key="graph.name" :value="graph.name">
+                            {{ graph.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="button-row">
+                    <button @click="loadGraph" :disabled="!selectedGraph" class="btn primary">Load Graph</button>
+                    <button @click="showGraphLoader = false" class="btn secondary">Cancel</button>
+                </div>
+
+                <!-- File upload section -->
+                <div class="form-group upload-section">
+                    <h4>Import Graph from File</h4>
+                    <label for="graph-file" class="file-label">
+                        Choose JSON file
+                        <input
+                            type="file"
+                            id="graph-file"
+                            accept=".json"
+                            @change="loadGraphFromFile"
+                            class="file-input"
+                        />
+                    </label>
+                    <div class="file-format-info">
+                        <small>File must be a JSON containing nodes and edges objects</small>
+                    </div>
+                </div>
+
+                <div class="info-text">
+                    <p>Create graphs using the Graph Creator tool!</p>
+                    <router-link to="/graph-creator" class="creator-link">Open Graph Creator</router-link>
+                </div>
+            </div>
+        </div>
+
+        <!-- Node Interaction Panel -->
+        <div v-if="showNodeInteraction && interactionNode" class="panel node-interaction">
+            <div class="panel-section">
+                <h3>{{ nodes[interactionNode]?.name }} Interaction
+                    <span class="status-badge" :style="{ backgroundColor: Status.getColor(nodes[interactionNode]?.status) }">
+                        {{ Status.getStatusString(nodes[interactionNode]?.status) }}
+                    </span>
+                    <button class="close-btn" @click="showNodeInteraction = false">×</button>
+                </h3>
+
+                <div class="interaction-content">
+                    <p class="ip-address">IP: {{ nameToIP(nodes[interactionNode]?.name || '') }}</p>
+                    <p v-if="nodes[interactionNode]?.difficulty !== undefined" class="difficulty-info">
+                        Difficulty: {{ Level[nodes[interactionNode]?.difficulty!] }}
+                    </p>
+
+                    <div v-if="availableMinigames.length > 0" class="minigames-list">
+                        <h4>Available Actions</h4>
+                        <div v-for="(minigame, index) in availableMinigames" :key="index" class="minigame-item">
+                            <div class="minigame-info">
+                                <h5>{{ minigame.title }}</h5>
+                                <p>{{ minigame.description }}</p>
+                                <p class="minigame-difficulty">Difficulty: {{ minigame.difficulty !== undefined ? Level[minigame.difficulty] : 'Default' }}</p>
+                            </div>
+                            <button class="btn primary play-btn" @click="startMinigame(minigame)">Start</button>
+                        </div>
+                    </div>
+                    <div v-else class="no-minigames">
+                        <p>No actions available for this node.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Debug Button (hidden in production) -->
+        <button @click="addRandomNode" class="debug-button">Add Random Node</button>
     </div>
 </template>
 
 <style lang="css" scoped>
 .graph {
-    position: fixed;
-    top: 0;
-    left: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+.header {
+    padding: 1rem;
+    background-color: var(--color-background-mute);
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: var(--green);
+}
+
+.content {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+.graph-container {
     height: 100%;
     width: 100%;
+    position: relative;
 }
 
 .tooltip {
@@ -279,5 +894,257 @@ defineExpose({ addRandomNode })
     transition: opacity 0.2s linear;
     pointer-events: none;
     width: fit-content;
+    z-index: 1000;
+}
+
+.panel {
+    position: absolute;
+    background-color: var(--color-background-soft);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.graph-loader {
+    top: 70px;
+    right: 10px;
+    width: 300px;
+}
+
+.node-interaction {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+}
+
+.panel-section {
+    padding: 1rem;
+}
+
+h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    color: var(--green);
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #000;
+    margin-left: 8px;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0 4px;
+    line-height: 1;
+}
+
+.close-btn:hover {
+    color: var(--green);
+}
+
+.interaction-content {
+    padding: 0.5rem 0;
+}
+
+.ip-address {
+    font-family: 'Pixel', monospace;
+    font-size: 14px;
+    color: var(--color-text);
+    margin-bottom: 16px;
+    padding: 4px 8px;
+    background-color: var(--color-background);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.minigames-list h4 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: var(--color-text);
+    font-size: 14px;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 4px;
+}
+
+.minigame-item {
+    margin-bottom: 12px;
+    padding: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-background);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.minigame-info {
+    flex: 1;
+}
+
+.minigame-item h5 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--green);
+}
+
+.minigame-item p {
+    margin: 0;
+    font-size: 12px;
+    color: var(--color-text);
+}
+
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    background-color: var(--color-background);
+    color: var(--color-text);
+    border-radius: 4px;
+}
+
+.button-row {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.primary {
+    background-color: var(--green);
+    color: black;
+}
+
+.secondary {
+    background-color: #4466cc;
+    color: white;
+}
+
+.danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.primary:hover {
+    background-color: #2ecc71;
+}
+
+.secondary:hover {
+    background-color: #5577dd;
+}
+
+.danger:hover {
+    background-color: #f85c4d;
+}
+
+.info-text {
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid var(--color-border);
+    font-size: 12px;
+}
+
+.creator-link {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--green);
+    text-decoration: none;
+}
+
+.creator-link:hover {
+    text-decoration: underline;
+}
+
+.debug-button {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background-color: transparent;
+    color: transparent;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 0;
+}
+
+.debug-button:active {
+    color: var(--color-text-muted);
+    font-size: 10px;
+}
+
+.no-minigames {
+    text-align: center;
+    padding: 16px;
+    color: var(--color-text);
+    font-style: italic;
+}
+
+.upload-section {
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px dashed var(--color-border);
+    border-radius: 4px;
+    background-color: var(--color-background);
+}
+
+.file-label {
+    display: inline-block;
+    padding: 8px 12px;
+    background-color: var(--color-background-mute);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--green);
+    transition: all 0.2s;
+}
+
+.file-label:hover {
+    background-color: var(--color-background-soft);
+    border-color: var(--green);
+}
+
+.file-input {
+    opacity: 0;
+    position: absolute;
+    z-index: -1;
+}
+
+.file-format-info {
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--color-text-muted);
 }
 </style>

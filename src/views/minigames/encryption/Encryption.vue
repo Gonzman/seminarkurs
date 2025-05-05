@@ -32,7 +32,7 @@
 import { ref } from 'vue'
 import Timer from '../Timer.vue'
 
-const inputs = ref<HTMLInputElement[]>([]) // Array of input elements
+const inputs = ref<HTMLInputElement[]>([])
 const finished = ref(false)
 const timer = ref<InstanceType<typeof Timer> | null>(null)
 const start: number = 100
@@ -45,7 +45,7 @@ function caesarCipher(str: string, shift: number, decrypt: boolean = false): str
             const c = str.charCodeAt(i)
             if (c >= 65 && c <= 90) return String.fromCharCode(((c - 65 + n) % 26) + 65)
             if (c >= 97 && c <= 122) return String.fromCharCode(((c - 97 + n) % 26) + 97)
-            if (c >= 48 && c <= 57) return l // Keep numbers unchanged
+            if (c >= 48 && c <= 57) return l
             return l
         })
         .join('')
@@ -61,9 +61,8 @@ function reset() {
 
 function onInputChange(event: Event, index: number) {
     const input = event.target as HTMLInputElement
-    input.value = input.value.replace(/[^a-zA-Z0-9]/g, '') // Allow letters and numbers
+    input.value = input.value.replace(/[^a-zA-Z0-9]/g, '')
 
-    // Move focus to the next input if the input has a value
     if (input.value && inputs.value[index + 1]) {
         inputs.value[index + 1].focus()
     }
@@ -72,7 +71,7 @@ function onInputChange(event: Event, index: number) {
 function checkAnswer() {
     let userInput: string = ''
     for (const inputElement of inputs.value) {
-        userInput += inputElement.value // Concatenate the values of all input elements
+        userInput += inputElement.value
     }
     if (userInput == selectedWord) {
         finished.value = true
@@ -135,15 +134,13 @@ input:focus-within {
     outline-color: var(--green);
     box-shadow: 1px 2px 13px 4px var(--green);
 }
-/* To remove prev next arrow from number input */
-/* Chrome, Safari, Edge, Opera */
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
 
-/* Firefox */
 input[type='number'] {
     appearance: textfield;
     -moz-appearance: textfield;
