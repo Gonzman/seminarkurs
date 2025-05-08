@@ -20,18 +20,17 @@
             <p>{{ knowledgeStore.selectedKnowledge.description }}</p>
         </div>
         <div class="detail" v-else>
-            <p class="heading">Select a knowledge to view</p>
+            <p class="heading">Wähle eine Informationen</p>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge'
 
 const knowledgeStore = useKnowledgeStore()
 
-// Use computed for reactivity
 const knowledges = computed<KnowledgeItem[]>(() => Array.from(knowledgeStore.knowledges.values()))
 
 function selectKnowledge(knowledge: KnowledgeItem) {

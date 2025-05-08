@@ -95,7 +95,7 @@ const onDragEnd = () => {
 
 .stevie {
     position: fixed;
-    z-index: 1000;
+    z-index: 999;
     cursor: grab;
     transition: top 0.05s ease-out, left 0.05s ease-out;
 }
@@ -105,6 +105,7 @@ const onDragEnd = () => {
 .fade-leave-active {
     transition: opacity 0.3s ease;
 }
+
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
@@ -115,9 +116,11 @@ const onDragEnd = () => {
 .slide-left-leave-active {
     transition: transform 0.5s ease;
 }
+
 .slide-left-enter-from {
     transform: translateX(100%);
 }
+
 .slide-left-leave-to {
     transform: translateX(-100%);
 }
@@ -127,9 +130,11 @@ const onDragEnd = () => {
 .slide-right-leave-active {
     transition: transform 0.5s ease;
 }
+
 .slide-right-enter-from {
     transform: translateX(-100%);
 }
+
 .slide-right-leave-to {
     transform: translateX(100%);
 }
@@ -139,9 +144,11 @@ const onDragEnd = () => {
 .slide-up-leave-active {
     transition: transform 0.5s ease;
 }
+
 .slide-up-enter-from {
     transform: translateY(100%);
 }
+
 .slide-up-leave-to {
     transform: translateY(-100%);
 }
@@ -151,9 +158,11 @@ const onDragEnd = () => {
 .slide-down-leave-active {
     transition: transform 0.5s ease;
 }
+
 .slide-down-enter-from {
     transform: translateY(-100%);
 }
+
 .slide-down-leave-to {
     transform: translateY(100%);
 }
