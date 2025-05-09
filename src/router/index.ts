@@ -71,6 +71,12 @@ const router = createRouter({
             props: { level: Level.SUPER_HARD },
         },
         {
+            path: '/infotinder',
+            name: 'infotinder',
+            component: () => import('../views/minigames/infotinder/InfoTinder.vue'),
+            props: { max_space: 80 },
+        },
+        {
             path: '/about',
             name: 'about',
             component: () => import('../views/AboutView.vue'),
