@@ -12,6 +12,7 @@ import { games } from '@/stores/knowledge'
 import Level from '@/views/minigames/level'
 import type { KnowledgeItem } from '@/stores/knowledge'
 import knowledgeData from '@/data/knowledge.json'
+import { config, type Edge, type GraphData, type Node } from './graph'
 
 const graph = ref<vNG.Instance | null>(null)
 const nodeForm = ref<HTMLFormElement | null>(null)
@@ -37,25 +38,7 @@ onMounted(() => {
     }
 })
 
-export interface Node extends vNG.Node {
-    icon: string
-    status: Status.Status
-    draggable?: boolean
-    minigame?: games
-    difficulty?: Level
-    knowledgeIds?: number[]
-}
 
-export interface Edge extends vNG.Edge {
-    color?: string
-    dashed?: boolean
-}
-
-export interface GraphData {
-    nodes: Record<string, Node>
-    edges: Record<string, Edge>
-    layouts: Layouts
-}
 
 const edges = reactive<Record<string, Edge>>({})
 
@@ -67,21 +50,31 @@ const nodes = reactive<Record<string, Node>>({})
 
 // Generate a unique node ID
 function generateNodeId(): string {
-    const prefix = "node";
-    let counter = Object.keys(nodes).length + 1;
+    let prefix = makeid(5);
 
     // Ensure ID doesn't already exist
-    while(nodes[`${prefix}${counter}`]) {
-        counter++;
+    while (nodes[prefix]) {
+        prefix = makeid(5);
     }
 
-    return `${prefix}${counter}`;
+    return prefix;
+}
+
+function generateEdgeId(): string {
+    let prefix = makeid(5);
+
+    // Ensure ID doesn't already exist
+    while (edges[prefix]) {
+        prefix = makeid(5);
+    }
+
+    return prefix;
 }
 
 function initializeStartNode() {
     // Only add if no nodes exist
     if (Object.keys(nodes).length === 0) {
-        nodes['node1'] = {
+        nodes['start'] = {
             name: 'start',
             icon: '&#xe320',
             status: Status.Status.START,
@@ -89,7 +82,7 @@ function initializeStartNode() {
         };
 
         layouts.value.nodes = {
-            'node1': { x: 0, y: 0, fixed: true }
+            'start': { x: 0, y: 0, fixed: true }
         };
     }
 }
@@ -106,6 +99,16 @@ const newNode = reactive({
     y: 0,
     knowledgeIds: [] as number[]
 })
+
+function makeid(length: number): string {
+    var result = '';
+    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    var charactersLength = characters.length;
+    for (var i = 0; i < length; i++) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 
 const newEdge = reactive({
     id: '',
@@ -160,67 +163,11 @@ const difficultyOptions = computed(() => {
 const nodeOptions = computed(() => {
     return Object.keys(nodes).map(id => ({
         value: id,
-        label: `${id} (${nodes[id].name})`
+        label: `${nodes[id].name}`
     }))
 })
 
-const configs = reactive(
-    defineConfigs({
-        node: {
-            selectable: true,
-            draggable: (node) => (node.draggable !== undefined ? node.draggable : true),
-            normal: {
-                color: (node) => Status.getColor(node.status),
-                radius: 20,
-            },
-            hover: {
-                color: (node) => Status.getColor(node.status),
-                radius: 22,
-            },
-            label: {
-                visible: true,
-                fontSize: 11,
-                lineHeight: 1.1,
-                color: '#FFFFFF',
-                fontFamily: 'Pixel',
-            },
-        },
-        edge: {
-            normal: {
-                color: (edge) => edge.color ?? '#4466cc',
-                dasharray: (edge) => (edge.dashed ? '6' : '0'),
-                width: 5,
-            },
-            hover: {
-                color: (edge) => edge.color ?? '#4466cc',
-            },
-        },
-        focusring: {
-            visible: true,
-            width: 4,
-            padding: 3,
-            color: '#eebb00',
-            dasharray: '0',
-        },
-        view: {
-            layoutHandler: new ForceLayout({
-                positionFixedByDrag: true, // Enable position fixing when dragging
-                positionFixedByClickWithAltKey: true,
-                createSimulation: (d3, nodes, edges) => {
-                    const forceLink = d3
-                        .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-                        .id((d: { id: any }) => d.id)
-                    return d3
-                        .forceSimulation(nodes)
-                        .force('edge', forceLink.distance(40).strength(0.5))
-                        .force('charge', d3.forceManyBody().strength(-800))
-                        .force('center', d3.forceCenter(0, 0))
-                        .alphaMin(0.001)
-                },
-            }),
-        },
-    }),
-)
+const configs = config(nodes, true)
 
 // Add a handler for canvas:click to reset the form when clicking on empty space
 const eventHandlers: vNG.EventHandlers = {
@@ -265,14 +212,12 @@ const eventHandlers: vNG.EventHandlers = {
     'node:dragend': ({ node, position }) => {
         if (!node || !position) return;
 
-        // Update the node position in the layouts when dragging ends
         if (!layouts.value.nodes) {
             layouts.value.nodes = {};
         }
 
         const nodeId = node.toString();
 
-        // Fix the Position type error by creating a new object with explicit x and y properties
         layouts.value.nodes[nodeId] = {
             x: position.x,
             y: position.y,
@@ -280,7 +225,6 @@ const eventHandlers: vNG.EventHandlers = {
         };
     },
     'view:click': () => {
-        // Reset forms when clicking on empty space (canvas)
         resetNodeForm();
         resetEdgeForm();
     },
@@ -290,7 +234,6 @@ const eventHandlers: vNG.EventHandlers = {
     }
 }
 
-// Toggle knowledge selection
 function toggleKnowledge(id: number) {
     const index = selectedKnowledgeIds.value.indexOf(id);
     if (index === -1) {
@@ -301,7 +244,6 @@ function toggleKnowledge(id: number) {
     newNode.knowledgeIds = [...selectedKnowledgeIds.value];
 }
 
-// Add a new node to the graph
 function addNode() {
     // Clear previous error
     errorMessage.value = '';
@@ -320,7 +262,7 @@ function addNode() {
 
     // Add node to the nodes object
     nodes[nodeId] = {
-        name: newNode.name,
+        name: newNode.name + " (" + nodeId + ")",
         icon: newNode.icon,
         status: newNode.status,
         draggable: newNode.draggable,
@@ -367,7 +309,7 @@ function addEdge() {
     }
 
     // Generate a unique edge ID if not provided
-    const edgeId = newEdge.id.trim() !== '' ? newEdge.id : `edge${Object.keys(edges).length + 1}`;
+    const edgeId = newEdge.id.trim() !== '' ? newEdge.id : `edge${generateEdgeId()}`;
 
     // Add edge to the edges object
     edges[edgeId] = {
@@ -457,6 +399,13 @@ function saveGraph() {
         return;
     }
 
+    // loop through nodes and remove the last 8 characters from the name
+    Object.keys(nodes).forEach(key => {
+        if (nodes[key].name) {
+            nodes[key].name = nodes[key].name.slice(0, -8);
+        }
+    });
+
     const graphData: GraphData = {
         nodes: { ...nodes },
         edges: { ...edges },
@@ -504,6 +453,9 @@ function loadGraph() {
 
     // Load nodes
     Object.entries(graph.data.nodes).forEach(([id, node]) => {
+        if (node.status !== Status.Status.START) {
+            node.name = node.name + " (" + id + ")";
+        }
         nodes[id] = { ...node };
     });
 
@@ -547,6 +499,14 @@ function deleteGraph() {
 
 // Export the graph as JSON
 function exportGraph() {
+
+    Object.keys(nodes).forEach(key => {
+        if (nodes[key].name) {
+            nodes[key].name = nodes[key].name.slice(0, -8);
+        }
+    });
+
+
     const graphData: GraphData = {
         nodes: { ...nodes },
         edges: { ...edges },
@@ -587,6 +547,11 @@ function importGraph(event: Event) {
 
             // Load nodes
             Object.entries(graphData.nodes).forEach(([id, node]) => {
+
+                if (node.status !== Status.Status.START) {
+                    node.name = node.name + " (" + id + ")";
+                }
+
                 nodes[id] = { ...node }
             })
 
@@ -625,14 +590,8 @@ function importGraph(event: Event) {
 
         <div class="content">
             <div class="graph-container">
-                <v-network-graph
-                    ref="graph"
-                    v-model:layouts="layouts"
-                    :nodes="nodes"
-                    :edges="edges"
-                    :configs="configs"
-                    :event-handlers="eventHandlers"
-                    />
+                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="nodes" :edges="edges" :configs="configs"
+                    :event-handlers="eventHandlers" />
             </div>
 
             <div class="control-panel">
@@ -643,7 +602,9 @@ function importGraph(event: Event) {
                 <div class="panel-section">
                     <h3>Nodes</h3>
                     <form ref="nodeForm" @submit.prevent="addNode" class="form">
-
+                        <div class="form-group">
+                            <p>ID: {{ newNode.id }}</p>
+                        </div>
 
                         <div class="form-group required">
                             <label for="node-name">Name: <span class="required-mark">*</span></label>
@@ -671,12 +632,12 @@ function importGraph(event: Event) {
 
                         <div class="form-group">
                             <label for="node-x">X:</label>
-                            <input type="number" id="node-x" v-model="newNode.x" />
+                            <input type="number" id="node-x" v-model.number="newNode.x" />
                         </div>
 
                         <div class="form-group">
                             <label for="node-y">Y:</label>
-                            <input type="number" id="node-y" v-model="newNode.y" />
+                            <input type="number" id="node-y" v-model.number="newNode.y" />
                         </div>
 
                         <div class="form-group">
@@ -702,25 +663,21 @@ function importGraph(event: Event) {
                         <div class="form-group">
                             <label>Knowledge: <span class="hint">(Independent from minigames)</span></label>
                             <div class="knowledge-selector">
-                                <div
-                                    v-for="item in knowledgeItems"
-                                    :key="item.id"
-                                    class="knowledge-item"
+                                <div v-for="item in knowledgeItems" :key="item.id" class="knowledge-item"
                                     :class="{ selected: selectedKnowledgeIds.includes(item.id) }"
-                                    @click="toggleKnowledge(item.id)"
-                                >
+                                    @click="toggleKnowledge(item.id)">
                                     <div class="knowledge-title">{{ item.title }}</div>
                                 </div>
                             </div>
-                            <div class="hint-text">Select multiple knowledge items that this node will make available to the player.</div>
+                            <div class="hint-text">Select multiple knowledge items that this node will make available to
+                                the player.</div>
                         </div>
 
                         <div class="button-row">
-                            <button type="submit" class="btn primary">{{ newNode.id in nodes ? 'Update' : 'Add' }} Node</button>
+                            <button type="submit" class="btn primary">{{ newNode.id in nodes ? 'Update' : 'Add' }}
+                                Node</button>
                             <button type="button" class="btn secondary" @click="resetNodeForm">Clear</button>
-                            <button
-                                type="button"
-                                class="btn danger"
+                            <button type="button" class="btn danger"
                                 v-if="newNode.id in nodes && !(newNode.id === 'node1' && nodes[newNode.id].status === Status.Status.START)"
                                 @click="removeNode(newNode.id)">Delete</button>
                         </div>
@@ -738,7 +695,7 @@ function importGraph(event: Event) {
                                 newNode.minigame = node.minigame;
                                 newNode.difficulty = node.difficulty;
                                 newNode.knowledgeIds = node.knowledgeIds || [];
-                                selectedKnowledgeIds.value = [...(node.knowledgeIds || [])];
+                                selectedKnowledgeIds = [...(node.knowledgeIds || [])];
 
                                 // Load position coordinates if available
                                 const nodeLayouts = layouts.nodes || {};
@@ -749,8 +706,9 @@ function importGraph(event: Event) {
                             }">
                                 {{ id }} - {{ node.name }} ({{ Status.getStatusString(node.status) }})
                                 <span v-if="node.minigame !== undefined" class="minigame-tag">{{
-                                    Object.keys(games).find(key => games[key as keyof typeof games] === node.minigame) || 'Game'
-                                }}</span>
+                                    Object.keys(games).find(key => games[key as keyof typeof games] === node.minigame)
+                                    || 'Game'
+                                    }}</span>
                                 <span v-if="node.knowledgeIds && node.knowledgeIds.length > 0" class="knowledge-tag">
                                     {{ node.knowledgeIds.length }} knowledge items
                                 </span>
@@ -798,16 +756,20 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="button-row">
-                            <button type="submit" class="btn primary">{{ newEdge.id in edges ? 'Update' : 'Add' }} Edge</button>
+                            <button type="submit" class="btn primary">{{ newEdge.id in edges ? 'Update' : 'Add' }}
+                                Edge</button>
                             <button type="button" class="btn secondary" @click="resetEdgeForm">Clear</button>
-                            <button type="button" class="btn danger" v-if="newEdge.id in edges" @click="removeEdge(newEdge.id)">Delete</button>
+                            <button type="button" class="btn danger" v-if="newEdge.id in edges"
+                                @click="removeEdge(newEdge.id)">Delete</button>
                         </div>
+
                     </form>
 
                     <div class="edge-list">
                         <h4>Edge List</h4>
                         <ul>
-                            <li v-for="(edge, id) in edges" :key="id" @click="() => { newEdge.id = id; newEdge.source = edge.source; newEdge.target = edge.target; newEdge.color = edge.color ?? '#4466cc'; newEdge.dashed = edge.dashed ?? false; }">
+                            <li v-for="(edge, id) in edges" :key="id"
+                                @click="() => { newEdge.id = id; newEdge.source = edge.source; newEdge.target = edge.target; newEdge.color = edge.color ?? '#4466cc'; newEdge.dashed = edge.dashed ?? false; }">
                                 {{ id }}: {{ edge.source }} → {{ edge.target }}
                             </li>
                         </ul>
@@ -950,7 +912,8 @@ label {
     color: var(--color-text);
 }
 
-input, select {
+input,
+select {
     padding: 0.5rem;
     border: 1px solid var(--color-border);
     border-radius: 4px;
@@ -968,7 +931,8 @@ input[type="checkbox"] {
     width: auto;
 }
 
-input:focus, select:focus {
+input:focus,
+select:focus {
     border-color: var(--green);
     outline: none;
 }
@@ -1015,7 +979,8 @@ input:focus, select:focus {
     background-color: #f85c4d;
 }
 
-.node-list, .edge-list {
+.node-list,
+.edge-list {
     margin-top: 1rem;
     max-height: 200px;
     overflow-y: auto;

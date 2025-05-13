@@ -23,6 +23,8 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
     const knowledges = ref<KnowledgeItem[]>([])
     const selectedKnowledge = ref<KnowledgeItem | null>(null)
 
+    const gameKnowledges = ref<KnowledgeItem[]>([])
+
     function loadKnowledges() {
         const stored = localStorage.getItem('knowledges')
         if (stored) {
@@ -42,19 +44,11 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
                 })
             } catch (error) {
                 console.error('Error parsing knowledge data:', error)
-                initializeFromJsonData()
+                initializeFromJsonData() //FIXME dev
             }
         } else {
-            initializeFromJsonData()
+            initializeFromJsonData() //FIXME dev
         }
-    }
-
-    function initializeFromJsonData() {
-        console.log('Initializing knowledge store from knowledge.json file')
-        knowledges.value = (knowledgeData as KnowledgeItem[]).map(item => ({
-            ...item,
-            sources: item.sources || []
-        }))
     }
 
     function addKnowledge(knowledgeItem: KnowledgeItem) {
@@ -132,7 +126,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
                     const savedGraphsData = localStorage.getItem('saved-graphs')
                     if (savedGraphsData && nodeId) {
                         const savedGraphs = JSON.parse(savedGraphsData)
-                        const currentGraph = savedGraphs.find((g: any) => g.name === "current")
+                        const currentGraph = savedGraphs.find((g: any) => g.name === 'current')
                         const graphData = currentGraph?.data || savedGraphs[0]?.data
 
                         if (graphData && graphData.nodes && graphData.nodes[nodeId]) {
@@ -140,42 +134,61 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
 
                             if (node.knowledgeIds && node.knowledgeIds.length > 0) {
                                 node.knowledgeIds.forEach((knowledgeId: number) => {
-                                    const existingKnowledge = knowledges.value.find(item => item.id === knowledgeId)
+                                    const existingKnowledge = knowledges.value.find(
+                                        (item) => item.id === knowledgeId,
+                                    )
 
                                     if (existingKnowledge) {
                                         if (!existingKnowledge.sources) {
                                             existingKnowledge.sources = [node.name || nodeId]
-                                        } else if (!existingKnowledge.sources.includes(node.name || nodeId)) {
+                                        } else if (
+                                            !existingKnowledge.sources.includes(node.name || nodeId)
+                                        ) {
                                             existingKnowledge.sources.push(node.name || nodeId)
                                         }
                                     } else {
-                                        const knowledgeFromImportedData = (knowledgeData as KnowledgeItem[])
-                                            .find(k => k.id === knowledgeId)
+                                        const knowledgeFromImportedData = (
+                                            knowledgeData as KnowledgeItem[]
+                                        ).find((k) => k.id === knowledgeId)
 
                                         if (knowledgeFromImportedData) {
                                             const newKnowledge: KnowledgeItem = {
                                                 ...knowledgeFromImportedData,
-                                                sources: [node.name || nodeId]
+                                                sources: [node.name || nodeId],
                                             }
 
                                             addKnowledge(newKnowledge)
-                                            console.log('Added knowledge from JSON data:', newKnowledge)
+                                            console.log(
+                                                'Added knowledge from JSON data:',
+                                                newKnowledge,
+                                            )
                                         } else {
                                             const knowledgeData = localStorage.getItem('knowledges')
-                                            const allKnowledge = knowledgeData ? JSON.parse(knowledgeData) : []
-                                            const knowledgeFromData = allKnowledge.find((k: any) => k.id === knowledgeId)
+                                            const allKnowledge = knowledgeData
+                                                ? JSON.parse(knowledgeData)
+                                                : []
+                                            const knowledgeFromData = allKnowledge.find(
+                                                (k: any) => k.id === knowledgeId,
+                                            )
 
                                             if (knowledgeFromData) {
                                                 const newKnowledge: KnowledgeItem = {
                                                     id: knowledgeId,
-                                                    title: knowledgeFromData.title || `Knowledge ${knowledgeId}`,
-                                                    description: knowledgeFromData.description || 'No description available.',
+                                                    title:
+                                                        knowledgeFromData.title ||
+                                                        `Knowledge ${knowledgeId}`,
+                                                    description:
+                                                        knowledgeFromData.description ||
+                                                        'No description available.',
                                                     image: knowledgeFromData.image || '',
-                                                    sources: [node.name || nodeId]
+                                                    sources: [node.name || nodeId],
                                                 }
 
                                                 addKnowledge(newKnowledge)
-                                                console.log('Added knowledge from localStorage:', newKnowledge)
+                                                console.log(
+                                                    'Added knowledge from localStorage:',
+                                                    newKnowledge,
+                                                )
                                             }
                                         }
                                     }
@@ -188,7 +201,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
                         nodeId: minigameData.nodeId,
                         minigame: {
                             ...minigameData.minigame,
-                            knowledge: null
+                            knowledge: null,
                         },
                         success: true,
                         timestamp: Date.now(),
@@ -222,6 +235,34 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         completeGame()
     }
 
+    function addGameKnowledges(knowledges: KnowledgeItem[]) {
+        knowledges.forEach((item) => {
+            const existingIndex = gameKnowledges.value.findIndex((k) => k.id === item.id)
+            if (existingIndex === -1) {
+                gameKnowledges.value.push(item)
+            }
+        })
+    }
+
+    function gameFailed() {
+        gameKnowledges.value = []
+    }
+
+    function getGameKnowledges() {
+        return gameKnowledges.value
+    }
+
+    function moveGameKnowledgeToKnowledges(knowledge: KnowledgeItem[]) {
+        knowledge.forEach((item) => {
+            const existingIndex = gameKnowledges.value.findIndex((k) => k.id === item.id)
+            const existingIndexInKnowledges = knowledges.value.findIndex((k) => k.id === item.id)
+            if (existingIndex !== -1 && existingIndexInKnowledges === -1) {
+                knowledges.value.push(item)
+            }
+        })
+        gameKnowledges.value = []
+    }
+
     loadKnowledges()
 
     return {
@@ -231,6 +272,23 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         addKnowledge,
         addRandomKnowledge,
         getAllKnowledges,
-        finishedGameSuccesfully
+        finishedGameSuccesfully,
+        addGameKnowledges,
+        gameFailed,
+        getGameKnowledges,
+        moveGameKnowledgeToKnowledges,
     }
 })
+
+export function getKnowledgeById(id: number): KnowledgeItem | null {
+    const knowledge = initializeFromJsonData().find((k) => k.id === id)
+    return knowledge || null
+}
+
+function initializeFromJsonData(): KnowledgeItem[] {
+    console.log('Initializing knowledge store from knowledge.json file')
+    return (knowledgeData as KnowledgeItem[]).map((item) => ({
+        ...item,
+        sources: item.sources || [],
+    }))
+}

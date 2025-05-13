@@ -10,14 +10,16 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import * as Status from './status'
 import { useMouse } from '@vueuse/core'
 import { useGameStore } from '@/stores/game'
-import { useKnowledgeStore, type KnowledgeItem, games } from '@/stores/knowledge'
+import { useKnowledgeStore, type KnowledgeItem, games, getKnowledgeById } from '@/stores/knowledge'
 import { useRouter } from 'vue-router'
 import Level from '@/views/minigames/level';
 // Import interface types from GraphCreator
-import { type Node, type Edge, type GraphData } from './GraphCreator.vue'
+
+import { config, type Edge, type GraphData, type Node } from './graph'
 import knowledgeData from '@/data/knowledge.json'
 // Import default graph data
 import defaultGraphData from '@/data/graph.json'
+import Knowledge from '@/components/overlays/Knowledge.vue'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -178,97 +180,7 @@ const availableMinigames = computed(() => {
     });
 });
 
-const configs = reactive(
-    defineConfigs({
-        node: {
-            selectable: true,
-            draggable: (node) => (node.draggable !== undefined ? node.draggable : true),
-            normal: {
-                color: (node) => Status.getColor(node.status),
-                radius: 20,
-            },
-            hover: {
-                color: (node) => Status.getColor(node.status),
-                radius: 22,
-            },
-            label: {
-                visible: true,
-                fontSize: 11,
-                lineHeight: 1.1,
-                color: '#FFFFFF',
-                fontFamily: 'Pixel',
-            },
-        },
-        edge: {
-            normal: {
-                color: (edge) => edge.color ?? '#4466cc',
-                dasharray: (edge) => {
-                    // Check if source and target nodes exist
-                    if (!edge.source || !edge.target || !nodes[edge.source] || !nodes[edge.target]) {
-                        return edge.dashed ? '6' : '0';
-                    }
-
-                    // Check if source node is START or HACKED
-                    const sourceNode = nodes[edge.source];
-                    const targetNode = nodes[edge.target];
-
-                    // Only animate edges from START or HACKED nodes to ONLINE or HACKED nodes
-                    const shouldAnimate =
-                        (sourceNode.status === Status.Status.START) ||
-                        (sourceNode.status === Status.Status.HACKED &&
-                         (targetNode.status === Status.Status.ONLINE ||
-                          targetNode.status === Status.Status.HACKED));
-
-                    return shouldAnimate ? '6' : (edge.dashed ? '6' : '0');
-                },
-                width: 5,
-                animate: (edge) => {
-                    // Check if source and target nodes exist
-                    if (!edge.source || !edge.target || !nodes[edge.source] || !nodes[edge.target]) {
-                        return false;
-                    }
-
-                    // Apply animation to the same edges that have dasharray
-                    const sourceNode = nodes[edge.source];
-                    const targetNode = nodes[edge.target];
-
-                    return (sourceNode.status === Status.Status.START) ||
-                           (sourceNode.status === Status.Status.HACKED &&
-                            (targetNode.status === Status.Status.ONLINE ||
-                             targetNode.status === Status.Status.HACKED));
-                }
-            },
-            hover: {
-                color: (edge) => edge.color ?? '#4466cc',
-            },
-        },
-
-        focusring: {
-            visible: true,
-            width: 4,
-            padding: 3,
-            color: '#eebb00',
-            dasharray: '0',
-        },
-        view: {
-            layoutHandler: new ForceLayout({
-                positionFixedByDrag: false,
-                positionFixedByClickWithAltKey: true,
-                createSimulation: (d3, nodes, edges) => {
-                    const forceLink = d3
-                        .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-                        .id((d: { id: any }) => d.id)
-                    return d3
-                        .forceSimulation(nodes)
-                        .force('edge', forceLink.distance(40).strength(0.5))
-                        .force('charge', d3.forceManyBody().strength(-800))
-                        .force('center', d3.forceCenter().strength(0.008))
-                        .alphaMin(0.001)
-                },
-            }),
-        },
-    }),
-)
+const configs = config(nodes, false);
 
 const targetNodePos = computed(() => {
     return layouts.value.nodes[targetNodeId.value] || { x: 0, y: 0 }
@@ -403,30 +315,17 @@ function startMinigame(minigame: NodeMinigame) {
 
     const node = nodes[interactionNode.value];
 
-    // Get the node's name for reference
-    const nodeName = node.name || interactionNode.value;
+    const knowledgeItems = node.knowledgeIds?.map((knowledgeId) => {
+        return getKnowledgeById(knowledgeId);
+    });
 
-    // Remove knowledge from the minigame to ensure it's not used
-    // We'll use the node's knowledgeIds instead
-    const cleanMinigame = {
-        ...minigame,
-        knowledge: null // Explicitly set knowledge to null
-    };
-
-    // Store current node and minigame information in localStorage
-    localStorage.setItem('current-minigame', JSON.stringify({
-        nodeId: interactionNode.value,
-        nodeName: nodeName,
-        minigame: cleanMinigame,
-        timestamp: Date.now()
-    }));
-
-    // Navigate to the minigame
+    if (knowledgeItems) {
+        knowledgeStore.addGameKnowledges(knowledgeItems.filter((item): item is KnowledgeItem => item !== null && item !== undefined));
+    }
     router.push(minigame.route);
     showNodeInteraction.value = false;
 }
 
-// Add a function to check for completed minigames and update knowledge store
 function checkCompletedMinigames() {
     const minigameData = localStorage.getItem('completed-minigame');
     if (!minigameData) return;
@@ -435,7 +334,6 @@ function checkCompletedMinigames() {
         const data = JSON.parse(minigameData);
         const { nodeId, success } = data;
 
-        // Only process if the minigame was completed successfully
         if (success && nodeId && nodes[nodeId]) {
             console.log(`Processing completed minigame for node ${nodeId}`);
             const node = nodes[nodeId];
@@ -493,7 +391,7 @@ function checkCompletedMinigames() {
 }
 
 // Function to load graph from a file
-function loadGraphFromFile(event) {
+function loadGraphFromFile(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
@@ -506,7 +404,10 @@ function loadGraphFromFile(event) {
     const reader = new FileReader();
     reader.onload = (e) => {
         try {
-            const jsonData = JSON.parse(e.target.result);
+            if (!e.target || !e.target.result) {
+                return;
+            }
+            const jsonData = JSON.parse(e.target.result as string);
 
             // Validate the structure of the imported data
             if (!jsonData.nodes || !jsonData.edges) {
@@ -785,13 +686,8 @@ defineExpose({ addRandomNode })
                     <h4>Import Graph from File</h4>
                     <label for="graph-file" class="file-label">
                         Choose JSON file
-                        <input
-                            type="file"
-                            id="graph-file"
-                            accept=".json"
-                            @change="loadGraphFromFile"
-                            class="file-input"
-                        />
+                        <input type="file" id="graph-file" accept=".json" @change="loadGraphFromFile"
+                            class="file-input" />
                     </label>
                     <div class="file-format-info">
                         <small>File must be a JSON containing nodes and edges objects</small>
@@ -809,7 +705,8 @@ defineExpose({ addRandomNode })
         <div v-if="showNodeInteraction && interactionNode" class="panel node-interaction">
             <div class="panel-section">
                 <h3>{{ nodes[interactionNode]?.name }} Interaction
-                    <span class="status-badge" :style="{ backgroundColor: Status.getColor(nodes[interactionNode]?.status) }">
+                    <span class="status-badge"
+                        :style="{ backgroundColor: Status.getColor(nodes[interactionNode]?.status) }">
                         {{ Status.getStatusString(nodes[interactionNode]?.status) }}
                     </span>
                     <button class="close-btn" @click="showNodeInteraction = false">×</button>
@@ -827,7 +724,8 @@ defineExpose({ addRandomNode })
                             <div class="minigame-info">
                                 <h5>{{ minigame.title }}</h5>
                                 <p>{{ minigame.description }}</p>
-                                <p class="minigame-difficulty">Difficulty: {{ minigame.difficulty !== undefined ? Level[minigame.difficulty] : 'Default' }}</p>
+                                <p class="minigame-difficulty">Difficulty: {{ minigame.difficulty !== undefined ?
+                                    Level[minigame.difficulty] : 'Default' }}</p>
                             </div>
                             <button class="btn primary play-btn" @click="startMinigame(minigame)">Start</button>
                         </div>

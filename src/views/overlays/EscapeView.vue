@@ -17,6 +17,10 @@
             <button @click="state = State.SELECT" class="back">&#8249;</button>
         </Instrocution>
 
+        <div>
+            {{ useKnowledgeStore().getGameKnowledges() }}
+        </div>
+
     </div>
 </template>
 
@@ -24,6 +28,7 @@
 import Instrocution from '@/components/overlays/Introduction.vue';
 import Knowledge from '@/components/overlays/Knowledge.vue';
 import { useGameStore } from '@/stores/game';
+import { useKnowledgeStore } from '@/stores/knowledge';
 import { ref } from 'vue';
 
 const escapeStore = useGameStore();
