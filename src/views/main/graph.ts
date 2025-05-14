@@ -98,6 +98,9 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                         // Apply animation to the same edges that have dasharray
                         const sourceNode = nodes[edge.source]
                         const targetNode = nodes[edge.target]
+                        if (isCreator) {
+                            return true
+                        }
 
                         return (
                             sourceNode.status === Status.Status.START ||
@@ -120,9 +123,8 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                 dasharray: '0',
             },
             view: {
-                layoutHandler: isCreator
-                    ? new ForceLayout({
-                          positionFixedByDrag: false,
+                layoutHandler: new ForceLayout({
+                          positionFixedByDrag: isCreator,
                           positionFixedByClickWithAltKey: true,
                           createSimulation: (d3, nodes, edges) => {
                               const forceLink = d3
@@ -135,8 +137,7 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                                   .force('center', d3.forceCenter().strength(0.008))
                                   .alphaMin(0.001)
                           },
-                      })
-                    : new ForceLayout(),
+                      }),
             },
         }),
     )
