@@ -49,10 +49,10 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                 },
                 label: {
                     visible: true,
-                    fontSize: 11,
+                    fontSize: isCreator ? 20: 11,
                     lineHeight: 1.1,
                     color: '#FFFFFF',
-                    fontFamily: 'Pixel',
+                    fontFamily: isCreator ? 'italic':'Pixel',
                 },
             },
             edge: {
