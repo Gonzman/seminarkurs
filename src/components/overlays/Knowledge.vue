@@ -1,13 +1,13 @@
 <template>
     <div class="knowledge-overlay">
         <div class="info-header">
-            <slot></slot> <!-- This is where the back button is inserted -->
+            <slot></slot>
             <span class="info-text">Informationen</span>
         </div>
         <div class="container">
             <div class="list">
                 <div class="knowledge-header">
-                    <h2>Collected Knowledge</h2>
+                    <h2>Gesammelte Informationen</h2>
                     <div class="buttons-row">
                         <button @click="addRandomKnowledge" class="add-btn" v-if="isDebug">Add Random Knowledge</button>
                         <button @click="removeAllKnowledges" class="clear-btn" v-if="isDebug">Clear All</button>
@@ -15,8 +15,7 @@
                 </div>
 
                 <div v-if="knowledges.length === 0" class="no-knowledge">
-                    <p>You haven't collected any knowledge yet.</p>
-                    <p>Explore nodes to gather intelligence.</p>
+                    <p>Du hast keine Informationen gesammelt</p>
                 </div>
 
                 <ul v-else class="knowledge-list">
@@ -25,7 +24,8 @@
                         <div class="knowledge-item">
                             <span class="knowledge-title">{{ knowledge.title }}</span>
                             <span v-if="knowledge.sources && knowledge.sources.length > 0" class="knowledge-source">
-                                {{ knowledge.sources.length > 1 ? `${knowledge.sources.length} sources` : knowledge.sources[0] }}
+                                {{ knowledge.sources.length > 1 ? `${knowledge.sources.length} sources` :
+                                    knowledge.sources[0] }}
                             </span>
                         </div>
                     </li>
@@ -38,10 +38,10 @@
                     <p class="description">{{ knowledgeStore.selectedKnowledge.description }}</p>
                     <div class="source" v-if="knowledgeStore.selectedKnowledge.sources?.length">
                         <span v-if="knowledgeStore.selectedKnowledge.sources.length === 1">
-                            Source: {{ knowledgeStore.selectedKnowledge.sources[0] }}
+                            Vom: {{ knowledgeStore.selectedKnowledge.sources[0] }}
                         </span>
                         <span v-else>
-                            Sources:
+                            Vom:
                             <ul class="source-list">
                                 <li v-for="(source, index) in knowledgeStore.selectedKnowledge.sources" :key="index">
                                     {{ source }}
@@ -53,7 +53,7 @@
             </div>
             <div class="detail" v-else>
                 <div class="empty-detail">
-                    <p class="placeholder-text">Select a knowledge item to view details</p>
+                    <p class="placeholder-text">Wähle eine Information aus</p>
                 </div>
             </div>
         </div>
@@ -75,12 +75,12 @@ const imageModules = import.meta.glob('@/assets/images/*', { eager: true })
 const imagePaths = ref<Record<string, string>>({})
 
 onMounted(() => {
-  // Create a mapping of image filenames to their actual URLs
-  Object.entries(imageModules).forEach(([path, module]) => {
-    const fileName = path.split('/').pop() || ''
-    // @ts-ignore - Vite's module type doesn't match TypeScript's expectations
-    imagePaths.value[fileName] = module.default
-  })
+    // Create a mapping of image filenames to their actual URLs
+    Object.entries(imageModules).forEach(([path, module]) => {
+        const fileName = path.split('/').pop() || ''
+        // @ts-ignore - Vite's module type doesn't match TypeScript's expectations
+        imagePaths.value[fileName] = module.default
+    })
 })
 
 function selectKnowledge(knowledge: KnowledgeItem) {
@@ -129,7 +129,6 @@ function getKnowledgeImagePath(imagePath: string): string {
     display: flex;
     align-items: center;
     padding: 10px;
-    background-color: var(--color-background-soft);
     z-index: 20;
 }
 
@@ -152,7 +151,6 @@ function getKnowledgeImagePath(imagePath: string): string {
     border-right: 1px solid var(--color-border);
     padding: 20px;
     overflow-y: auto;
-    background-color: var(--color-background-soft);
     height: 100%;
 }
 
@@ -160,7 +158,6 @@ function getKnowledgeImagePath(imagePath: string): string {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background-color: var(--color-background);
     display: flex;
     flex-direction: column;
 }
@@ -210,8 +207,7 @@ function getKnowledgeImagePath(imagePath: string): string {
     padding: 40px 20px;
     color: var(--color-text);
     font-style: italic;
-    border: 1px dashed var(--color-border);
-    border-radius: 8px;
+    border: 3.5px dashed var(--color-border);
     margin: 20px 0;
 }
 
