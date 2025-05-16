@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 

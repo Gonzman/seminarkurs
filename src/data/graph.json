@@ -1,0 +1,44 @@
+{
+    "nodes": {
+      "node1": {
+        "name": "start",
+        "icon": "&#xe320",
+        "status": 3,
+        "draggable": false
+      },
+      "node2": {
+        "name": "12",
+        "icon": "&#xe328",
+        "status": 2,
+        "draggable": true,
+        "minigame": 3,
+        "difficulty": 0,
+        "knowledgeIds": [
+          2,
+          1
+        ]
+      }
+    },
+    "edges": {
+      "edge1": {
+        "source": "node1",
+        "target": "node2",
+        "color": "#4466cc",
+        "dashed": false
+      }
+    },
+    "layouts": {
+      "nodes": {
+        "node1": {
+          "x": 0,
+          "y": 0,
+          "fixed": true
+        },
+        "node2": {
+          "x": 214,
+          "y": -130,
+          "fixed": true
+        }
+      }
+    }
+  }

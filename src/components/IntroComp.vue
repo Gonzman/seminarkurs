@@ -72,7 +72,7 @@ const contentStyle = computed(() => {
     return {
         transform: transformValue,
         willChange: 'transform',
-        textAlign: 'center'
+        textAlign: 'center' as CanvasTextAlign
     }
 })
 </script>

@@ -26,15 +26,13 @@ const stevieStore = useStevieStore();
 
 const speeachText = ref('Hello, I am Stevie!');
 
-const count = ref(0); // Changed to a number
+const count = ref(0);
 const folder = ref('idle');
 
 const imagePath = ref(`/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
-// Import all images from @/assets/stevie/ and its subfolders
 const images = import.meta.glob('/src/assets/stevie/idle/*.png', { eager: true }) as Record<string, string>;
 
-// Log the keys of the images object to debug
 console.log(Object.keys(images));
 
 function handleClick() {
@@ -65,10 +63,9 @@ function handleClick() {
 async function startCounter() {
     try {
         while (true) {
-            await idleAnim(); // Run idle animation
-            //await handyAnim(); // Run handy animation
-            await anim(2000, 'handy'); // Run another animation
-            await idleAnim(); // Run idle animation again
+            await idleAnim();
+            await anim(2000, 'handy');
+            await idleAnim();
         }
     } catch (error) {
         console.error('Animation error:', error);
@@ -79,14 +76,14 @@ function handyAnim() {
     return new Promise<void>((resolve) => {
         let currentCount = 0;
         const interval = 2000 / 12;
-        folder.value = 'handy'; // Set the folder name here
+        folder.value = 'handy';
         const counterInterval = setInterval(() => {
             count.value = currentCount;
             imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
 
             if (currentCount >= 11) {
                 clearInterval(counterInterval);
-                resolve(); // Resolve the Promise when the animation ends
+                resolve();
             } else {
                 currentCount++;
             }
@@ -99,14 +96,14 @@ function idleAnim() {
         let currentCount = 0;
 
         const interval = 1000 / 6;
-        folder.value = 'idle'; // Set the folder name here
+        folder.value = 'idle';
         const counterInterval = setInterval(() => {
             count.value = currentCount;
             imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
 
             if (currentCount >= 5) {
                 clearInterval(counterInterval);
-                resolve(); // Resolve the Promise when the animation ends
+                resolve();
             } else {
                 currentCount++;
             }
@@ -120,9 +117,6 @@ function anim(sec: number, folder: string) {
     return new Promise<void>((resolve) => {
         let currentCount = 0;
 
-        // Preload all images from all folders
-
-        // Filter images based on the folder
         const imagesList = Object.keys(allImages).filter((path) => path.includes(`/stevie/${folder}/`));
         const imageCount = imagesList.length;
 
@@ -139,7 +133,7 @@ function anim(sec: number, folder: string) {
 
             if (currentCount >= (imageCount - 1)) {
                 clearInterval(counterInterval);
-                resolve(); // Resolve the Promise when the animation ends
+                resolve();
             } else {
                 currentCount++;
             }
@@ -171,7 +165,7 @@ startCounter()
 
 defineExpose({
     triggerMonolog,
-    startCounter, // Expose the startCounter function
+    startCounter,
 });
 </script>
 
@@ -182,16 +176,16 @@ defineExpose({
 
 .stevie{
     user-select: none;
-    position: relative; /* Add position relative as container reference */
+    position: relative;
 }
 
 .speech-bubble-container {
     position: absolute;
-    bottom: 100%; /* Position above the Stevie character */
+    bottom: 100%;
     left: 50%;
-    transform: translateX(-50%); /* Center horizontally */
-    margin-bottom: 15px; /* Add some space between bubble and character */
-    z-index: 10; /* Ensure it appears above other elements */
+    transform: translateX(-50%);
+    margin-bottom: 15px;
+    z-index: 10;
 }
 
 p {
