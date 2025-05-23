@@ -7,17 +7,18 @@
                         <h2 class="title">Du hast diese Information extrahiert!</h2>
                         <div class="image-div">
                             <img class="image"
-                                src="https://www.robinage.com/wp-content/uploads/2024/05/water-800x534.jpg" />
+                                src="{{}}" />
                         </div>
                         <h2 class="subtitle">Willst du diese Info speichern?</h2>
-                        <div class="size-text">({{ size }} KB)</div>
+                        <div class="size-text">({{ getKnowledgeImagePath(currentImage) }} KB)</div>
                         <div class="button-div">
                             <button class="button" @click="save()">Speichern</button>
                             <button class="button" @click="del()">Löschen</button>
                         </div>
-                        <div class="size-text">Speicher ({{ used_space }} / {{ max_space }} KB)</div>
+                        <div class="size-text">Speicher ({{ used_space.toFixed(2) }} / {{ max_space.toFixed(2) }} KB)
+                        </div>
                         <div class="size-bar-div" ref="size_bar_div">
-                            <div v-for="i in 40" class="size-bar-module"></div>
+                            <div v-for="_ in 40" class="size-bar-module"></div>
                         </div>
                     </div>
                 </div>
@@ -27,7 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, onUnmounted, ref } from 'vue';
+import { defineProps, onMounted, ref } from 'vue';
+import { getKnowledgeById, useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
 
 const size_bar_div = ref<HTMLElement | null>(null);
 
@@ -35,42 +37,86 @@ const { max_space } = defineProps<{
     max_space: number
 }>()
 
-let used_space = 0
-let size = 4.54
+let used_space = ref(0)
+let size = ref(0)
+
+const knowledgeStore = useKnowledgeStore()
+//const knowledges = knowledgeStore.getGameKnowledges()
+const knowledges = ref<KnowledgeItem[]>([]);
+for (let i = 0; i < 20; i++) {
+    const knowledge = getKnowledgeById(i)
+    if (knowledge) knowledges.value.push(knowledge);
+}
+const current = ref(0)
+const max = ref(knowledges.value.length)
+const currentKnowledge = ref<KnowledgeItem | null>(knowledges.value[0])
+console.log(knowledges)
+
+let currentImage: string;
 
 const save = () => {
-    if (used_space + size <= max_space) {
-        used_space += size
+    if (used_space.value + size.value <= max_space) {
+        used_space.value += size.value
         update_bar();
     } else {
         alert("Nicht genug Speicherplatz")
     }
+    next()
 }
 
 const del = () => {
-
+    next()
 }
 
 const update_bar = () => {
-    const bar_count = used_space / max_space * 40
+    const bar_count = used_space.value / max_space * 40
     if (size_bar_div.value && size_bar_div.value.children.length > 0) {
         for (let i = 0; i < size_bar_div.value.children.length; i++) {
+            const child = size_bar_div.value.children[i] as HTMLElement;
             if (i <= bar_count - 1) {
-                size_bar_div.value.children[i].style.opacity = '1'
+                child.style.opacity = '1';
             } else {
-                size_bar_div.value.children[i].style.opacity = '0'
+                child.style.opacity = '0';
             }
         }
     }
 }
 
 const next = () => {
-
+    if (current.value < max.value - 1) {
+        current.value++;
+        currentKnowledge.value = knowledges.value[current.value];
+        if (currentKnowledge.value) {
+            currentImage = currentKnowledge.value.image;
+        }
+    } else {
+        // TODO: All iterated
+    }
 }
 
+const getKnowledgeImagePath = (imagePath: string): string => {
+    if (!imagePath) return '';
+    if (imagePath.startsWith('http')) {
+        return imagePath;
+    }
+    const fileName = imagePath.includes('/') ? imagePath.split('/').pop() || '' : imagePath;
+    if (fileName && imagePaths.value[fileName]) {
+        return imagePaths.value[fileName];
+    }
+    return new URL(`/src/assets/images/${fileName}`, import.meta.url).href;
+}
+
+const imageModules = import.meta.glob('@/assets/images/*', { eager: true })
+const imagePaths = ref<Record<string, string>>({})
+
 onMounted(() => {
+    Object.entries(imageModules).forEach(([path, module]) => {
+        const fileName = path.split('/').pop() || ''
+        // @ts-ignore - Vite's module type doesn't match TypeScript's expectations
+        imagePaths.value[fileName] = module.default
+    })
     update_bar();
-});
+})
 </script>
 
 <style scoped>
