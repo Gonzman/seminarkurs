@@ -59,7 +59,6 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                 normal: {
                     color: (edge: vNG.Edge) => edge.color ?? '#4466cc',
                     dasharray: (edge: vNG.Edge) => {
-                        // Check if source and target nodes exist
                         if (
                             !edge.source ||
                             !edge.target ||
@@ -69,11 +68,9 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                             return edge.dashed ? '6' : '0'
                         }
 
-                        // Check if source node is START or HACKED
                         const sourceNode = nodes[edge.source]
                         const targetNode = nodes[edge.target]
 
-                        // Only animate edges from START or HACKED nodes to ONLINE or HACKED nodes
                         const shouldAnimate =
                             sourceNode.status === Status.Status.START ||
                             (sourceNode.status === Status.Status.HACKED &&
@@ -95,7 +92,6 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                             return false
                         }
 
-                        // Apply animation to the same edges that have dasharray
                         const sourceNode = nodes[edge.source]
                         const targetNode = nodes[edge.target]
                         if (isCreator) {
