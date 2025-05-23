@@ -67,7 +67,6 @@ import { useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge'
 const knowledgeStore = useKnowledgeStore()
 const isDebug = ref(import.meta.env.DEV || window.location.href.includes('debug'))
 
-// Use computed for reactivity
 const knowledges = computed<KnowledgeItem[]>(() => Array.from(knowledgeStore.knowledges.values()))
 
 // Import all images from assets/images directory
