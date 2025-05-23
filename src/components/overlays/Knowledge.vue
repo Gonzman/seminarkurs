@@ -95,7 +95,7 @@ function removeAllKnowledges() {
 }
 
 // Function to resolve image paths using Vite's asset handling
-function getKnowledgeImagePath(imagePath: string): string {
+export function getKnowledgeImagePath(imagePath: string): string {
     if (!imagePath) return '';
 
     // If it's an absolute URL (starts with http or https)
