@@ -25,6 +25,9 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
 
     const gameKnowledges = ref<KnowledgeItem[]>([])
 
+    const imageModules = import.meta.glob('@/assets/images/*', { eager: true })
+    const imagePaths = ref<Record<string, string>>({})
+
     function loadKnowledges() {
         const stored = localStorage.getItem('knowledges')
         if (stored) {
@@ -49,6 +52,11 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         } else {
             initializeFromJsonData() //FIXME dev
         }
+
+        Object.entries(imageModules).forEach(([path, module]) => {
+            const fileName = path.split('/').pop() || ''
+            imagePaths.value[fileName] = (module as { default: string }).default
+        })
     }
 
     function addKnowledge(knowledgeItem: KnowledgeItem) {
@@ -263,6 +271,26 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         gameKnowledges.value = []
     }
 
+    function getKnowledgeImagePath(imagePath: string): string {
+        if (!imagePath) return ''
+
+        // If it's an absolute URL (starts with http or https)
+        if (imagePath.startsWith('http')) {
+            return imagePath
+        }
+
+        // Extract just the filename if it includes a path
+        const fileName = imagePath.includes('/') ? imagePath.split('/').pop() || '' : imagePath
+
+        // If we have the image in our mapped paths
+        if (fileName && imagePaths.value[fileName]) {
+            return imagePaths.value[fileName]
+        }
+
+        // Fallback: try direct access through assets
+        return new URL(`/src/assets/images/${fileName}`, import.meta.url).href
+    }
+
     loadKnowledges()
 
     return {
@@ -277,6 +305,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         gameFailed,
         getGameKnowledges,
         moveGameKnowledgeToKnowledges,
+        getKnowledgeImagePath,
     }
 })
 

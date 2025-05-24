@@ -7,7 +7,7 @@
                         <h2 class="title">Du hast diese Information extrahiert!</h2>
                         <div class="image-div">
                             <img class="image"
-                                src="{{}}" />
+                                :src="knowledgeStore.getKnowledgeImagePath(currentKnowledge?.image ?? '')" />
                         </div>
                         <h2 class="subtitle">Willst du diese Info speichern?</h2>
                         <div class="size-text">({{ getKnowledgeImagePath(currentImage) }} KB)</div>

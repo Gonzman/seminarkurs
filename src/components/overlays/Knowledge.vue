@@ -34,7 +34,8 @@
             <div class="detail" v-if="knowledgeStore.selectedKnowledge">
                 <h3 class="heading">{{ knowledgeStore.selectedKnowledge.title }}</h3>
                 <div class="knowledge-content">
-                    <img :src="getKnowledgeImagePath(knowledgeStore.selectedKnowledge.image)" alt="Knowledge Image" />
+                    <img :src="useKnowledgeStore().getKnowledgeImagePath(knowledgeStore.selectedKnowledge.image)"
+                        alt="Knowledge Image" />
                     <p class="description">{{ knowledgeStore.selectedKnowledge.description }}</p>
                     <div class="source" v-if="knowledgeStore.selectedKnowledge.sources?.length">
                         <span v-if="knowledgeStore.selectedKnowledge.sources.length === 1">
@@ -69,18 +70,7 @@ const isDebug = ref(import.meta.env.DEV || window.location.href.includes('debug'
 
 const knowledges = computed<KnowledgeItem[]>(() => Array.from(knowledgeStore.knowledges.values()))
 
-// Import all images from assets/images directory
-const imageModules = import.meta.glob('@/assets/images/*', { eager: true })
-const imagePaths = ref<Record<string, string>>({})
 
-onMounted(() => {
-    // Create a mapping of image filenames to their actual URLs
-    Object.entries(imageModules).forEach(([path, module]) => {
-        const fileName = path.split('/').pop() || ''
-        // @ts-ignore - Vite's module type doesn't match TypeScript's expectations
-        imagePaths.value[fileName] = module.default
-    })
-})
 
 function selectKnowledge(knowledge: KnowledgeItem) {
     knowledgeStore.selectedKnowledge = knowledge
@@ -95,25 +85,7 @@ function removeAllKnowledges() {
 }
 
 // Function to resolve image paths using Vite's asset handling
-export function getKnowledgeImagePath(imagePath: string): string {
-    if (!imagePath) return '';
 
-    // If it's an absolute URL (starts with http or https)
-    if (imagePath.startsWith('http')) {
-        return imagePath;
-    }
-
-    // Extract just the filename if it includes a path
-    const fileName = imagePath.includes('/') ? imagePath.split('/').pop() || '' : imagePath;
-
-    // If we have the image in our mapped paths
-    if (fileName && imagePaths.value[fileName]) {
-        return imagePaths.value[fileName];
-    }
-
-    // Fallback: try direct access through assets
-    return new URL(`/src/assets/images/${fileName}`, import.meta.url).href;
-}
 </script>
 
 <style lang="css" scoped>
