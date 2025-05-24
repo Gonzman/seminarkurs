@@ -92,7 +92,11 @@ const router = createRouter({
             path: '/infotinder',
             name: 'infotinder',
             component: () => import('../views/minigames/infotinder/InfoTinder.vue'),
-            props: { max_space: 80 },
+            props: {
+                max_space: 80,
+                min_size: 6,
+                max_size: 10,
+            },
         },
         {
             path: '/about',

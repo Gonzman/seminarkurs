@@ -9,10 +9,10 @@
                             <img class="image"
                                 :src="knowledgeStore.getKnowledgeImagePath(currentKnowledge?.image ?? '')" />
                         </div>
-                        <h2 class="subtitle">Willst du diese Info speichern?</h2>
-                        <div class="size-text">({{ getKnowledgeImagePath(currentImage) }} KB)</div>
+                        <h2 class="subtitle">Willst du diese Info speichern? ({{ current + 1 }} / {{ max }})</h2>
+                        <div class="size-text">({{ size }} KB)</div>
                         <div class="button-div">
-                            <button class="button" @click="save()">Speichern</button>
+                            <button class="button" :disabled="is_disabled" @click="save()">Speichern</button>
                             <button class="button" @click="del()">Löschen</button>
                         </div>
                         <div class="size-text">Speicher ({{ used_space.toFixed(2) }} / {{ max_space.toFixed(2) }} KB)
@@ -32,9 +32,12 @@ import { defineProps, onMounted, ref } from 'vue';
 import { getKnowledgeById, useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
 
 const size_bar_div = ref<HTMLElement | null>(null);
+const is_disabled = ref(false);
 
-const { max_space } = defineProps<{
-    max_space: number
+const { max_space, min_size, max_size } = defineProps<{
+    max_space: number,
+    min_size: number,
+    max_size: number,
 }>()
 
 let used_space = ref(0)
@@ -50,16 +53,14 @@ for (let i = 0; i < 20; i++) {
 const current = ref(0)
 const max = ref(knowledges.value.length)
 const currentKnowledge = ref<KnowledgeItem | null>(knowledges.value[0])
-console.log(knowledges)
-
-let currentImage: string;
+size.value = hashTitleToSize(currentKnowledge.value?.title || "default", min_size, max_size)
 
 const save = () => {
     if (used_space.value + size.value <= max_space) {
         used_space.value += size.value
         update_bar();
     } else {
-        alert("Nicht genug Speicherplatz")
+        alert("Nicht genug Speicherplatz!")
     }
     next()
 }
@@ -86,35 +87,30 @@ const next = () => {
     if (current.value < max.value - 1) {
         current.value++;
         currentKnowledge.value = knowledges.value[current.value];
-        if (currentKnowledge.value) {
-            currentImage = currentKnowledge.value.image;
+        size.value = hashTitleToSize(currentKnowledge.value.title, min_size, max_size);
+        if (used_space.value + size.value <= max_space) {
+            is_disabled.value = false;
+        } else {
+            is_disabled.value = true;
         }
     } else {
-        // TODO: All iterated
+        alert("Game end");
+        // End game
     }
 }
 
-const getKnowledgeImagePath = (imagePath: string): string => {
-    if (!imagePath) return '';
-    if (imagePath.startsWith('http')) {
-        return imagePath;
+function hashTitleToSize(str: string, min_size: number, max_size: number): number {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+        hash = (hash << 5) - hash + str.charCodeAt(i);
+        hash |= 0;
     }
-    const fileName = imagePath.includes('/') ? imagePath.split('/').pop() || '' : imagePath;
-    if (fileName && imagePaths.value[fileName]) {
-        return imagePaths.value[fileName];
-    }
-    return new URL(`/src/assets/images/${fileName}`, import.meta.url).href;
+    let norm = (hash >>> 0) / 0xFFFFFFFF;
+    return Math.round((norm * (max_size - min_size) + min_size) * 100) / 100;
 }
 
-const imageModules = import.meta.glob('@/assets/images/*', { eager: true })
-const imagePaths = ref<Record<string, string>>({})
 
 onMounted(() => {
-    Object.entries(imageModules).forEach(([path, module]) => {
-        const fileName = path.split('/').pop() || ''
-        // @ts-ignore - Vite's module type doesn't match TypeScript's expectations
-        imagePaths.value[fileName] = module.default
-    })
     update_bar();
 })
 </script>
@@ -226,5 +222,11 @@ button {
     width: 100%;
     background-color: #62708b;
     border: none;
+    color: black;
+}
+
+button:disabled {
+    opacity: 0.5;
+    color: black;
 }
 </style>
