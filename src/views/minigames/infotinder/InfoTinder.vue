@@ -50,6 +50,7 @@ for (let i = 0; i < 20; i++) {
     const knowledge = getKnowledgeById(i)
     if (knowledge) knowledges.value.push(knowledge);
 }
+const saved_knowledges: KnowledgeItem[] = []
 const current = ref(0)
 const max = ref(knowledges.value.length)
 const currentKnowledge = ref<KnowledgeItem | null>(knowledges.value[0])
@@ -59,10 +60,13 @@ const save = () => {
     if (used_space.value + size.value <= max_space) {
         used_space.value += size.value
         update_bar();
+        if (currentKnowledge.value) {
+            saved_knowledges.push(currentKnowledge.value)
+        }
+        next()
     } else {
         alert("Nicht genug Speicherplatz!")
     }
-    next()
 }
 
 const del = () => {
@@ -94,6 +98,7 @@ const next = () => {
             is_disabled.value = true;
         }
     } else {
+        knowledgeStore.moveGameKnowledgeToKnowledges(saved_knowledges);
         alert("Game end");
         // End game
     }
@@ -108,7 +113,6 @@ function hashTitleToSize(str: string, min_size: number, max_size: number): numbe
     let norm = (hash >>> 0) / 0xFFFFFFFF;
     return Math.round((norm * (max_size - min_size) + min_size) * 100) / 100;
 }
-
 
 onMounted(() => {
     update_bar();
