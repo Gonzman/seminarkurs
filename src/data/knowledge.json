@@ -1,128 +1,224 @@
 [
   {
     "id": 1,
-    "title": "Turbinen-Steuerung Passwort",
-    "description": "",
-    "image": "YYMMDD 1.png"
-  },
-  {
-    "id": 2,
-    "title": "Sabotage Hinweis",
-    "description": "",
-    "image": "Sabotage.png"
-  },
-  {
-    "id": 3,
-    "title": "AAAAAAA",
-    "description": "",
-    "image": "AAAAAAA.png"
-  },
-  {
-    "id": 4,
-    "title": "Analyse",
-    "description": "",
+    "title": "Analyseprotokoll",
+    "description": "Detailliertes Analyseprotokoll zu Systemschwankungen der letzten Woche. Zeigt erhebliche Anomalien in den Prozessdaten.",
     "image": "Analyse.png"
   },
   {
-    "id": 5,
-    "title": "Ausfallquote",
-    "description": "",
+    "id": 2,
+    "title": "Ausfallquotenstatistik",
+    "description": "Statistik der Systemausfälle der letzten 3 Monate. Ein signifikanter Anstieg ist seit Anfang des Monats zu beobachten.",
     "image": "ausfallquote.png"
   },
   {
-    "id": 6,
-    "title": "Bericht Schäden",
-    "description": "",
+    "id": 3,
+    "title": "Schadensbericht",
+    "description": "Offizieller Bericht über mehrere kleinere Sabotageakte und Systemschäden an verschiedenen Anlagenteilen.",
     "image": "Bericht_Schäden.png"
   },
   {
+    "id": 4,
+    "title": "Handbuch zur Systemarchitektur",
+    "description": "Internes Handbuch zur Systemarchitektur der Anlage mit Zugangsprotokollen und Sicherheitsrichtlinien.",
+    "image": "Buch.png"
+  },
+  {
+    "id": 5,
+    "title": "Prozessdaten Diagramm",
+    "description": "Diagramm der Prozessdaten der letzten 24 Stunden. Zeigt mehrere ungewöhnliche Muster und Abweichungen vom Sollwert.",
+    "image": "diagramm_datasheet.png"
+  },
+  {
+    "id": 6,
+    "title": "Erweiterte Prozessdatenanalyse",
+    "description": "Erweiterte Analyse der Prozessdaten mit detaillierten Abweichungen und Korrelation zu Systemereignissen.",
+    "image": "diagramm_datasheet2.png"
+  },
+  {
     "id": 7,
-    "title": "Dateien",
-    "description": "",
-    "image": "files.png"
+    "title": "Familienfoto 2009",
+    "description": "Familienfoto eines Mitarbeiters aus dem Jahr 2009. Könnte für Social Engineering genutzt worden sein.",
+    "image": "familie_2009.png"
   },
   {
     "id": 8,
-    "title": "Fußball",
-    "description": "",
-    "image": "fussball.png"
+    "title": "Familienfoto 2010",
+    "description": "Neueres Familienfoto des gleichen Mitarbeiters aus dem Jahr 2010.",
+    "image": "familie_2010.png"
   },
   {
     "id": 9,
-    "title": "Generalpasswort",
-    "description": "",
-    "image": "Generalpasswort.png"
+    "title": "Interne Dateistruktur",
+    "description": "Übersicht über die interne Dateistruktur des Kontrollsystems mit Zugriffsebenen.",
+    "image": "files.png"
   },
   {
     "id": 10,
-    "title": "Handy Feier",
-    "description": "",
-    "image": "Handy_Feier.png"
+    "title": "Fußballteam",
+    "description": "Bild eines lokalen Fußballteams, bei dem mehrere Mitarbeiter der Anlage spielen. Könnte für Social Engineering relevant sein.",
+    "image": "fussball.png"
   },
   {
     "id": 11,
-    "title": "Krisenstab",
-    "description": "",
-    "image": "Krisenstab.png"
+    "title": "Geburtstagsfeier mit Katze",
+    "description": "Privates Foto einer Geburtstagsfeier mit einem Haustier. Auf dem Bild sind Nahmen und potenzielle Passwörter erkennbar.",
+    "image": "Geburtstag_Katze.png"
   },
   {
     "id": 12,
-    "title": "Laborbereich 1",
-    "description": "",
-    "image": "Laborbereich1.png"
+    "title": "Master-Passwortliste",
+    "description": "Erschreckenderweise eine Liste mit Generalpasswörtern für verschiedene Systemebenen.",
+    "image": "Generalpasswort.png"
   },
   {
     "id": 13,
-    "title": "Laborbereich 2",
-    "description": "",
-    "image": "Laborbereich2.png"
+    "title": "Feierfotos vom Handy",
+    "description": "Screenshots aus einer Nachricht mit Fotos einer Betriebsfeier. Zeigt mehrere Mitarbeiter in entspannter Atmosphäre.",
+    "image": "Handy_Feier.png"
   },
   {
     "id": 14,
-    "title": "Müll 2",
-    "description": "",
-    "image": "Muell2.png"
+    "title": "Katzengeburtstag Info",
+    "description": "Weitere Informationen zum Geburtstagsfeier-Foto mit der Katze, enthält persönliche Daten.",
+    "image": "INFO_Katze+geburtstag.png"
   },
   {
     "id": 15,
-    "title": "Müll 1",
-    "description": "",
-    "image": "Müll1.png"
+    "title": "Manipulationsbericht Krankenhaus",
+    "description": "Interner Bericht über manipulierte medizinische Geräte im nahegelegenen Krankenhaus.",
+    "image": "Krankenhaus_Manipulation.png"
   },
   {
     "id": 16,
-    "title": "Neue Ära",
-    "description": "",
-    "image": "NeueÄra.png"
+    "title": "Krankenhausmeldung",
+    "description": "Offizielle Meldung zu Systemstörungen im Krankenhaus, die mit unseren Systemausfällen korrelieren.",
+    "image": "Krankenhaus_Meldung.png"
   },
   {
     "id": 17,
-    "title": "Rückmeldung Prüfung",
-    "description": "",
-    "image": "Rückmeldung_Prüfung.png"
+    "title": "Krankenhausakte zu Todesfall",
+    "description": "Vertrauliche Krankenakte zu einem verdächtigen Todesfall im Zusammenhang mit Systemausfällen.",
+    "image": "Krankenhaus_Todesfall.png"
   },
   {
     "id": 18,
-    "title": "Schwankungen",
-    "description": "",
-    "image": "Schwankungen.png"
+    "title": "Krisenstabsprotokoll",
+    "description": "Protokoll des Krisenstabes zur aktuellen Situation mit Handlungsanweisungen und Notfallplan.",
+    "image": "Krisenstab.png"
   },
   {
     "id": 19,
-    "title": "Unregelmäßig",
-    "description": "",
-    "image": "unregelmäßig.png"
+    "title": "Laborbereich Zone 1",
+    "description": "Überwachungsfoto des Laborbereichs Zone 1 mit Sichtung einer unbefugten Person.",
+    "image": "Laborbereich1.png"
   },
   {
     "id": 20,
-    "title": "Wartung",
-    "description": "",
-    "image": "Wartung.png"
+    "title": "Laborbereich Zone 2",
+    "description": "Überwachungsfoto des Laborbereichs Zone 2 mit verdächtigen Aktivitäten.",
+    "image": "Laborbereich2.png"
   },
   {
     "id": 21,
-    "title": "YYMMDD",
-    "description": "",
+    "title": "Aktualisierte Mitarbeiterliste",
+    "description": "Neue Mitarbeiterliste mit Zugriffsrechten und persönlichen Daten. Könnte für Social Engineering missbraucht werden.",
+    "image": "Mitarbeiterliste_NEW.png"
+  },
+  {
+    "id": 22,
+    "title": "Gelöschte Datei gefunden",
+    "description": "Eine wiederhergestellte gelöschte Datei mit verdächtigen Inhalten.",
+    "image": "Muell2.png"
+  },
+  {
+    "id": 23,
+    "title": "Gelöschte Nachricht",
+    "description": "Eine weitere wiederhergestellte gelöschte Nachricht mit Hinweisen auf einen Insider.",
+    "image": "Muell3.png"
+  },
+  {
+    "id": 24,
+    "title": "Papierkorb-Fragment",
+    "description": "Fragment einer gelöschten Datei aus dem digitalen Papierkorb mit Teilen eines Plans.",
+    "image": "Muell4.png"
+  },
+  {
+    "id": 25,
+    "title": "Aktennotiz zur Entsorgung",
+    "description": "Notiz über die unsachgemäße Entsorgung sensibler Unterlagen.",
+    "image": "Müll1.png"
+  },
+  {
+    "id": 26,
+    "title": "Manifest 'Neue Ära'",
+    "description": "Manifest einer Gruppe, die sich 'Neue Ära' nennt und technologischen Widerstand propagiert.",
+    "image": "NeueÄra.png"
+  },
+  {
+    "id": 27,
+    "title": "Passwortbuch mit ID",
+    "description": "Seite aus einem physischen Notizbuch mit Passwörtern und System-IDs.",
+    "image": "passwortBUCH+ID.png"
+  },
+  {
+    "id": 28,
+    "title": "Die Katze PISHI",
+    "description": "Foto der Katze namens 'PISHI', die offenbar als Password-Inspiration für einen Mitarbeiter dient.",
+    "image": "PISHI_cat.png"
+  },
+  {
+    "id": 29,
+    "title": "Prüfungsrückmeldung",
+    "description": "Offizielles Dokument mit Rückmeldung zur Sicherheitsprüfung der Anlage. Mehrere kritische Punkte wurden nicht behoben.",
+    "image": "Rückmeldung_Prüfung.png"
+  },
+  {
+    "id": 30,
+    "title": "Sabotagehinweise",
+    "description": "Dokument mit Hinweisen auf gezielte Sabotageakte innerhalb der Anlage.",
+    "image": "Sabotage.png"
+  },
+  {
+    "id": 31,
+    "title": "Systemschwankungen",
+    "description": "Diagramm mit ungewöhnlichen Systemschwankungen, die nicht durch reguläre Betriebsparameter erklärt werden können.",
+    "image": "Schwankungen.png"
+  },
+  {
+    "id": 32,
+    "title": "Testdaten",
+    "description": "Set von Testdaten, das für Sicherheitstests verwendet wurde, aber verdächtige Muster enthält.",
+    "image": "Testdaten.png"
+  },
+  {
+    "id": 33,
+    "title": "Unregelmäßigkeitsbericht",
+    "description": "Bericht über unregelmäßige Aktivitäten im System während der Nachtstunden.",
+    "image": "unregelmäßig.png"
+  },
+  {
+    "id": 34,
+    "title": "Wartungsprotokoll",
+    "description": "Wartungsprotokoll mit Anmerkungen zu verdächtigen Konfigurationsänderungen bei der letzten Routinewartung.",
+    "image": "Wartung.png"
+  },
+  {
+    "id": 35,
+    "title": "WinCC Konfigurations-Screenshot",
+    "description": "Screenshot der WinCC-Konfiguration mit unautorisierten Änderungen an kritischen Systemparametern.",
+    "image": "WINCC.png"
+  },
+  {
+    "id": 36,
+    "title": "Datumscode-Dokument",
+    "description": "Dokument mit einem verdächtigen Datumscode-System (YYMMDD), das für die Koordination von Aktivitäten verwendet wird.",
     "image": "YYMMDD.png"
+  },
+  {
+    "id": 37,
+    "title": "Unbekanntes Code-Dokument",
+    "description": "Dokument mit kryptischen Inhalten und der Markierung 'AAAAAAA', könnte Teil eines Aktivierungscodes sein.",
+    "image": "AAAAAAA.png"
   }
 ]

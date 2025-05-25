@@ -108,13 +108,3 @@ const router = createRouter({
 })
 
 export default router
-
-const knowledge = useKnowledgeStore()
-
-export function goToInfoTinder() {
-    if (knowledge.getGameKnowledges().length == 0) {
-        router.push('/graph')
-        return
-    }
-    router.push('/infotinder')
-}

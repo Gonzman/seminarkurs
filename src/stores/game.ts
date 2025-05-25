@@ -49,6 +49,10 @@ export const useGameStore = defineStore('game', () => {
             knowledgeStore.gameFailed()
             router.push('/graph')
         }else {
+            if (knowledgeStore.getGameKnowledges().length == 0) {
+                router.push('/graph')
+                return
+            }
             router.push('/infotinder')
         }
     }
@@ -78,5 +82,3 @@ const gameStateArray = [
 ] as const
 
 export type GameStateType = (typeof gameStateArray)[number]
-
-
