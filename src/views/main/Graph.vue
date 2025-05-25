@@ -611,7 +611,7 @@ function loadGraphData(graphData: GraphData) {
 }
 
 onMounted(() => {
-    gameStore.gameState = 'selectScreen'
+    gameStore.gameState = 'graph'
     loadSavedGraphs()
 
     try {

@@ -52,6 +52,7 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import Level from '../level'
 import { useRouter } from 'vue-router'
+import { goToInfoTinder } from '@/router';
 
 const router = useRouter()
 
@@ -235,63 +236,8 @@ const checkSolution = () => {
     }
 
     gameWon.value = allCorrect
-    completeGame()
-}
 
-const completeGame = () => {
-    const allFingersComplete = currentFingerIndex.value === activeFingers.value.length - 1 && gameWon.value;
-
-    if (allFingersComplete) {
-        const currentMinigame = localStorage.getItem('current-minigame');
-        if (currentMinigame) {
-            try {
-                const minigameData = JSON.parse(currentMinigame);
-
-                const completedData = {
-                    nodeId: minigameData.nodeId,
-                    minigame: minigameData.minigame,
-                    success: true,
-                    timestamp: Date.now()
-                };
-
-                localStorage.setItem('completed-minigame', JSON.stringify(completedData));
-
-                localStorage.removeItem('current-minigame');
-
-                console.log('Game completed successfully!', completedData);
-
-                setTimeout(() => {
-                    router.push('/graph');
-                }, 2000);
-            } catch (e) {
-                console.error('Error processing minigame completion:', e);
-            }
-        } else {
-            console.log('Game completed, but no current minigame data found.');
-
-            const completedData = {
-                nodeId: 'node2',
-                minigame: {
-                    title: "Finger Game",
-                    knowledge: {
-                        id: Date.now(),
-                        title: "Finger Manipulation",
-                        description: "The ability to precisely manipulate and match finger patterns is essential for biometric authentication systems.",
-                        image: ""
-                    },
-                    newStatus: 3
-                },
-                success: true,
-                timestamp: Date.now()
-            };
-
-            localStorage.setItem('completed-minigame', JSON.stringify(completedData));
-
-            setTimeout(() => {
-                router.push('/graph');
-            }, 2000);
-        }
-    }
+    goToInfoTinder()
 }
 
 const nextFinger = () => {
