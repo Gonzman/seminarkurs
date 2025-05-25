@@ -487,6 +487,8 @@ function loadSavedGraphs() {
 // Load the first graph in the list (or "current" if it exists)
 function loadFirstGraph() {
     if (savedGraphs.value.length === 0) {
+        loadGraphData(defaultGraphData);
+        selectedGraph.value = "default";
         return;
     }
 
@@ -569,11 +571,11 @@ onMounted(() => {
     loadSavedGraphs()
 
     try {
-        loadGraphData(defaultGraphData);
-        console.log('Default graph loaded from graph.json file');
-
         const defaultExists = savedGraphs.value.findIndex(g => g.name === "default");
-        if (defaultExists === -1) {
+        if (defaultExists === -1 && defaultGraphData) {
+            loadGraphData(defaultGraphData);
+            console.log('Default graph loaded from graph.json file');
+
             savedGraphs.value.push({
                 name: "default",
                 data: {
@@ -583,9 +585,10 @@ onMounted(() => {
                 }
             });
             localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
+            selectedGraph.value = "default";
+        } else {
+            loadFirstGraph();
         }
-
-        selectedGraph.value = "default";
     } catch (error) {
         console.error('Failed to load default graph:', error);
         loadFirstGraph();

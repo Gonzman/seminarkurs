@@ -80,6 +80,21 @@ const svg = useTemplateRef('svg')
 const useTemp = ref<boolean>(false)
 
 const mouse = useMouse()
+const svgMousePos = ref({ x: 0, y: 0 })
+
+// Function to convert global mouse coordinates to SVG coordinates
+function updateSvgMousePosition() {
+    if (!svg.value) return
+
+    const svgElement = svg.value
+    const svgRect = svgElement.getBoundingClientRect()
+
+    // Calculate the relative position within the SVG
+    svgMousePos.value = {
+        x: mouse.x.value - svgRect.left,
+        y: mouse.y.value - svgRect.top
+    }
+}
 
 function selectLeftBox(index: number, color: string) {
     // Get center of the left box
@@ -91,12 +106,15 @@ function selectLeftBox(index: number, color: string) {
         color: color,
     }
 
+    // Update SVG mouse position
+    updateSvgMousePosition()
+
     // Start the temporary line from the box center
     tempLine.value = {
         x1: leftCenter.x,
         y1: leftCenter.y,
-        x2: mouse.x.value.toString(),
-        y2: (mouse.y.value - 42).toString(),
+        x2: svgMousePos.value.x.toString(),
+        y2: svgMousePos.value.y.toString(),
         color: color,
     }
     useTemp.value = true
@@ -152,11 +170,14 @@ function connectToRightBox(index: number, color: string) {
 
 watch([mouse.x, mouse.y], () => {
     if (useTemp.value) {
+        // Update SVG-relative mouse position
+        updateSvgMousePosition()
+
         tempLine.value = {
             x1: tempLine.value!.x1,
             y1: tempLine.value!.y1,
-            x2: mouse.x.value.toString(),
-            y2: (mouse.y.value - 42).toString(),
+            x2: svgMousePos.value.x.toString(),
+            y2: svgMousePos.value.y.toString(),
             color: tempLine.value!.color,
         }
     }
