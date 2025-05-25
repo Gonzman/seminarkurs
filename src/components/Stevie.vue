@@ -29,11 +29,7 @@ const speeachText = ref('Hello, I am Stevie!');
 const count = ref(0);
 const folder = ref('idle');
 
-const imagePath = ref(`/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
-
-const images = import.meta.glob('/src/assets/stevie/idle/*.png', { eager: true }) as Record<string, string>;
-
-console.log(Object.keys(images));
+const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
 function handleClick() {
 
@@ -79,7 +75,7 @@ function handyAnim() {
         folder.value = 'handy';
         const counterInterval = setInterval(() => {
             count.value = currentCount;
-            imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
+            imagePath.value = `/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
 
             if (currentCount >= 11) {
                 clearInterval(counterInterval);
@@ -99,7 +95,7 @@ function idleAnim() {
         folder.value = 'idle';
         const counterInterval = setInterval(() => {
             count.value = currentCount;
-            imagePath.value = `/src/assets/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
+            imagePath.value = `/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
 
             if (currentCount >= 5) {
                 clearInterval(counterInterval);
@@ -111,15 +107,24 @@ function idleAnim() {
     });
 }
 
-const allImages = import.meta.glob('/src/assets/stevie/*/*.png', { eager: true }) as Record<string, string>;
+function getFrameCount(folderName: string): number {
+    switch (folderName) {
+        case 'idle':
+            return 6;
+        case 'handy':
+            return 12;
+        case 'exclamation':
+            return 10;
+        default:
+            return 6;
+    }
+}
 
 function anim(sec: number, folder: string) {
     return new Promise<void>((resolve) => {
         let currentCount = 0;
-
-        const imagesList = Object.keys(allImages).filter((path) => path.includes(`/stevie/${folder}/`));
-        const imageCount = imagesList.length;
-
+        const imageCount = getFrameCount(folder);
+        
         if (imageCount === 0) {
             console.error(`No images found for folder: ${folder}`);
             resolve();
@@ -129,7 +134,7 @@ function anim(sec: number, folder: string) {
         const interval = sec / imageCount;
         const counterInterval = setInterval(() => {
             count.value = currentCount;
-            imagePath.value = imagesList[currentCount];
+            imagePath.value = `/stevie/${folder}/frame_${String(currentCount).padStart(2, '0')}.png`;
 
             if (currentCount >= (imageCount - 1)) {
                 clearInterval(counterInterval);
