@@ -322,69 +322,23 @@ function startMinigame(minigame: NodeMinigame) {
     if (knowledgeItems) {
         knowledgeStore.addGameKnowledges(knowledgeItems.filter((item): item is KnowledgeItem => item !== null && item !== undefined));
     }
+
+    gameStore.setLastMinigameNode(interactionNode.value);
+
     router.push(minigame.route);
     showNodeInteraction.value = false;
 }
 
 function checkCompletedMinigames() {
-    const minigameData = localStorage.getItem('completed-minigame');
-    if (!minigameData) return;
+    const minigameData = gameStore.getLastMinigameNode();
+    const win = gameStore.getMinigameWin();
+    if (!minigameData && !win) return;
 
     try {
-        const data = JSON.parse(minigameData);
-        const { nodeId, success } = data;
+        const node = nodes[minigameData];
+        node.status = win ? Status.Status.HACKED : Status.Status.ONLINE;
+        saveCurrentGraph();
 
-        if (success && nodeId && nodes[nodeId]) {
-            console.log(`Processing completed minigame for node ${nodeId}`);
-            const node = nodes[nodeId];
-
-            // Update node status if specified in the minigame data
-            if (data.minigame?.newStatus !== undefined) {
-                node.status = data.minigame.newStatus;
-            }
-
-            // Get knowledge directly from the node if it has knowledgeIds
-            if (node.knowledgeIds && node.knowledgeIds.length > 0) {
-                // Find the knowledge items from the store
-                node.knowledgeIds.forEach(knowledgeId => {
-                    // First check if this knowledge already exists in the knowledge store
-                    const knowledgeItem = knowledgeStore.knowledges.find(item => item.id === knowledgeId);
-
-                    if (knowledgeItem) {
-                        // Knowledge already exists, make sure it has this node as a source
-                        if (!knowledgeItem.sources) {
-                            knowledgeItem.sources = [node.name || nodeId];
-                        } else if (!knowledgeItem.sources.includes(node.name || nodeId)) {
-                            knowledgeItem.sources.push(node.name || nodeId);
-                        }
-                    } else {
-                        // Need to find the knowledge item from the imported knowledge data
-                        const knowledgeFromData = knowledgeData.find((k: any) => k.id === knowledgeId);
-
-                        if (knowledgeFromData) {
-                            // Create a complete knowledge item
-                            const newKnowledgeItem: KnowledgeItem = {
-                                id: knowledgeId,
-                                title: knowledgeFromData.title || `Knowledge ${knowledgeId}`,
-                                description: knowledgeFromData.description || 'No description available.',
-                                image: knowledgeFromData.image || '',
-                                sources: [node.name || nodeId]
-                            };
-
-                            // Add to knowledge store
-                            knowledgeStore.addKnowledge(newKnowledgeItem);
-                            console.log('Added knowledge from node:', newKnowledgeItem);
-                        }
-                    }
-                });
-            }
-
-            // Clear the completed minigame data
-            localStorage.removeItem('completed-minigame');
-
-            // Save the updated graph state
-            saveCurrentGraph();
-        }
     } catch (e) {
         console.error('Error processing completed minigame:', e);
     }

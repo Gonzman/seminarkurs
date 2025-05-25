@@ -5,6 +5,7 @@ import { ref, watch, useTemplateRef } from 'vue'
 import Timer from '../Timer.vue'
 import Level from '../level'
 import { useKnowledgeStore } from '@/stores/knowledge';
+import { useGameStore } from '@/stores/game';
 
 const props = defineProps<{ level: Level }>()
 
@@ -144,7 +145,7 @@ function connectToRightBox(index: number, color: string) {
     selectedBox.value = null
 
     if (lines.value.length === colors.length) {
-        useKnowledgeStore().finishedGameSuccesfully();
+        useGameStore().setMinigameWin(true);
         console.log('finished')
         alert('Gewonnen')
     }

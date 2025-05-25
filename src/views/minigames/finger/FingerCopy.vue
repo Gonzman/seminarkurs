@@ -52,8 +52,10 @@
 import { ref, computed, onMounted, watch } from 'vue'
 import Level from '../level'
 import { useRouter } from 'vue-router'
+import { useGameStore } from '@/stores/game'
 
 const router = useRouter()
+const gameStore = useGameStore()
 
 const props = defineProps<{ level?: Level }>();
 
@@ -235,7 +237,7 @@ const checkSolution = () => {
     }
 
     gameWon.value = allCorrect
-    completeGame()
+    gameStore.setMinigameWin(true);
 }
 
 const completeGame = () => {

@@ -1,11 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { set } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useKnowledgeStore } from './knowledge'
 
 export const useGameStore = defineStore('game', () => {
     const escapeState = ref(false)
     const gameState: Ref<GameStateType> = ref('intro')
     const watchedIntro = ref(false)
+
+    const minigameNode: Ref<string> = ref("")
+
+    const router = useRouter()
+    const knowledgeStore = useKnowledgeStore()
+
+    const minigameWin = ref(false);
 
     function toggleEscape() {
         escapeState.value = !escapeState.value
@@ -23,7 +33,30 @@ export const useGameStore = defineStore('game', () => {
         return gameState
     }
 
-    return { escapeState, toggleEscape, getEscape, gameState, setGameState, getGameState, watchedIntro}
+    function setMinigameWin(value: boolean) {
+        minigameWin.value = value
+
+        if(!value) {
+            knowledgeStore.gameFailed()
+            router.push('/graph')
+        }else {
+            router.push('/infotinder')
+        }
+    }
+
+    function getMinigameWin() {
+        return minigameWin.value
+    }
+
+    function setLastMinigameNode(node: string) {
+        minigameNode.value = node
+    }
+
+    function getLastMinigameNode() {
+        return minigameNode.value
+    }
+
+    return { escapeState, toggleEscape, getEscape, gameState, setGameState, getGameState, watchedIntro, setMinigameWin, getMinigameWin, setLastMinigameNode, getLastMinigameNode }
 })
 const gameStateArray = [
     'intro',
@@ -35,3 +68,5 @@ const gameStateArray = [
 ] as const
 
 export type GameStateType = (typeof gameStateArray)[number]
+
+

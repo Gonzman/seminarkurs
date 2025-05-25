@@ -31,11 +31,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Timer from '../Timer.vue'
+import { useGameStore } from '@/stores/game'
 
 const inputs = ref<HTMLInputElement[]>([])
 const finished = ref(false)
 const timer = ref<InstanceType<typeof Timer> | null>(null)
 const start: number = 100
+const gameStore = useGameStore()
 
 function caesarCipher(str: string, shift: number, decrypt: boolean = false): string {
     const s = decrypt ? (26 - shift) % 26 : shift
@@ -75,7 +77,7 @@ function checkAnswer() {
     }
     if (userInput == selectedWord) {
         finished.value = true
-        alert('Entschlüsselt')
+        gameStore.setMinigameWin(true);
     } else if (timer.value) {
         timer.value.addTime(-5)
     }
