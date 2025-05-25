@@ -1,21 +1,23 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game'
-import { onUnmounted, ref, computed } from 'vue'
+import { onUnmounted, ref, computed, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router';
 const props = defineProps<{ sekunden: number; fertig?: boolean }>()
 const emits = defineEmits(['timeOver'])
 const timer = ref<number>(props.sekunden)
 let interval: number
 const max: number = props.sekunden
 let firstClick: boolean = false
-const escapeStore = useGameStore()
+const escapeStore = useGameStore();
+const router = useRouter()
 
 const progressPercentage = computed(() => {
-  return (timer.value / max) * 100
+    return (timer.value / max) * 100
 })
 
 function addTime(seconds: number) {
-  timer.value += seconds
+    timer.value += seconds
 }
 
 function clickEvent() {
@@ -28,7 +30,8 @@ function clickEvent() {
 
             if (timer.value <= -1) {
                 clearInterval(interval)
-                emits('timeOver')
+                emits('timeOver');
+                router.push("/graph")
             }
         }, 1000)
     }
@@ -37,10 +40,11 @@ function clickEvent() {
 document.addEventListener('click', clickEvent)
 document.addEventListener('keypress', clickEvent)
 
-onUnmounted(() => clearInterval(interval))
+onBeforeUnmount(() => clearInterval(interval))
+
 
 defineExpose({
-  addTime
+    addTime
 })
 </script>
 
@@ -50,9 +54,7 @@ defineExpose({
             <span :style="{ color: timer % 2 === 0 && timer < 30 ? 'red' : '' }">{{ timer }}s</span>
         </div>
         <div class="win95-progress-container">
-            <div
-                class="win95-progress-bar"
-                :style="{ width: `${progressPercentage}%` }">
+            <div class="win95-progress-bar" :style="{ width: `${progressPercentage}%` }">
             </div>
         </div>
     </div>

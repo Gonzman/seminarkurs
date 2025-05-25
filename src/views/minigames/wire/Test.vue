@@ -49,7 +49,7 @@ function getBoxCenter(xPosition: string, yPosition: number) {
     const rectNumeric = parseInt(rect)
     return {
         x: xPosition,
-        y: `${yPosition + rectNumeric/2}%`
+        y: `${yPosition + rectNumeric / 2}%`
     }
 }
 
@@ -62,7 +62,7 @@ fisherYatesShuffle(colorsR)
 function fisherYatesShuffle(array: unknown[]): void {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1))
-        ;[array[i], array[j]] = [array[j], array[i]]
+            ;[array[i], array[j]] = [array[j], array[i]]
     }
 }
 
@@ -147,7 +147,7 @@ function connectToRightBox(index: number, color: string) {
     if (lines.value.length === colors.length) {
         useGameStore().setMinigameWin(true);
         console.log('finished')
-        alert('Gewonnen')
+        goToInfoTinder()
     }
 }
 
@@ -172,50 +172,17 @@ function timerFertig() {
     <Timer :sekunden="start" @time-over="timerFertig"></Timer>
     <div class="svg-container">
         <svg ref="svg">
-            <line
-                v-for="(line, index) in lines"
-                :key="'line-' + index"
-                :x1="line.x1"
-                :y1="line.y1"
-                :x2="line.x2"
-                :y2="line.y2"
-                :stroke="line.color"
-                stroke-width="3"
-            />
+            <line v-for="(line, index) in lines" :key="'line-' + index" :x1="line.x1" :y1="line.y1" :x2="line.x2"
+                :y2="line.y2" :stroke="line.color" stroke-width="3" />
 
-            <line
-                key="temp"
-                :x1="tempLine?.x1"
-                :y1="tempLine?.y1"
-                :x2="tempLine?.x2"
-                :y2="tempLine?.y2"
-                :stroke="tempLine?.color"
-                stroke-width="3"
-            />
+            <line key="temp" :x1="tempLine?.x1" :y1="tempLine?.y1" :x2="tempLine?.x2" :y2="tempLine?.y2"
+                :stroke="tempLine?.color" stroke-width="3" />
 
-            <rect
-                v-for="(color, index) in colorsL"
-                :key="'L-' + index"
-                @click="selectLeftBox(index, color)"
-                x="10%"
-                :y="`${spacing(index)}%`"
-                :width="rect"
-                :height="rect"
-                :fill="color"
-                class="clickable"
-            />
+            <rect v-for="(color, index) in colorsL" :key="'L-' + index" @click="selectLeftBox(index, color)" x="10%"
+                :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="color" class="clickable" />
 
-            <rect
-                v-for="(color, index) in colorsR"
-                :key="'R-' + index"
-                @click="connectToRightBox(index, color)"
-                x="90%"
-                :y="`${spacing(index)}%`"
-                :width="rect"
-                :height="rect"
-                :fill="color"
-                class="clickable"
-            />
+            <rect v-for="(color, index) in colorsR" :key="'R-' + index" @click="connectToRightBox(index, color)" x="90%"
+                :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="color" class="clickable" />
         </svg>
     </div>
 </template>
@@ -225,6 +192,7 @@ svg {
     width: 100%;
     height: 84.5dvh;
 }
+
 .clickable {
     cursor: pointer;
 }

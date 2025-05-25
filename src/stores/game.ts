@@ -27,6 +27,14 @@ export const useGameStore = defineStore('game', () => {
 
     function setGameState(value: GameStateType) {
         gameState.value = value
+
+        switch (value) {
+            case 'circuitbreaker':
+            case 'intro':
+            case 'wire':
+                stevie.setVisible(false)
+                break
+        }
     }
 
     function getGameState() {
@@ -60,11 +68,12 @@ export const useGameStore = defineStore('game', () => {
 })
 const gameStateArray = [
     'intro',
-    'selectScreen',
+    'graph',
     'circuitbreaker',
     'ceaser',
     'finger',
     'wire',
+    'tinder',
 ] as const
 
 export type GameStateType = (typeof gameStateArray)[number]

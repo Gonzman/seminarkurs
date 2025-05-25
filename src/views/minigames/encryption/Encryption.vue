@@ -6,13 +6,7 @@
         <fieldset>
             <div v-for="(char, index) in encryptSelectedWord.length" :key="index">
                 <div>
-                    <input
-                        ref="inputs"
-                        type="text"
-                        maxlength="1"
-                        autofocus
-                        @input="onInputChange($event, index)"
-                    />
+                    <input ref="inputs" type="text" maxlength="1" autofocus @input="onInputChange($event, index)" />
                 </div>
             </div>
         </fieldset>
@@ -33,6 +27,7 @@ import { ref } from 'vue'
 import Timer from '../Timer.vue'
 import { useGameStore } from '@/stores/game'
 
+const router = useRouter()
 const inputs = ref<HTMLInputElement[]>([])
 const finished = ref(false)
 const timer = ref<InstanceType<typeof Timer> | null>(null)
@@ -110,6 +105,7 @@ fieldset {
     padding: 0;
     margin: 2rem 0;
 }
+
 .sr-only {
     position: absolute;
     width: 1px;
@@ -120,6 +116,7 @@ fieldset {
     clip: rect(0, 0, 0, 0);
     border: 0;
 }
+
 input {
     border-radius: 8px;
     border: 2px solid var(--green);
@@ -130,6 +127,7 @@ input {
     width: 45px;
     font-family: inherit;
 }
+
 input:focus,
 input:focus-within {
     border: none;
@@ -147,6 +145,7 @@ input[type='number'] {
     appearance: textfield;
     -moz-appearance: textfield;
 }
+
 .btn-wrapper {
     display: flex;
     flex-wrap: wrap;
@@ -155,6 +154,7 @@ input[type='number'] {
     gap: 1rem;
     margin-top: 2rem;
 }
+
 #paste-btn {
     color: var(--green);
 }

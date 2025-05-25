@@ -4,9 +4,9 @@ import { ref, type Ref } from 'vue'
 export const useStevieStore = defineStore('stevie', () => {
     const stevieState: Ref<StevieStateType> = ref('normal')
     const watchedIntro = ref(false)
+    const isVisible = ref(false)
 
-
-    function setStevie(value: StevieStateType) {
+    function setStevieMood(value: StevieStateType) {
         stevieState.value = value
     }
 
@@ -14,7 +14,15 @@ export const useStevieStore = defineStore('stevie', () => {
         return stevieState
     }
 
-    return { stevieState, setStevie, getStevie, watchedIntro }
+    function setVisible(state: boolean) {
+        isVisible.value = state
+    }
+
+    function getVisible(): boolean {
+        return isVisible.value
+    }
+
+    return { stevieState, setStevieMood, getStevie, watchedIntro, setVisible, getVisible }
 })
 
 const stevieStateArray = ['normal', 'angry', 'happy', 'sad', 'confused', 'scared'] as const

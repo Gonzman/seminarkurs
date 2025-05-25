@@ -30,9 +30,11 @@
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
 import { getKnowledgeById, useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
+import { useRouter } from 'vue-router';
 
 const size_bar_div = ref<HTMLElement | null>(null);
 const is_disabled = ref(false);
+const router = useRouter()
 
 const { max_space, min_size, max_size } = defineProps<{
     max_space: number,
@@ -44,12 +46,12 @@ let used_space = ref(0)
 let size = ref(0)
 
 const knowledgeStore = useKnowledgeStore()
-//const knowledges = knowledgeStore.getGameKnowledges()
-const knowledges = ref<KnowledgeItem[]>([]);
-for (let i = 0; i < 20; i++) {
-    const knowledge = getKnowledgeById(i)
-    if (knowledge) knowledges.value.push(knowledge);
-}
+const knowledges = ref(knowledgeStore.getGameKnowledges())
+// const knowledges = ref<KnowledgeItem[]>([]);
+// for (let i = 0; i < 20; i++) {
+//     const knowledge = getKnowledgeById(i)
+//     if (knowledge) knowledges.value.push(knowledge);
+// }
 const saved_knowledges: KnowledgeItem[] = []
 const current = ref(0)
 const max = ref(knowledges.value.length)
@@ -99,8 +101,7 @@ const next = () => {
         }
     } else {
         knowledgeStore.moveGameKnowledgeToKnowledges(saved_knowledges);
-        alert("Game end");
-        // End game
+        router.push("/graph")
     }
 }
 

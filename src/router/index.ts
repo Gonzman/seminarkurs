@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Level from '@/views/minigames/level'
 import FingerCopy from '@/views/minigames/finger/FingerCopy.vue'
+import { useKnowledgeStore } from '@/stores/knowledge'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -107,3 +108,13 @@ const router = createRouter({
 })
 
 export default router
+
+const knowledge = useKnowledgeStore()
+
+export function goToInfoTinder() {
+    if (knowledge.getGameKnowledges().length == 0) {
+        router.push('/graph')
+        return
+    }
+    router.push('/infotinder')
+}
