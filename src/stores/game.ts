@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 import { ref, type Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useKnowledgeStore } from './knowledge'
+import { useStevieStore } from './stevie'
 
 export const useGameStore = defineStore('game', () => {
     const escapeState = ref(false)
@@ -14,7 +15,7 @@ export const useGameStore = defineStore('game', () => {
 
     const router = useRouter()
     const knowledgeStore = useKnowledgeStore()
-
+    const stevie = useStevieStore()
     const minigameWin = ref(false);
 
     function toggleEscape() {

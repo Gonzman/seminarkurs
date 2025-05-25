@@ -26,6 +26,7 @@
 import { ref } from 'vue'
 import Timer from '../Timer.vue'
 import { useGameStore } from '@/stores/game'
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const inputs = ref<HTMLInputElement[]>([])

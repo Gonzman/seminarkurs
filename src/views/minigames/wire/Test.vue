@@ -146,8 +146,7 @@ function connectToRightBox(index: number, color: string) {
 
     if (lines.value.length === colors.length) {
         useGameStore().setMinigameWin(true);
-        console.log('finished')
-        goToInfoTinder()
+
     }
 }
 
