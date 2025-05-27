@@ -49,11 +49,15 @@ const router = createRouter({
             path: '/graph',
             name: 'Graph',
             component: () => import('../views/main/Graph.vue'),
-        },
-        {
+        },        {
             path: '/graph-creator',
             name: 'GraphCreator',
             component: () => import('../views/main/GraphCreator.vue'),
+        },
+        {
+            path: '/stevie-generator',
+            name: 'StevieGenerator',
+            component: () => import('../views/main/StevieGenerator.vue'),
         },
         {
             path: '/circuitbreaker/:difficulty?',

@@ -170,7 +170,6 @@ function connectToRightBox(index: number, color: string) {
 
 watch([mouse.x, mouse.y], () => {
     if (useTemp.value) {
-        // Update SVG-relative mouse position
         updateSvgMousePosition()
 
         tempLine.value = {

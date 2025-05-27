@@ -649,11 +649,11 @@ defineExpose({ addRandomNode })
                     <div class="file-format-info">
                         <small>File must be a JSON containing nodes and edges objects</small>
                     </div>
-                </div>
-
-                <div class="info-text">
+                </div>                <div class="info-text">
                     <p>Create graphs using the Graph Creator tool!</p>
                     <router-link to="/graph-creator" class="creator-link">Open Graph Creator</router-link>
+                    <p>Customize Stevie with the Stevie Generator tool!</p>
+                    <router-link to="/stevie-generator" class="creator-link">Open Stevie Generator</router-link>
                 </div>
             </div>
         </div>
