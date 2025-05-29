@@ -48,11 +48,11 @@ const layouts = ref<Layouts>({
 
 const nodes = reactive<Record<string, Node>>({})
 
-// Generate a unique node ID
+
 function generateNodeId(): string {
     let prefix = makeid(5);
 
-    // Ensure ID doesn't already exist
+
     while (nodes[prefix]) {
         prefix = makeid(5);
     }
@@ -63,7 +63,7 @@ function generateNodeId(): string {
 function generateEdgeId(): string {
     let prefix = makeid(5);
 
-    // Ensure ID doesn't already exist
+
     while (edges[prefix]) {
         prefix = makeid(5);
     }
@@ -72,7 +72,7 @@ function generateEdgeId(): string {
 }
 
 function initializeStartNode() {
-    // Only add if no nodes exist
+
     if (Object.keys(nodes).length === 0) {
         nodes['start'] = {
             name: 'start',
@@ -131,7 +131,7 @@ const statusOptions = computed(() => {
     return options
 })
 
-// Options for minigame dropdown
+
 const minigameOptions = computed(() => {
     const options = []
     for (const game in games) {
@@ -145,7 +145,7 @@ const minigameOptions = computed(() => {
     return options
 })
 
-// Options for difficulty level dropdown
+
 const difficultyOptions = computed(() => {
     const options = []
     for (const level in Level) {
@@ -159,7 +159,7 @@ const difficultyOptions = computed(() => {
     return options
 })
 
-// Get node IDs for edge creation dropdowns
+
 const nodeOptions = computed(() => {
     return Object.keys(nodes).map(id => ({
         value: id,
@@ -169,44 +169,44 @@ const nodeOptions = computed(() => {
 
 const configs = config(nodes, true)
 
-// Add a handler for canvas:click to reset the form when clicking on empty space
+
 const eventHandlers: vNG.EventHandlers = {
     'node:click': ({ node }) => {
         if (!node) return;
 
-        // Populate node form with selected node data
+
         newNode.id = node;
         if (nodes[node]) {
             newNode.name = nodes[node].name || '';
             newNode.icon = nodes[node].icon;
             newNode.status = nodes[node].status;
             newNode.draggable = nodes[node].draggable ?? true;
-            newNode.minigame = nodes[node].minigame; // Load minigame property
-            newNode.difficulty = nodes[node].difficulty; // Load difficulty property
-            newNode.knowledgeIds = nodes[node].knowledgeIds || []; // Load knowledge IDs
-            selectedKnowledgeIds.value = [...(nodes[node].knowledgeIds || [])]; // Update selected knowledge IDs
+            newNode.minigame = nodes[node].minigame;
+            newNode.difficulty = nodes[node].difficulty;
+            newNode.knowledgeIds = nodes[node].knowledgeIds || [];
+            selectedKnowledgeIds.value = [...(nodes[node].knowledgeIds || [])];
         }
 
-        // Get position
+
         if (layouts.value.nodes && layouts.value.nodes[node as string]) {
             newNode.x = layouts.value.nodes[node as string].x;
             newNode.y = layouts.value.nodes[node as string].y;
         }
 
-        // Clear error message
+
         errorMessage.value = '';
     },
     'edge:click': ({ edge }) => {
         if (!edge || !edges[edge]) return;
 
-        // Populate edge form with selected edge data
+
         newEdge.id = edge;
         newEdge.source = edges[edge].source;
         newEdge.target = edges[edge].target;
         newEdge.color = edges[edge].color ?? '#4466cc';
         newEdge.dashed = edges[edge].dashed ?? false;
 
-        // Clear error message
+
         errorMessage.value = '';
     },
     'node:dragend': ({ node, position }) => {
@@ -229,8 +229,8 @@ const eventHandlers: vNG.EventHandlers = {
         resetEdgeForm();
     },
     'edge:pointerout': () => {
-        // Optional: reset edge form when mouse leaves an edge
-        // resetEdgeForm();
+
+
     }
 }
 
@@ -245,33 +245,33 @@ function toggleKnowledge(id: number) {
 }
 
 function addNode() {
-    // Clear previous error
+
     errorMessage.value = '';
 
-    // Check if name is provided
+
     if (!newNode.name.trim()) {
         errorMessage.value = 'Node name is required';
         return;
     }
 
-    // Determine if we're editing or creating new
+
     const isEdit = newNode.id.trim() !== '' && newNode.id in nodes;
 
-    // For new nodes, generate a random ID
+
     const nodeId = isEdit ? newNode.id : generateNodeId();
 
-    // Add node to the nodes object
+
     nodes[nodeId] = {
         name: newNode.name + " (" + nodeId + ")",
         icon: newNode.icon,
         status: newNode.status,
         draggable: newNode.draggable,
-        minigame: newNode.minigame, // Add the minigame property
-        difficulty: newNode.difficulty, // Make sure to include difficulty
-        knowledgeIds: [...selectedKnowledgeIds.value] // Include knowledge IDs
+        minigame: newNode.minigame,
+        difficulty: newNode.difficulty,
+        knowledgeIds: [...selectedKnowledgeIds.value]
     }
 
-    // Add layout position
+
     if (!layouts.value.nodes) {
         layouts.value.nodes = {};
     }
@@ -283,7 +283,7 @@ function addNode() {
             fixed: false
         }
     } else {
-        // Update position if specified and different from current
+
         if (newNode.x !== layouts.value.nodes[nodeId].x ||
             newNode.y !== layouts.value.nodes[nodeId].y) {
             layouts.value.nodes[nodeId] = {
@@ -294,13 +294,13 @@ function addNode() {
         }
     }
 
-    // Reset form for next entry
+
     resetNodeForm();
 }
 
-// Add a new edge to the graph
+
 function addEdge() {
-    // Clear previous error
+
     errorMessage.value = '';
 
     if (!newEdge.source.trim() || !newEdge.target.trim()) {
@@ -308,10 +308,10 @@ function addEdge() {
         return;
     }
 
-    // Generate a unique edge ID if not provided
+
     const edgeId = newEdge.id.trim() !== '' ? newEdge.id : `edge${generateEdgeId()}`;
 
-    // Add edge to the edges object
+
     edges[edgeId] = {
         source: newEdge.source,
         target: newEdge.target,
@@ -319,19 +319,19 @@ function addEdge() {
         dashed: newEdge.dashed
     }
 
-    // Reset form for next entry
+
     resetEdgeForm();
 }
 
-// Reset the node form
+
 function resetNodeForm() {
-    newNode.id = ''; // Clear ID for new node creation
+    newNode.id = '';
     newNode.name = ''
     newNode.icon = '&#xe328'
     newNode.status = Status.Status.ONLINE
     newNode.draggable = true
     newNode.minigame = undefined
-    newNode.difficulty = undefined // Make sure to reset difficulty when clearing form
+    newNode.difficulty = undefined
     newNode.knowledgeIds = []
     selectedKnowledgeIds.value = []
 
@@ -342,7 +342,7 @@ function resetNodeForm() {
     errorMessage.value = ''
 }
 
-// Reset the edge form
+
 function resetEdgeForm() {
     newEdge.id = ''
     newEdge.source = ''
@@ -357,25 +357,25 @@ function resetEdgeForm() {
     errorMessage.value = ''
 }
 
-// Remove a node from the graph
+
 function removeNode(nodeId: string) {
-    // Don't allow removing the start node
+
     if (nodeId === 'node1' && nodes[nodeId].status === Status.Status.START) {
         errorMessage.value = "Cannot delete the start node";
         return;
     }
 
-    // Remove any edges connected to this node
+
     for (const edgeId in edges) {
         if (edges[edgeId].source === nodeId || edges[edgeId].target === nodeId) {
             delete edges[edgeId]
         }
     }
 
-    // Remove the node
+
     delete nodes[nodeId]
 
-    // Remove from layouts
+
     if (layouts.value.nodes && layouts.value.nodes[nodeId]) {
         delete layouts.value.nodes[nodeId]
     }
@@ -383,15 +383,15 @@ function removeNode(nodeId: string) {
     resetNodeForm()
 }
 
-// Remove an edge from the graph
+
 function removeEdge(edgeId: string) {
     delete edges[edgeId]
     resetEdgeForm()
 }
 
-// Save the current graph to JSON
+
 function saveGraph() {
-    // Clear previous error
+
     errorMessage.value = '';
 
     if (!graphName.value.trim()) {
@@ -399,7 +399,7 @@ function saveGraph() {
         return;
     }
 
-    // loop through nodes and remove the last 8 characters from the name
+
     Object.keys(nodes).forEach(key => {
         if (nodes[key].name) {
             nodes[key].name = nodes[key].name.slice(0, -8);
@@ -412,28 +412,28 @@ function saveGraph() {
         layouts: { ...layouts.value }
     }
 
-    // Check if we're updating an existing graph
+
     const existingIndex = savedGraphs.value.findIndex(graph => graph.name === graphName.value);
 
     if (existingIndex >= 0) {
-        // Update existing graph
+
         savedGraphs.value[existingIndex].data = graphData;
     } else {
-        // Add new graph
+
         savedGraphs.value.push({
             name: graphName.value,
             data: graphData
         });
     }
 
-    // Save to localStorage
+
     localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
     alert(`Graph "${graphName.value}" saved successfully!`);
 }
 
-// Load a saved graph by name
+
 function loadGraph() {
-    // Clear previous error
+
     errorMessage.value = '';
 
     if (!selectedGraph.value) {
@@ -447,11 +447,11 @@ function loadGraph() {
         return;
     }
 
-    // Clear existing graph
+
     Object.keys(nodes).forEach(key => delete nodes[key]);
     Object.keys(edges).forEach(key => delete edges[key]);
 
-    // Load nodes
+
     Object.entries(graph.data.nodes).forEach(([id, node]) => {
         if (node.status !== Status.Status.START) {
             node.name = node.name + " (" + id + ")";
@@ -459,18 +459,18 @@ function loadGraph() {
         nodes[id] = { ...node };
     });
 
-    // Load edges
+
     Object.entries(graph.data.edges).forEach(([id, edge]) => {
         edges[id] = { ...edge };
     });
 
-    // Load layouts
+
     layouts.value = { ...graph.data.layouts };
 
-    // Set graph name
+
     graphName.value = selectedGraph.value;
 
-    // Make sure we have a start node
+
     if (!Object.values(nodes).some(node => node.status === Status.Status.START)) {
         initializeStartNode();
     }
@@ -478,9 +478,9 @@ function loadGraph() {
     alert(`Graph "${selectedGraph.value}" loaded successfully!`);
 }
 
-// Delete a saved graph
+
 function deleteGraph() {
-    // Clear previous error
+
     errorMessage.value = '';
 
     if (!selectedGraph.value) {
@@ -497,7 +497,7 @@ function deleteGraph() {
     alert('Graph deleted successfully')
 }
 
-// Export the graph as JSON
+
 function exportGraph() {
 
     Object.keys(nodes).forEach(key => {
@@ -525,9 +525,9 @@ function exportGraph() {
     URL.revokeObjectURL(url);
 }
 
-// Import graph from JSON file
+
 function importGraph(event: Event) {
-    // Clear previous error
+
     errorMessage.value = '';
 
     const input = event.target as HTMLInputElement;
@@ -541,11 +541,11 @@ function importGraph(event: Event) {
             const content = e.target?.result as string
             const graphData = JSON.parse(content) as GraphData
 
-            // Clear existing graph
+
             Object.keys(nodes).forEach(key => delete nodes[key])
             Object.keys(edges).forEach(key => delete edges[key])
 
-            // Load nodes
+
             Object.entries(graphData.nodes).forEach(([id, node]) => {
 
                 if (node.status !== Status.Status.START) {
@@ -555,15 +555,15 @@ function importGraph(event: Event) {
                 nodes[id] = { ...node }
             })
 
-            // Load edges
+
             Object.entries(graphData.edges).forEach(([id, edge]) => {
                 edges[id] = { ...edge }
             })
 
-            // Load layouts
+
             layouts.value = { ...graphData.layouts }
 
-            // Make sure we have a start node
+
             if (!Object.values(nodes).some(node => node.status === Status.Status.START)) {
                 initializeStartNode();
             }
@@ -574,7 +574,7 @@ function importGraph(event: Event) {
             console.error('Import error:', error)
         }
 
-        // Reset the input to allow uploading the same file again
+
         input.value = ''
     }
 
@@ -697,7 +697,7 @@ function importGraph(event: Event) {
                                 newNode.knowledgeIds = node.knowledgeIds || [];
                                 selectedKnowledgeIds = [...(node.knowledgeIds || [])];
 
-                                // Load position coordinates if available
+
                                 const nodeLayouts = layouts.nodes || {};
                                 if (nodeLayouts[id]) {
                                     newNode.x = nodeLayouts[id].x;

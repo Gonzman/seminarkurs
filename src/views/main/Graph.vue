@@ -13,11 +13,11 @@ import { useGameStore } from '@/stores/game'
 import { useKnowledgeStore, type KnowledgeItem, games, getKnowledgeById } from '@/stores/knowledge'
 import { useRouter } from 'vue-router'
 import Level from '@/views/minigames/level';
-// Import interface types from GraphCreator
+
 
 import { config, type Edge, type GraphData, type Node } from './graph'
 import knowledgeData from '@/data/knowledge.json'
-// Import default graph data
+
 import defaultGraphData from '@/data/graph.json'
 import Knowledge from '@/components/overlays/Knowledge.vue'
 
@@ -35,7 +35,7 @@ const showGraphLoader = ref(false)
 const showNodeInteraction = ref(false)
 const interactionNode = ref<string | null>(null)
 
-// Define minigame associations with node statuses
+
 interface NodeMinigame {
     title: string
     route: string
@@ -43,10 +43,10 @@ interface NodeMinigame {
     knowledge: Partial<KnowledgeItem> | null
     requiredStatus?: Status.Status
     newStatus?: Status.Status
-    difficulty?: Level // Add optional difficulty
+    difficulty?: Level
 }
 
-// Define nodeMinigames based on status
+
 const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
     [Status.Status.START]: [],
     [Status.Status.HACKED]: [],
@@ -55,7 +55,7 @@ const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
             title: "Finger Game",
             route: "/finger",
             description: "Test your reflexes in this coordination game.",
-            knowledge: null, // No knowledge defined in minigame - will get from node
+            knowledge: null,
             difficulty: Level.EASY,
             newStatus: Status.Status.HACKED
         },
@@ -63,7 +63,7 @@ const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
             title: "Circuit Breaker",
             route: "/circuitbreaker",
             description: "Bypass the circuit protection system.",
-            knowledge: null, // No knowledge defined in minigame - will get from node
+            knowledge: null,
             difficulty: Level.MEDIUM,
             newStatus: Status.Status.HACKED
         }
@@ -74,7 +74,7 @@ const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
             title: "Scan Node",
             route: "/infotinder",
             description: "Scan the node to gather information.",
-            knowledge: null, // No knowledge defined in minigame - will get from node
+            knowledge: null,
             newStatus: Status.Status.ONLINE
         }
     ]
@@ -96,32 +96,32 @@ const layouts = ref<Layouts>({
 
 const nodes = reactive<Record<string, Node>>({})
 
-// Available minigames for the selected node
+
 const availableMinigames = computed(() => {
     if (!interactionNode.value || !nodes[interactionNode.value]) {
         return [];
     }
 
     const node = nodes[interactionNode.value];
-    const minigameList: NodeMinigame[] = []; // Ensure type
+    const minigameList: NodeMinigame[] = [];
 
-    // If the node has a specifically assigned minigame, prioritize it
+
     if (node.minigame !== undefined) {
         const gameType = node.minigame;
-        // Determine difficulty: Node override > Default (lookup needed) > EASY
-        let difficulty = node.difficulty ?? Level.EASY; // Default to EASY if no specific or status default
+
+        let difficulty = node.difficulty ?? Level.EASY;
         let routeBase = "";
         let title = "";
         let description = "";
 
-        // Find default difficulty for this game type if node doesn't specify
+
         if (node.difficulty === undefined) {
-            // Search through nodeMinigames for a match to get default difficulty
-            // Since we no longer use game property in knowledge, we'll use a switch statement directly
-            difficulty = Level.EASY; // Default fallback
+
+
+            difficulty = Level.EASY;
         }
 
-        // Set appropriate details based on the game type
+
         switch (gameType) {
             case games.FINGER:
                 routeBase = "/finger";
@@ -134,7 +134,7 @@ const availableMinigames = computed(() => {
                 description = "Bypass the circuit protection system.";
                 break;
             case games.ENCRYPTION:
-                routeBase = "/caeser"; // Assuming caeser is the route base
+                routeBase = "/caeser";
                 title = "Encryption Challenge";
                 description = "Break the encryption to access node data.";
                 break;
@@ -144,37 +144,37 @@ const availableMinigames = computed(() => {
                 description = "Connect the wires to establish a network connection.";
                 break;
             default:
-                // Handle unknown game type if necessary
+
                 return [];
         }
 
-        // Get the correct difficulty name (EASY, MEDIUM, etc.)
+
         const difficultyName = Level[difficulty].toLowerCase();
 
         minigameList.push({
             title,
-            route: `${routeBase}/${difficultyName}`, // Append lowercase difficulty name to route
+            route: `${routeBase}/${difficultyName}`,
             description,
             knowledge: {
                 title: title,
                 description: description
             },
-            difficulty: difficulty // Pass difficulty along
+            difficulty: difficulty
         });
 
-        // Return only the specifically assigned minigame
+
         return minigameList;
     }
 
-    // Otherwise fall back to status-based minigames
+
     const statusMinigames = nodeMinigames[node.status] || [];
     return statusMinigames.map((mg: NodeMinigame) => {
-        // Get the lowercase difficulty name if available
+
         const difficultyName = mg.difficulty !== undefined ? Level[mg.difficulty].toLowerCase() : 'easy';
 
         return {
             ...mg,
-            // Construct route with difficulty
+
             route: `${mg.route}/${difficultyName}`
         };
     });
@@ -219,14 +219,14 @@ const eventHandlers: vNG.EventHandlers = {
     'node:click': ({ node }) => {
         if (!node || !nodes[node]) return
 
-        // Don't show interaction for start node
+
         if (nodes[node].status === Status.Status.START) return
 
         interactionNode.value = node
         showNodeInteraction.value = true
     },
     'view:click': () => {
-        // Hide interaction panel when clicking elsewhere
+
         if (!showNodeInteraction.value) return
         showNodeInteraction.value = false
     }
@@ -246,7 +246,7 @@ function addNode() {
 }
 
 function addRandomNode() {
-    //bug: Kann unendlich viele Nodes spawnen, möglicherweise werden die Edges im Array nicht aktualisiert
+
     const nodeId = `node${nextNodeIndex.value}`
     const name = `N${nextNodeIndex.value}`
     const icon = '&#xe328'
@@ -344,12 +344,12 @@ function checkCompletedMinigames() {
     }
 }
 
-// Function to load graph from a file
+
 function loadGraphFromFile(event: any) {
     const file = event.target.files[0];
     if (!file) return;
 
-    // Check if file is a JSON file
+
     if (!file.name.toLowerCase().endsWith('.json')) {
         alert('Please select a JSON file');
         return;
@@ -363,26 +363,26 @@ function loadGraphFromFile(event: any) {
             }
             const jsonData = JSON.parse(e.target.result as string);
 
-            // Validate the structure of the imported data
+
             if (!jsonData.nodes || !jsonData.edges) {
                 alert('Invalid graph file format. File must contain nodes and edges objects.');
                 return;
             }
 
-            // Load the graph data
+
             loadGraphData({
                 nodes: jsonData.nodes,
                 edges: jsonData.edges,
                 layouts: jsonData.layouts || {}
             });
 
-            // Save the imported graph
+
             const graphName = file.name.replace(/\.json$/, '') || 'imported';
 
-            // Check if a graph with this name already exists
+
             const existingIndex = savedGraphs.value.findIndex(g => g.name === graphName);
             if (existingIndex >= 0) {
-                // Ask for confirmation before overwriting
+
                 if (confirm(`A graph named "${graphName}" already exists. Do you want to overwrite it?`)) {
                     savedGraphs.value[existingIndex].data = {
                         nodes: { ...nodes },
@@ -390,7 +390,7 @@ function loadGraphFromFile(event: any) {
                         layouts: { ...layouts.value }
                     };
                 } else {
-                    // Generate unique name
+
                     const uniqueName = `${graphName}_${Date.now()}`;
                     savedGraphs.value.push({
                         name: uniqueName,
@@ -403,7 +403,7 @@ function loadGraphFromFile(event: any) {
                     selectedGraph.value = uniqueName;
                 }
             } else {
-                // Add as a new graph
+
                 savedGraphs.value.push({
                     name: graphName,
                     data: {
@@ -415,13 +415,13 @@ function loadGraphFromFile(event: any) {
                 selectedGraph.value = graphName;
             }
 
-            // Save to localStorage
+
             localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
 
-            // Close the graph loader
+
             showGraphLoader.value = false;
 
-            // Show success message
+
             alert(`Graph "${graphName}" has been loaded successfully.`);
         } catch (error) {
             console.error('Error loading graph from file:', error);
@@ -436,7 +436,7 @@ function loadGraphFromFile(event: any) {
     reader.readAsText(file);
 }
 
-// Save current graph to localStorage
+
 function saveCurrentGraph() {
     const graphData: GraphData = {
         nodes: { ...nodes },
@@ -444,34 +444,34 @@ function saveCurrentGraph() {
         layouts: { ...layouts.value }
     };
 
-    // Get existing saved graphs
+
     const existing = savedGraphs.value || [];
 
-    // Check if "current" graph exists and update it
+
     const currentIndex = existing.findIndex(g => g.name === "current");
     if (currentIndex >= 0) {
         existing[currentIndex].data = graphData;
     } else {
-        // Add new "current" graph
+
         existing.push({
             name: "current",
             data: graphData
         });
     }
 
-    // Save updated graphs
+
     localStorage.setItem('saved-graphs', JSON.stringify(existing));
     savedGraphs.value = existing;
 }
 
-// Add missing functions needed for graph loading
 
-// Toggle graph loader visibility
+
+
 function toggleGraphLoader() {
     showGraphLoader.value = !showGraphLoader.value;
 }
 
-// Load saved graphs from localStorage
+
 function loadSavedGraphs() {
     const savedData = localStorage.getItem('saved-graphs');
     if (savedData) {
@@ -484,7 +484,7 @@ function loadSavedGraphs() {
     }
 }
 
-// Load the first graph in the list (or "current" if it exists)
+
 function loadFirstGraph() {
     if (savedGraphs.value.length === 0) {
         loadGraphData(defaultGraphData);
@@ -492,20 +492,20 @@ function loadFirstGraph() {
         return;
     }
 
-    // Look for a graph named "current" first
+
     const currentGraph = savedGraphs.value.find(g => g.name === "current");
 
     if (currentGraph) {
         loadGraphData(currentGraph.data);
         selectedGraph.value = "current";
     } else {
-        // Otherwise load the first graph
+
         loadGraphData(savedGraphs.value[0].data);
         selectedGraph.value = savedGraphs.value[0].name;
     }
 }
 
-// Load a graph by name
+
 function loadGraph() {
     if (!selectedGraph.value) {
         return;
@@ -521,34 +521,34 @@ function loadGraph() {
     showGraphLoader.value = false;
 }
 
-// Load graph data (nodes, edges, and layouts)
+
 function loadGraphData(graphData: GraphData) {
     if (!graphData) return;
 
-    // Clear existing graph
+
     Object.keys(nodes).forEach(key => delete nodes[key]);
     Object.keys(edges).forEach(key => delete edges[key]);
 
-    // Load nodes
+
     if (graphData.nodes) {
         Object.entries(graphData.nodes).forEach(([id, node]) => {
             nodes[id] = { ...node };
         });
     }
 
-    // Load edges
+
     if (graphData.edges) {
         Object.entries(graphData.edges).forEach(([id, edge]) => {
             edges[id] = { ...edge };
         });
     }
 
-    // Load layouts
+
     if (graphData.layouts) {
         layouts.value = { ...graphData.layouts };
     }
 
-    // Update next indices to prevent ID conflicts
+
     nextNodeIndex.value = Math.max(
         ...Object.keys(nodes).map(id => {
             const match = id.match(/node(\d+)/);
