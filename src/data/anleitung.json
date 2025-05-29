@@ -4,5 +4,22 @@
     "title": "Ceasar",
     "description": "Dieses Rätsel ...",
     "imageSrc": ""
+  },
+  {
+    "id": 1,
+    "title": "Circuit Breaker",
+    "description": "Führe das Signal zum Ausgang der Platine. Drücke SPACE um das Signal zu senden. Nutze WASD oder die Pfeiltasten zum steuern des Signales ohne die Wände oder das Signal selber zu berühren.",
+    "imageSrc": ""
+  },
+  {
+    "id": 2,
+    "title": "Finger",
+    "description": "Versuche mit den Auswahlfeldern den Finger auf der rechten Seite zu kopieren."
+  },
+  {
+    "id": 3,
+    "title": "Info Tinder",
+    "description": "Wähle relevante Informationen zum speichern aus. Du hast nur begrenzt Speicherplatz, deswegen musst du entscheiden was wichtig ist und was nicht. Unten wird Dir dein verfügbarer Speicher angezeigt, sowie die Größe der Information und die Anzahl an Informationen die gespeichert werden können.",
+    "imageSrc": ""
   }
 ]
