@@ -332,7 +332,24 @@ function startMinigame(minigame: NodeMinigame) {
 function checkCompletedMinigames() {
     const minigameData = gameStore.getLastMinigameNode();
     const win = gameStore.getMinigameWin();
-    if (!minigameData && !win) return;
+    if (!minigameData) return;
+
+    if (!win) {
+        const lossKey = `loss_${minigameData}`;
+        const losses = localStorage.getItem(lossKey);
+        if (losses == null) {
+            localStorage.setItem(lossKey, "1");
+        } else {
+            let lossCount = Number(losses);
+            lossCount++;
+            localStorage.setItem(lossKey, lossCount.toString());
+
+            if (lossCount >= 3) {
+                alert("You've failed this node challenge 3 times");
+            }
+        }
+        return;
+    }
 
     try {
         const node = nodes[minigameData];
@@ -649,7 +666,8 @@ defineExpose({ addRandomNode })
                     <div class="file-format-info">
                         <small>File must be a JSON containing nodes and edges objects</small>
                     </div>
-                </div>                <div class="info-text">
+                </div>
+                <div class="info-text">
                     <p>Create graphs using the Graph Creator tool!</p>
                     <router-link to="/graph-creator" class="creator-link">Open Graph Creator</router-link>
                     <p>Customize Stevie with the Stevie Generator tool!</p>
