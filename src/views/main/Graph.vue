@@ -66,6 +66,22 @@ const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
             knowledge: null,
             difficulty: Level.MEDIUM,
             newStatus: Status.Status.HACKED
+        },
+        {
+            title: "Encryption Challenge",
+            route: "/caeser",
+            description: "Break the encryption to access node data.",
+            knowledge: null,
+            difficulty: Level.HARD,
+            newStatus: Status.Status.HACKED
+        },
+        {
+            title: "Wire Connection",
+            route: "/wire",
+            description: "Connect the wires to establish a network connection.",
+            knowledge: null,
+            difficulty: Level.SUPER_HARD,
+            newStatus: Status.Status.HACKED
         }
     ],
     [Status.Status.OFFLINE]: [],

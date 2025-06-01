@@ -1,4 +1,6 @@
 enum Level{
+
+    IMPOSSIBLE,
     SUPER_HARD,
     HARD,
     MEDIUM,

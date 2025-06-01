@@ -27,11 +27,13 @@ import { ref } from 'vue'
 import Timer from '../Timer.vue'
 import { useGameStore } from '@/stores/game'
 import { useRouter } from 'vue-router'
+import Level from '../level'
 
 const router = useRouter()
 const inputs = ref<HTMLInputElement[]>([])
 const finished = ref(false)
 const timer = ref<InstanceType<typeof Timer> | null>(null)
+const props = defineProps<{ level: Level }>()
 const start: number = 100
 const gameStore = useGameStore()
 
@@ -79,9 +81,31 @@ function checkAnswer() {
     }
 }
 
-const wordList: string[] = ['WhoAreYou', 'DDoS', 'Overflow']
+let selectedWord = ""
 
-const selectedWord = wordList[Math.floor(Math.random() * wordList.length)]
+switch (props.level) {
+    case Level.EASY:
+        selectedWord = "AAAAAA"
+        break;
+
+    case Level.MEDIUM:
+        selectedWord = "LAB789"
+        break;
+
+    case Level.HARD:
+        selectedWord = "GHOSTSPU5001"
+        break;
+
+    case Level.SUPER_HARD:
+        selectedWord = "PHISHI1312"
+        break;
+
+    case Level.IMPOSSIBLE:
+        selectedWord = "HACKER1234MASTER!212"
+        break;
+
+}
+
 const encryptSelectedWord = caesarCipher(selectedWord, Math.floor(Math.random() * 25))
 </script>
 
