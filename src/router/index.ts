@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Level from '@/views/minigames/level'
 import FingerCopy from '@/views/minigames/finger/FingerCopy.vue'
 import { useKnowledgeStore } from '@/stores/knowledge'
+import { scenes } from '@/views/scenes/scenes'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -10,11 +11,6 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: () => import('../views/HomeView.vue'),
-        },
-        {
-            path: '/intro',
-            name: 'intro',
-            component: () => import('../views/intro/Intro.vue'),
         },
         {
             path: '/wire/:difficulty?',
@@ -49,7 +45,8 @@ const router = createRouter({
             path: '/graph',
             name: 'Graph',
             component: () => import('../views/main/Graph.vue'),
-        },        {
+        },
+        {
             path: '/graph-creator',
             name: 'GraphCreator',
             component: () => import('../views/main/GraphCreator.vue'),
@@ -107,6 +104,20 @@ const router = createRouter({
             path: '/about',
             name: 'about',
             component: () => import('../views/AboutView.vue'),
+        },
+
+        {
+            path: '/scenes/:scene?',
+            name: 'scenes',
+            component: () => import('../views/scenes/scenes.vue'),
+            props: (route) => {
+                const sceneKey =
+                    typeof route.params.scene === 'string'
+                        ? (route.params.scene.toUpperCase() as keyof typeof scenes)
+                        : 'INTRO'
+                const scene = scenes[sceneKey] !== undefined ? scenes[sceneKey] : scenes.INTRO
+                return { scene: scene }
+            },
         },
     ],
 })

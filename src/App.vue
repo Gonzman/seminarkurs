@@ -9,16 +9,9 @@ import Stevie from './components/Stevie.vue'
 const gameStore = useGameStore()
 const route = useRoute()
 const router = useRouter()
-const showContextMenu = ref(false)
-
 const transitionName = computed(() => {
     return route.meta.transition || 'fade'
 })
-
-function navigateToStevieGenerator() {
-    router.push('/stevie-generator')
-    showContextMenu.value = false
-}
 
 const handleKeyPress = (e: KeyboardEvent) => {
     if (e.code === 'Escape') {
@@ -30,12 +23,10 @@ const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches
 
 onMounted(() => {
     document.addEventListener('keydown', handleKeyPress)
-    document.addEventListener('click', handleClickOutside)
 })
 
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyPress)
-    document.removeEventListener('click', handleClickOutside)
 })
 
 const stevieRef = ref<HTMLElement | null>(null)
@@ -73,12 +64,7 @@ const onDragEnd = () => {
     }
 }
 
-// Close context menu when clicking outside
-const handleClickOutside = (e: MouseEvent) => {
-    if (showContextMenu.value && stevieRef.value && !stevieRef.value.contains(e.target as Node)) {
-        showContextMenu.value = false
-    }
-}
+
 </script>
 
 <template>
@@ -87,12 +73,9 @@ const handleClickOutside = (e: MouseEvent) => {
     </div>
     <transition name="fade" mode="out-in">
         <router-view></router-view>
-    </transition>    <div ref="stevieRef" class="stevie" @mousedown="onDragStart" @contextmenu.prevent="showContextMenu = true" :style="{ top: posY + 'px', left: posX + 'px' }">
+    </transition>
+    <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
         <Stevie v-if="gameStore.gameState != 'intro'" />
-        <div v-if="showContextMenu" class="context-menu" @click.stop>
-            <div class="menu-item" @click="navigateToStevieGenerator">Stevie Generator</div>
-            <div class="menu-item" @click="showContextMenu = false">Close</div>
-        </div>
     </div>
 </template>
 
@@ -115,31 +98,6 @@ const handleClickOutside = (e: MouseEvent) => {
     z-index: 999;
     cursor: grab;
     transition: top 0.05s ease-out, left 0.05s ease-out;
-}
-
-.context-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    padding: 5px 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    z-index: 1000;
-    min-width: 150px;
-}
-
-.menu-item {
-    padding: 8px 15px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #333;
-    transition: background-color 0.2s;
-}
-
-.menu-item:hover {
-    background-color: #f5f5f5;
 }
 
 .fade-enter-active,

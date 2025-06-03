@@ -1,44 +1,258 @@
 {
-    "nodes": {
-        "node1": {
-            "name": "start",
-            "icon": "&#xe320",
-            "status": 3,
-            "draggable": false
-        },
-        "node2": {
-            "name": "12",
-            "icon": "&#xe328",
-            "status": 2,
-            "draggable": true,
-            "minigame": 3,
-            "difficulty": 0,
-            "knowledgeIds": [
-                2,
-                1
-            ]
-        }
+  "nodes": {
+    "node1": {
+      "name": "Start",
+      "icon": "&#xe320",
+      "status": 3,
+      "draggable": false,
+      "knowledgeIds": []
     },
-    "edges": {
-        "edge1": {
-            "source": "node1",
-            "target": "node2",
-            "color": "#4466cc",
-            "dashed": false
-        }
+    "node2": {
+      "name": "PC",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 3,
+      "difficulty": 3,
+      "knowledgeIds": []
     },
-    "layouts": {
-        "nodes": {
-            "node1": {
-                "x": 0,
-                "y": 0,
-                "fixed": true
-            },
-            "node2": {
-                "x": 214,
-                "y": -130,
-                "fixed": true
-            }
-        }
+    "node3": {
+      "name": "PC",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node4": {
+      "name": "PC",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node5": {
+      "name": "PC",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node6": {
+      "name": "HUB",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node7": {
+      "name": "HUB",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node8": {
+      "name": "DRUCKER",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node9": {
+      "name": "STEUERZENTRALE",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node10": {
+      "name": "Zentrifuge  ",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node11": {
+      "name": "Zentrifuge  ",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node12": {
+      "name": "Zentrifuge  ",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node14": {
+      "name": "Steuerzentrale  ",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
+    },
+    "node15": {
+      "name": "WWW  ",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": []
     }
+  },
+  "edges": {
+    "edge1": {
+      "source": "node1",
+      "target": "node2",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge2": {
+      "source": "node2",
+      "target": "node6",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge3": {
+      "source": "node5",
+      "target": "node6",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge4": {
+      "source": "node4",
+      "target": "node6",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge5": {
+      "source": "node3",
+      "target": "node6",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge6": {
+      "source": "node1",
+      "target": "node8",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge7": {
+      "source": "node8",
+      "target": "node7",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge8": {
+      "source": "node9",
+      "target": "node11",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge10": {
+      "source": "node14",
+      "target": "node15",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeIzw5D": {
+      "source": "node9",
+      "target": "node12",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgehGO2b": {
+      "source": "node9",
+      "target": "node10",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeXQ1ah": {
+      "source": "node12",
+      "target": "node14",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeO83kr": {
+      "source": "node1",
+      "target": "node9",
+      "color": "#4466cc",
+      "dashed": false
+    }
+  },
+  "layouts": {
+    "nodes": {
+      "node1": {
+        "x": 0,
+        "y": 0,
+        "fixed": true
+      },
+      "node2": {
+        "x": -78.03196859379977,
+        "y": -156.72579061722865,
+        "fixed": true
+      },
+      "node3": {
+        "x": -204.03850241237734,
+        "y": -44.743534026583,
+        "fixed": true
+      },
+      "node4": {
+        "x": -494.52077562161105,
+        "y": -250.03474673143796,
+        "fixed": true
+      },
+      "node5": {
+        "x": -371.3124181021694,
+        "y": -70.39333062820391,
+        "fixed": true
+      },
+      "node6": {
+        "x": -326.76217086958127,
+        "y": -243.273814328546,
+        "fixed": true
+      },
+      "node7": {
+        "x": 434.28318568336465,
+        "y": -393.7267964590184,
+        "fixed": true
+      },
+      "node8": {
+        "x": 223.03068203401085,
+        "y": -121.1759359286021,
+        "fixed": true
+      },
+      "node9": {
+        "x": -132.35224011877725,
+        "y": 684.1687362995988,
+        "fixed": true
+      },
+      "node10": {
+        "x": 399.937158396667,
+        "y": 468.3645690852917,
+        "fixed": true
+      },
+      "node11": {
+        "x": -404.66065089678676,
+        "y": 342.08014784185394,
+        "fixed": true
+      },
+      "node12": {
+        "x": 155.81337362974816,
+        "y": 264.42904695630995,
+        "fixed": true
+      },
+      "node14": {
+        "x": 453.2282682263598,
+        "y": 126.63731023971818,
+        "fixed": true
+      },
+      "node15": {
+        "x": 527.9230788846439,
+        "y": 40.56295673769122,
+        "fixed": false
+      }
+    }
+  }
 }

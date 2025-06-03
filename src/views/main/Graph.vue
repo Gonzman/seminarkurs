@@ -114,11 +114,11 @@ const nodes = reactive<Record<string, Node>>({})
 
 
 const availableMinigames = computed(() => {
-    if (!interactionNode.value || !nodes[interactionNode.value]) {
+    if (!interactionNode.value || !filteredNodes.value[interactionNode.value]) {
         return [];
     }
 
-    const node = nodes[interactionNode.value];
+    const node = filteredNodes.value[interactionNode.value];
     const minigameList: NodeMinigame[] = [];
 
 
@@ -196,7 +196,11 @@ const availableMinigames = computed(() => {
     });
 });
 
-const configs = config(nodes, false);
+const filteredNodes = computed(() => {
+    return filterNodes(nodes);
+});
+
+const configs = computed(() => config(filteredNodes.value, false));
 
 const targetNodePos = computed(() => {
     return layouts.value.nodes[targetNodeId.value] || { x: 0, y: 0 }
@@ -233,10 +237,10 @@ const eventHandlers: vNG.EventHandlers = {
         tooltipOpacity.value = 0
     },
     'node:click': ({ node }) => {
-        if (!node || !nodes[node]) return
+        if (!node || !filteredNodes.value[node]) return
 
 
-        if (nodes[node].status === Status.Status.START) return
+        if (filteredNodes.value[node].status === Status.Status.START) return
 
         interactionNode.value = node
         showNodeInteraction.value = true
@@ -249,6 +253,55 @@ const eventHandlers: vNG.EventHandlers = {
 }
 const nextNodeIndex = ref(Object.keys(nodes).length + 1)
 const nextEdgeIndex = ref(Object.keys(edges).length + 1)
+
+
+function filterNodes(nodes: Record<string, Node>): Record<string, Node> {
+    const filtered: Record<string, Node> = {};
+    const visitedNodes = new Set<string>();
+
+    function getConnectedNodes(nodeId: string): string[] {
+        const connectedNodeIds: string[] = [];
+        for (const edge of Object.values(edges)) {
+            if (edge.source === nodeId) {
+                connectedNodeIds.push(edge.target);
+            }
+            if (edge.target === nodeId) {
+                connectedNodeIds.push(edge.source);
+            }
+        }
+        return connectedNodeIds;
+    }
+
+    function addNodeToFiltered(nodeId: string, status?: Status.Status) {
+        if (nodes[nodeId]) {
+            filtered[nodeId] = {
+                ...nodes[nodeId],
+                status: status !== undefined ? status : nodes[nodeId].status
+            };
+        }
+    }
+
+    for (const [nodeId, node] of Object.entries(nodes)) {
+        if (node.status === Status.Status.START || node.status === Status.Status.HACKED) {
+            addNodeToFiltered(nodeId);
+            visitedNodes.add(nodeId);
+
+            const connectedNodes = getConnectedNodes(nodeId);
+            for (const connectedNodeId of connectedNodes) {
+                if (!visitedNodes.has(connectedNodeId) && nodes[connectedNodeId]) {
+                    if (nodes[connectedNodeId].status === Status.Status.HACKED) {
+                        addNodeToFiltered(connectedNodeId);
+                    } else {
+                        addNodeToFiltered(connectedNodeId, Status.Status.ONLINE);
+                    }
+                    visitedNodes.add(connectedNodeId);
+                }
+            }
+        }
+    }
+
+    return filtered;
+}
 
 function addNode() {
     const nodeId = `node${nextNodeIndex.value}`
@@ -642,12 +695,12 @@ defineExpose({ addRandomNode })
         <div class="content">
             <!-- Graph Container -->
             <div class="graph-container">
-                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="nodes" :edges="edges" :configs="configs"
-                    :event-handlers="eventHandlers" />
+                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="filteredNodes" :edges="edges"
+                    :configs="configs" :event-handlers="eventHandlers" />
                 <div ref="tooltip" class="tooltip" :style="{ ...tooltipPos, opacity: tooltipOpacity }">
-                    <div>Name: {{ nodes[targetNodeId]?.name ?? '' }}</div>
-                    <div>Status: {{ Status.getStatusString(nodes[targetNodeId]?.status) }}</div>
-                    <div>IP: {{ nameToIP(nodes[targetNodeId]?.name ?? '') }}</div>
+                    <div>Name: {{ filteredNodes[targetNodeId]?.name ?? '' }}</div>
+                    <div>Status: {{ Status.getStatusString(filteredNodes[targetNodeId]?.status) }}</div>
+                    <div>IP: {{ nameToIP(filteredNodes[targetNodeId]?.name ?? '') }}</div>
                 </div>
             </div>
         </div>
@@ -695,18 +748,18 @@ defineExpose({ addRandomNode })
         <!-- Node Interaction Panel -->
         <div v-if="showNodeInteraction && interactionNode" class="panel node-interaction">
             <div class="panel-section">
-                <h3>{{ nodes[interactionNode]?.name }} Interaction
+                <h3>{{ filteredNodes[interactionNode]?.name }} Interaction
                     <span class="status-badge"
-                        :style="{ backgroundColor: Status.getColor(nodes[interactionNode]?.status) }">
-                        {{ Status.getStatusString(nodes[interactionNode]?.status) }}
+                        :style="{ backgroundColor: Status.getColor(filteredNodes[interactionNode]?.status) }">
+                        {{ Status.getStatusString(filteredNodes[interactionNode]?.status) }}
                     </span>
                     <button class="close-btn" @click="showNodeInteraction = false">×</button>
                 </h3>
 
                 <div class="interaction-content">
-                    <p class="ip-address">IP: {{ nameToIP(nodes[interactionNode]?.name || '') }}</p>
-                    <p v-if="nodes[interactionNode]?.difficulty !== undefined" class="difficulty-info">
-                        Difficulty: {{ Level[nodes[interactionNode]?.difficulty!] }}
+                    <p class="ip-address">IP: {{ nameToIP(filteredNodes[interactionNode]?.name || '') }}</p>
+                    <p v-if="filteredNodes[interactionNode]?.difficulty !== undefined" class="difficulty-info">
+                        Difficulty: {{ Level[filteredNodes[interactionNode]?.difficulty!] }}
                     </p>
 
                     <div v-if="availableMinigames.length > 0" class="minigames-list">
