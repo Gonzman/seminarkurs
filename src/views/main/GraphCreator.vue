@@ -359,8 +359,7 @@ function resetEdgeForm() {
 
 
 function removeNode(nodeId: string) {
-
-    if (nodeId === 'node1' && nodes[nodeId].status === Status.Status.START) {
+    if (nodeId === 'start' && nodes[nodeId].status === Status.Status.START) {
         errorMessage.value = "Cannot delete the start node";
         return;
     }
@@ -399,38 +398,35 @@ function saveGraph() {
         return;
     }
 
-
-    Object.keys(nodes).forEach(key => {
-        if (nodes[key].name) {
-            nodes[key].name = nodes[key].name.slice(0, -8);
-        }
-    });
-
     const graphData: GraphData = {
-        nodes: { ...nodes },
+        nodes: {},
         edges: { ...edges },
         layouts: { ...layouts.value }
     }
 
+    Object.keys(nodes).forEach(key => {
+        const node = { ...nodes[key] };
+        if (node.name && node.name.includes(' (') && node.name.endsWith(')')) {
+            const lastParenIndex = node.name.lastIndexOf(' (');
+            node.name = node.name.substring(0, lastParenIndex);
+        }
+        graphData.nodes[key] = node;
+    });
 
     const existingIndex = savedGraphs.value.findIndex(graph => graph.name === graphName.value);
 
     if (existingIndex >= 0) {
-
         savedGraphs.value[existingIndex].data = graphData;
     } else {
-
         savedGraphs.value.push({
             name: graphName.value,
             data: graphData
         });
     }
 
-
     localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
     alert(`Graph "${graphName.value}" saved successfully!`);
 }
-
 
 function loadGraph() {
 
@@ -453,10 +449,11 @@ function loadGraph() {
 
 
     Object.entries(graph.data.nodes).forEach(([id, node]) => {
-        if (node.status !== Status.Status.START) {
-            node.name = node.name + " (" + id + ")";
+        const newNode = { ...node };
+        if (newNode.status !== Status.Status.START) {
+            newNode.name = newNode.name + " (" + id + ")";
         }
-        nodes[id] = { ...node };
+        nodes[id] = newNode;
     });
 
 
@@ -499,19 +496,20 @@ function deleteGraph() {
 
 
 function exportGraph() {
-
-    Object.keys(nodes).forEach(key => {
-        if (nodes[key].name) {
-            nodes[key].name = nodes[key].name.slice(0, -8);
-        }
-    });
-
-
     const graphData: GraphData = {
-        nodes: { ...nodes },
+        nodes: {},
         edges: { ...edges },
         layouts: { ...layouts.value }
     }
+
+    Object.keys(nodes).forEach(key => {
+        const node = { ...nodes[key] };
+        if (node.name && node.name.includes(' (') && node.name.endsWith(')')) {
+            const lastParenIndex = node.name.lastIndexOf(' (');
+            node.name = node.name.substring(0, lastParenIndex);
+        }
+        graphData.nodes[key] = node;
+    });
 
     const jsonString = JSON.stringify(graphData, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -524,7 +522,6 @@ function exportGraph() {
 
     URL.revokeObjectURL(url);
 }
-
 
 function importGraph(event: Event) {
 
@@ -547,12 +544,11 @@ function importGraph(event: Event) {
 
 
             Object.entries(graphData.nodes).forEach(([id, node]) => {
-
-                if (node.status !== Status.Status.START) {
-                    node.name = node.name + " (" + id + ")";
+                const newNode = { ...node };
+                if (newNode.status !== Status.Status.START) {
+                    newNode.name = newNode.name + " (" + id + ")";
                 }
-
-                nodes[id] = { ...node }
+                nodes[id] = newNode;
             })
 
 
@@ -619,7 +615,7 @@ function importGraph(event: Event) {
                         <div class="form-group">
                             <label for="node-status">Status:</label>
                             <select id="node-status" v-model="newNode.status">
-                                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                                <option v-for="option in Status.Status" :key="option.value" :value="option.value">
                                     {{ option.label }}
                                 </option>
                             </select>
