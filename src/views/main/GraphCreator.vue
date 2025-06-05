@@ -615,8 +615,8 @@ function importGraph(event: Event) {
                         <div class="form-group">
                             <label for="node-status">Status:</label>
                             <select id="node-status" v-model="newNode.status">
-                                <option v-for="option in Status.Status" :key="option.value" :value="option.value">
-                                    {{ option.label }}
+                                <option v-for="option in Status.Status" :key="option" :value="option">
+                                    {{ option }}
                                 </option>
                             </select>
                         </div>
