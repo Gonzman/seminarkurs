@@ -1,100 +1,196 @@
 {
   "nodes": {
-    "node1": {
-      "name": "Start",
+    "start": {
+      "name": "start",
       "icon": "&#xe320",
       "status": 3,
-      "draggable": false,
-      "knowledgeIds": []
+      "draggable": false
     },
-    "node2": {
-      "name": "PC",
+    "vXLD1": {
+      "name": "PC (technik)",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
       "minigame": 3,
       "difficulty": 3,
-      "knowledgeIds": []
+      "knowledgeIds": [37, 29, 34, 9]
     },
-    "node3": {
-      "name": "PC",
+    "2FgL6": {
+      "name": "Drucker (2FgL6)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 0,
+      "difficulty": 4,
+      "knowledgeIds": [27, 32]
+    },
+    "vmKv6": {
+      "name": "PC (vmKv6)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 3,
+      "difficulty": 2,
+      "knowledgeIds": [20, 3, 30, 2]
+    },
+    "uZ6YO": {
+      "name": "Server (uZ6YO)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 2,
+      "difficulty": 3,
+      "knowledgeIds": [21, 22, 23, 24, 25]
+    },
+    "2nDnR": {
+      "name": "Server (2nDnR)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 2,
+      "difficulty": 4,
+      "knowledgeIds": [14, 32, 10, 18, 26, 31]
+    },
+    "sLs1R": {
+      "name": "PC (sLs1R)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 0,
+      "difficulty": 2,
+      "knowledgeIds": [11, 13, 33]
+    },
+    "z2oKM": {
+      "name": "PC (z2oKM)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "knowledgeIds": [5, 6, 35, 36]
+    },
+    "hJUri": {
+      "name": "Drucker (hJUri)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 3,
+      "difficulty": 4,
+      "knowledgeIds": [28, 8, 7]
+    },
+    "moUHp": {
+      "name": "PC (moUHp)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 0,
+      "difficulty": 2,
+      "knowledgeIds": [4, 12, 1]
+    },
+    "6T5c7": {
+      "name": "Ende 1",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
       "knowledgeIds": []
     },
-    "node4": {
-      "name": "PC",
+    "zpP7r": {
+      "name": "Steuereinheit",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 2,
+      "difficulty": 2,
+      "knowledgeIds": []
+    },
+    "Wo64O": {
+      "name": "Zentrifuge",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 1,
+      "difficulty": 3,
+      "knowledgeIds": []
+    },
+    "iTrlM": {
+      "name": "Zentrifuge",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 1,
+      "difficulty": 3,
+      "knowledgeIds": []
+    },
+    "v7Izy": {
+      "name": "Zentrifuge",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 1,
+      "difficulty": 3,
+      "knowledgeIds": []
+    },
+    "n1DSx": {
+      "name": "Zentrifuge",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 1,
+      "difficulty": 3,
+      "knowledgeIds": []
+    },
+    "U69xh": {
+      "name": "Zentrifuge",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 1,
+      "difficulty": 3,
+      "knowledgeIds": []
+    },
+    "HrBHB": {
+      "name": "Control-Terminal (HrBHB)",
+      "icon": "&#xe328",
+      "status": 2,
+      "draggable": true,
+      "minigame": 2,
+      "difficulty": 2,
+      "knowledgeIds": [32]
+    },
+    "vnned": {
+      "name": "Ende 2",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
       "knowledgeIds": []
     },
-    "node5": {
-      "name": "PC",
+    "SEDzG": {
+      "name": "Internet (SEDzG)",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
+      "minigame": 1,
+      "difficulty": 2,
       "knowledgeIds": []
     },
-    "node6": {
-      "name": "HUB",
+    "8vHeQ": {
+      "name": "Bank (8vHeQ)",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
+      "minigame": 2,
+      "difficulty": 0,
       "knowledgeIds": []
     },
-    "node7": {
-      "name": "HUB",
+    "7Fx5i": {
+      "name": "Krankenhaus (7Fx5i)",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
-      "knowledgeIds": []
+      "minigame": 0,
+      "difficulty": 1,
+      "knowledgeIds": [17, 16, 15]
     },
-    "node8": {
-      "name": "DRUCKER",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node9": {
-      "name": "STEUERZENTRALE",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node10": {
-      "name": "Zentrifuge  ",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node11": {
-      "name": "Zentrifuge  ",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node12": {
-      "name": "Zentrifuge  ",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node14": {
-      "name": "Steuerzentrale  ",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
-    "node15": {
-      "name": "WWW  ",
+    "9hY3i": {
+      "name": "Ende 3",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -102,156 +198,291 @@
     }
   },
   "edges": {
-    "edge1": {
-      "source": "node1",
-      "target": "node2",
+    "edgejdNXh": {
+      "source": "start",
+      "target": "vXLD1",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge2": {
-      "source": "node2",
-      "target": "node6",
+    "edgel0pQu": {
+      "source": "vXLD1",
+      "target": "2FgL6",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge3": {
-      "source": "node5",
-      "target": "node6",
+    "edgeAHTFf": {
+      "source": "2FgL6",
+      "target": "vmKv6",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge4": {
-      "source": "node4",
-      "target": "node6",
+    "edgeV7sCW": {
+      "source": "vmKv6",
+      "target": "uZ6YO",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge5": {
-      "source": "node3",
-      "target": "node6",
+    "edgerTlVL": {
+      "source": "2FgL6",
+      "target": "2nDnR",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge6": {
-      "source": "node1",
-      "target": "node8",
+    "edgepg02N": {
+      "source": "2nDnR",
+      "target": "sLs1R",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge7": {
-      "source": "node8",
-      "target": "node7",
+    "edge5NGQH": {
+      "source": "uZ6YO",
+      "target": "sLs1R",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge8": {
-      "source": "node9",
-      "target": "node11",
+    "edgeNGrlf": {
+      "source": "uZ6YO",
+      "target": "z2oKM",
       "color": "#4466cc",
       "dashed": false
     },
-    "edge10": {
-      "source": "node14",
-      "target": "node15",
+    "edgeLrtoY": {
+      "source": "sLs1R",
+      "target": "hJUri",
       "color": "#4466cc",
       "dashed": false
     },
-    "edgeIzw5D": {
-      "source": "node9",
-      "target": "node12",
+    "edgeT2k5E": {
+      "source": "z2oKM",
+      "target": "hJUri",
       "color": "#4466cc",
       "dashed": false
     },
-    "edgehGO2b": {
-      "source": "node9",
-      "target": "node10",
+    "edgeHFYk7": {
+      "source": "hJUri",
+      "target": "moUHp",
       "color": "#4466cc",
       "dashed": false
     },
-    "edgeXQ1ah": {
-      "source": "node12",
-      "target": "node14",
+    "edgeJtk48": {
+      "source": "moUHp",
+      "target": "6T5c7",
       "color": "#4466cc",
       "dashed": false
     },
-    "edgeO83kr": {
-      "source": "node1",
-      "target": "node9",
+    "edgetFylK": {
+      "source": "z2oKM",
+      "target": "zpP7r",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgefvDnj": {
+      "source": "zpP7r",
+      "target": "Wo64O",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgetB5Wt": {
+      "source": "zpP7r",
+      "target": "iTrlM",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeahUN5": {
+      "source": "zpP7r",
+      "target": "v7Izy",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgenOXVz": {
+      "source": "zpP7r",
+      "target": "n1DSx",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge1g8oC": {
+      "source": "zpP7r",
+      "target": "U69xh",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgejjhqw": {
+      "source": "Wo64O",
+      "target": "HrBHB",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeuom2K": {
+      "source": "iTrlM",
+      "target": "HrBHB",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeEv7dd": {
+      "source": "v7Izy",
+      "target": "HrBHB",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgen851Y": {
+      "source": "n1DSx",
+      "target": "HrBHB",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgezQkJQ": {
+      "source": "U69xh",
+      "target": "HrBHB",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgektw7C": {
+      "source": "HrBHB",
+      "target": "vnned",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgeM25LN": {
+      "source": "HrBHB",
+      "target": "SEDzG",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgedDv0j": {
+      "source": "SEDzG",
+      "target": "8vHeQ",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edge3XhO9": {
+      "source": "SEDzG",
+      "target": "7Fx5i",
+      "color": "#4466cc",
+      "dashed": false
+    },
+    "edgelRHFH": {
+      "source": "7Fx5i",
+      "target": "9hY3i",
       "color": "#4466cc",
       "dashed": false
     }
   },
   "layouts": {
     "nodes": {
-      "node1": {
+      "start": {
         "x": 0,
         "y": 0,
         "fixed": true
       },
-      "node2": {
-        "x": -78.03196859379977,
-        "y": -156.72579061722865,
+      "vXLD1": {
+        "x": 4,
+        "y": -107,
         "fixed": true
       },
-      "node3": {
-        "x": -204.03850241237734,
-        "y": -44.743534026583,
+      "2FgL6": {
+        "x": 4,
+        "y": -212,
         "fixed": true
       },
-      "node4": {
-        "x": -494.52077562161105,
-        "y": -250.03474673143796,
+      "vmKv6": {
+        "x": -179,
+        "y": -350,
         "fixed": true
       },
-      "node5": {
-        "x": -371.3124181021694,
-        "y": -70.39333062820391,
+      "uZ6YO": {
+        "x": -221.0258012331147,
+        "y": -530.5793590135082,
         "fixed": true
       },
-      "node6": {
-        "x": -326.76217086958127,
-        "y": -243.273814328546,
+      "2nDnR": {
+        "x": 164,
+        "y": -345,
         "fixed": true
       },
-      "node7": {
-        "x": 434.28318568336465,
-        "y": -393.7267964590184,
+      "sLs1R": {
+        "x": 168,
+        "y": -564,
         "fixed": true
       },
-      "node8": {
-        "x": 223.03068203401085,
-        "y": -121.1759359286021,
+      "z2oKM": {
+        "x": -124,
+        "y": -774,
         "fixed": true
       },
-      "node9": {
-        "x": -132.35224011877725,
-        "y": 684.1687362995988,
+      "hJUri": {
+        "x": 140.81107124994475,
+        "y": -774.6742669078918,
         "fixed": true
       },
-      "node10": {
-        "x": 399.937158396667,
-        "y": 468.3645690852917,
+      "moUHp": {
+        "x": 323,
+        "y": -877,
         "fixed": true
       },
-      "node11": {
-        "x": -404.66065089678676,
-        "y": 342.08014784185394,
+      "6T5c7": {
+        "x": 513.8813463581321,
+        "y": -976.4907499407163,
         "fixed": true
       },
-      "node12": {
-        "x": 155.81337362974816,
-        "y": 264.42904695630995,
+      "zpP7r": {
+        "x": -194.77331183534358,
+        "y": -979.3773450883394,
         "fixed": true
       },
-      "node14": {
-        "x": 453.2282682263598,
-        "y": 126.63731023971818,
+      "Wo64O": {
+        "x": -558.4880053133212,
+        "y": -935.3355994282226,
         "fixed": true
       },
-      "node15": {
-        "x": 527.9230788846439,
-        "y": 40.56295673769122,
-        "fixed": false
+      "iTrlM": {
+        "x": -453.3752733071786,
+        "y": -1120.9955823758953,
+        "fixed": true
+      },
+      "v7Izy": {
+        "x": -335.04037878840563,
+        "y": -1291.0784507052958,
+        "fixed": true
+      },
+      "n1DSx": {
+        "x": -120.57400292165285,
+        "y": -1211.37867479184,
+        "fixed": true
+      },
+      "U69xh": {
+        "x": 127.55500790997692,
+        "y": -1086.4728168674146,
+        "fixed": true
+      },
+      "HrBHB": {
+        "x": -442,
+        "y": -1622,
+        "fixed": true
+      },
+      "vnned": {
+        "x": 135.13881669501967,
+        "y": -1688.3116659683408,
+        "fixed": true
+      },
+      "SEDzG": {
+        "x": -407.961298150328,
+        "y": -1864.184519260131,
+        "fixed": true
+      },
+      "8vHeQ": {
+        "x": -736,
+        "y": -2248,
+        "fixed": true
+      },
+      "7Fx5i": {
+        "x": -256,
+        "y": -2099,
+        "fixed": true
+      },
+      "9hY3i": {
+        "x": -221.4251608118053,
+        "y": -2322.831274178291,
+        "fixed": true
       }
     }
   }
