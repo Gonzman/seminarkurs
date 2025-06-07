@@ -30,6 +30,7 @@ switch (props.level) {
         break
 
     case Level.SUPER_HARD:
+    case Level.IMPOSSIBLE:
         colors = ['red', 'green', 'blue', 'purple', 'yellow', 'teal']
         start = 15
         break

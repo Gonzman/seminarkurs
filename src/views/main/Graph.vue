@@ -69,7 +69,7 @@ const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
         },
         {
             title: "Encryption Challenge",
-            route: "/caeser",
+            route: "/caesar",
             description: "Break the encryption to access node data.",
             knowledge: null,
             difficulty: Level.HARD,
@@ -150,7 +150,7 @@ const availableMinigames = computed(() => {
                 description = "Bypass the circuit protection system.";
                 break;
             case games.ENCRYPTION:
-                routeBase = "/caeser";
+                routeBase = "/caesar";
                 title = "Encryption Challenge";
                 description = "Break the encryption to access node data.";
                 break;

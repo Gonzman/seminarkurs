@@ -9,8 +9,8 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'home',
-            component: () => import('../views/HomeView.vue'),
+            name: 'Hauptmenu',
+            component: () => import('../index.vue'),
         },
         {
             path: '/wire/:difficulty?',
@@ -28,8 +28,8 @@ const router = createRouter({
             meta: { transition: 'slide-left' },
         },
         {
-            path: '/caeser/:difficulty?',
-            name: 'caeser',
+            path: '/caesar/:difficulty?',
+            name: 'caesar',
             component: () => import('../views/minigames/encryption/Encryption.vue'),
             props: (route) => ({
                 level: route.params.difficulty
@@ -107,7 +107,7 @@ const router = createRouter({
         },
 
         {
-            path: '/scenes/:scene?',
+            path: '/scenes/:scene?/:debug?',
             name: 'scenes',
             component: () => import('../views/scenes/scenes.vue'),
             props: (route) => {
@@ -116,7 +116,8 @@ const router = createRouter({
                         ? (route.params.scene.toUpperCase() as keyof typeof scenes)
                         : 'INTRO'
                 const scene = scenes[sceneKey] !== undefined ? scenes[sceneKey] : scenes.INTRO
-                return { scene: scene }
+                const debug = route.params.debug ?? false
+                return { scene: scene, debug: debug }
             },
         },
     ],

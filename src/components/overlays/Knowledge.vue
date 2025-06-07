@@ -8,10 +8,6 @@
             <div class="list">
                 <div class="knowledge-header">
                     <h2>Gesammelte Informationen</h2>
-                    <div class="buttons-row">
-                        <button @click="addRandomKnowledge" class="add-btn" v-if="isDebug">Add Random Knowledge</button>
-                        <button @click="removeAllKnowledges" class="clear-btn" v-if="isDebug">Clear All</button>
-                    </div>
                 </div>
 
                 <div v-if="knowledges.length === 0" class="no-knowledge">
@@ -119,6 +115,7 @@ function removeAllKnowledges() {
 
 .list {
     width: 30%;
+    min-width: 430px;
     border-right: 1px solid var(--color-border);
     padding: 20px;
     overflow-y: auto;

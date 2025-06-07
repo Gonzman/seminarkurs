@@ -1,18 +1,38 @@
 <script setup lang="ts">
+import router from '@/router';
 import { scenes } from './scenes';
 
 
 const props = defineProps<{ scene?: scenes }>();
 
 
-const sceneNames = ['intro', 'outro1', 'outro2', 'outro3', 'outro4'];
+const sceneNames = ['intro', 'outro1', 'outro2', 'outro3', 'outro4'] as const;
 const filepath = "/videos/" + sceneNames[props.scene ?? scenes.INTRO] + ".mp4"
+
+
+function handleEnd() {
+    const currentSceneName = sceneNames[props.scene ?? scenes.INTRO];
+    switch (currentSceneName) {
+        case "intro":
+            router.push("/graph");
+            localStorage.setItem("intro", "1");
+            break;
+        case "outro1":
+            break;
+        case "outro2":
+            break;
+        case "outro3":
+            break;
+        case "outro4":
+            break;
+    }
+}
 
 </script>
 
 <template>
     <div class="video-container">
-        <video autoplay>
+        <video autoplay @ended="handleEnd">
             <source :src=filepath type="video/mp4">
         </video>
     </div>

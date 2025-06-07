@@ -7,7 +7,7 @@
       "draggable": false
     },
     "vXLD1": {
-      "name": "PC (technik)",
+      "name": "PC",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -16,7 +16,7 @@
       "knowledgeIds": [37, 29, 34, 9]
     },
     "2FgL6": {
-      "name": "Drucker (2FgL6)",
+      "name": "Drucker",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -25,7 +25,7 @@
       "knowledgeIds": [27, 32]
     },
     "vmKv6": {
-      "name": "PC (vmKv6)",
+      "name": "PC",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -34,7 +34,7 @@
       "knowledgeIds": [20, 3, 30, 2]
     },
     "uZ6YO": {
-      "name": "Server (uZ6YO)",
+      "name": "Server",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -43,7 +43,7 @@
       "knowledgeIds": [21, 22, 23, 24, 25]
     },
     "2nDnR": {
-      "name": "Server (2nDnR)",
+      "name": "Server",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -52,7 +52,7 @@
       "knowledgeIds": [14, 32, 10, 18, 26, 31]
     },
     "sLs1R": {
-      "name": "PC (sLs1R)",
+      "name": "PC",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -61,14 +61,16 @@
       "knowledgeIds": [11, 13, 33]
     },
     "z2oKM": {
-      "name": "PC (z2oKM)",
+      "name": "PC",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
+      "minigame": 0,
+      "difficulty": 1,
       "knowledgeIds": [5, 6, 35, 36]
     },
     "hJUri": {
-      "name": "Drucker (hJUri)",
+      "name": "Drucker",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -77,7 +79,7 @@
       "knowledgeIds": [28, 8, 7]
     },
     "moUHp": {
-      "name": "PC (moUHp)",
+      "name": "PC",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -147,7 +149,7 @@
       "knowledgeIds": []
     },
     "HrBHB": {
-      "name": "Control-Terminal (HrBHB)",
+      "name": "Control-Terminal",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -163,7 +165,7 @@
       "knowledgeIds": []
     },
     "SEDzG": {
-      "name": "Internet (SEDzG)",
+      "name": "Internet",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -172,7 +174,7 @@
       "knowledgeIds": []
     },
     "8vHeQ": {
-      "name": "Bank (8vHeQ)",
+      "name": "Bank",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
@@ -181,7 +183,7 @@
       "knowledgeIds": []
     },
     "7Fx5i": {
-      "name": "Krankenhaus (7Fx5i)",
+      "name": "Krankenhaus",
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,

@@ -69,8 +69,11 @@ export const useGameStore = defineStore('game', () => {
                 }
             }
         } else {
-            if (knowledgeStore.getGameKnowledges().length == 0) {
-                router.push('/graph')
+            const gameKnowledges = knowledgeStore.getGameKnowledges()
+            if (gameKnowledges.length == 0) {
+                setTimeout(() => {
+                    router.push('/graph')
+                }, 1000)
                 return
             }
             router.push('/infotinder')
