@@ -615,8 +615,8 @@ function importGraph(event: Event) {
                         <div class="form-group">
                             <label for="node-status">Status:</label>
                             <select id="node-status" v-model="newNode.status">
-                                <option v-for="option in Status.Status" :key="option" :value="option">
-                                    {{ option }}
+                                <option v-for="option in statusOptions" :key="option.value" :value="option.value">
+                                    {{ option.label }}
                                 </option>
                             </select>
                         </div>
@@ -704,7 +704,7 @@ function importGraph(event: Event) {
                                 <span v-if="node.minigame !== undefined" class="minigame-tag">{{
                                     Object.keys(games).find(key => games[key as keyof typeof games] === node.minigame)
                                     || 'Game'
-                                    }}</span>
+                                }}</span>
                                 <span v-if="node.knowledgeIds && node.knowledgeIds.length > 0" class="knowledge-tag">
                                     {{ node.knowledgeIds.length }} knowledge items
                                 </span>

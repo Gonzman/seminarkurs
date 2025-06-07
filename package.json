@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --write src/",
+    "build-server": "bun run build-only && scp -r dist/* offen:/var/www/"
   },
   "dependencies": {
     "@vueuse/core": "^12.5.0",
