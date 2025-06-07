@@ -95,7 +95,7 @@ const router = createRouter({
             name: 'infotinder',
             component: () => import('../views/minigames/infotinder/InfoTinder.vue'),
             props: {
-                max_space: 80,
+                max_space: 100,
                 min_size: 6,
                 max_size: 10,
             },
@@ -116,9 +116,14 @@ const router = createRouter({
                         ? (route.params.scene.toUpperCase() as keyof typeof scenes)
                         : 'INTRO'
                 const scene = scenes[sceneKey] !== undefined ? scenes[sceneKey] : scenes.INTRO
-                const debug = route.params.debug ?? false
+                const debug = route.params.debug === 'true'
                 return { scene: scene, debug: debug }
             },
+        },
+        {
+            path: '/ende',
+            name: 'Bericht Ende',
+            component: () => import('../views/main/End.vue'),
         },
     ],
 })

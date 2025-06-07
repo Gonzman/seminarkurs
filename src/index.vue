@@ -28,7 +28,7 @@ function start() {
 
 </script>
 
-<style>
+<style scoped>
 body {
     background: #0a0f0a;
     margin: 0;

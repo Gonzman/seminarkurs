@@ -3,14 +3,19 @@ import router from '@/router';
 import { scenes } from './scenes';
 
 
-const props = defineProps<{ scene?: scenes }>();
+const props = defineProps<{ scene?: scenes, debug?: boolean }>();
 
 
 const sceneNames = ['intro', 'outro1', 'outro2', 'outro3', 'outro4'] as const;
 const filepath = "/videos/" + sceneNames[props.scene ?? scenes.INTRO] + ".mp4"
 
+console.log(props.debug);
 
 function handleEnd() {
+    if (props.debug) {
+        router.push("/graph");
+        return;
+    }
     const currentSceneName = sceneNames[props.scene ?? scenes.INTRO];
     switch (currentSceneName) {
         case "intro":
@@ -18,12 +23,10 @@ function handleEnd() {
             localStorage.setItem("intro", "1");
             break;
         case "outro1":
-            break;
         case "outro2":
-            break;
         case "outro3":
-            break;
         case "outro4":
+            router.push("/ende")
             break;
     }
 }

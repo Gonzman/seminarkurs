@@ -1,12 +1,11 @@
 <template>
     <div>
-
-
         <div v-if="state == State.SELECT">
             <button @click="escapeStore.escapeState = false" class="back up">&#8249;</button>
             <div class="list">
                 <button @click="state = State.KNOWLEDGE" class="select">Informationen</button>
                 <button @click="state = State.INTRODUCTION" class="select">Anleitung</button>
+                <button @click="state = State.DEBUG" class="select">Szenen</button>
             </div>
         </div>
 
@@ -16,15 +15,17 @@
         <Instrocution v-else-if="state == State.INTRODUCTION">
             <button @click="state = State.SELECT" class="back">&#8249;</button>
         </Instrocution>
-
+        <Debug v-else-if="state == State.DEBUG">
+            <button @click="state = State.SELECT" class="back">&#8249;</button>
+        </Debug>
         <div>
-            {{ useKnowledgeStore().getGameKnowledges() }}
+            Debug: {{ useKnowledgeStore().getGameKnowledges() }}
         </div>
-
     </div>
 </template>
 
 <script setup lang="ts">
+import Debug from '@/components/overlays/Debug.vue';
 import Instrocution from '@/components/overlays/Introduction.vue';
 import Knowledge from '@/components/overlays/Knowledge.vue';
 import { useGameStore } from '@/stores/game';
@@ -37,6 +38,7 @@ enum State {
     SELECT,
     KNOWLEDGE,
     INTRODUCTION,
+    DEBUG
 }
 
 const state = ref<State>(State.SELECT);

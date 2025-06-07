@@ -41,7 +41,10 @@ const introductionStore = reactive({
 })
 
 const fetchIntroductionData = async () => {
-    introductionItems.value = jsonData;
+    introductionItems.value = jsonData.map((item: any) => ({
+        ...item,
+        imageSrc: typeof item.imageSrc === 'string' ? item.imageSrc : ''
+    }));
 }
 
 const selectIntroduction = (item: IntroductionItem) => {
