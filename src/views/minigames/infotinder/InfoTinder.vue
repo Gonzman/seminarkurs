@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { defineProps, onMounted, ref } from 'vue';
-import { getKnowledgeById, useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
+import { useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
 import { useRouter } from 'vue-router';
 
 const size_bar_div = ref<HTMLElement | null>(null);
@@ -53,7 +53,11 @@ const knowledges = ref(knowledgeStore.getGameKnowledges())
 //     if (knowledge) knowledges.value.push(knowledge);
 // }
 const saved_knowledges: KnowledgeItem[] = []
+const all_knowledges: KnowledgeItem[] = knowledgeStore.getAllKnowledges()
 const current = ref(0)
+all_knowledges.forEach(knowledge => {
+    current.value += hashTitleToSize(knowledge.title, min_size, max_size);
+})
 const max = ref(knowledges.value.length)
 const currentKnowledge = ref<KnowledgeItem | null>(knowledges.value[0])
 size.value = hashTitleToSize(currentKnowledge.value?.title || "default", min_size, max_size)
