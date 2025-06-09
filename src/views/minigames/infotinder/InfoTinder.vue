@@ -56,7 +56,7 @@ const saved_knowledges: KnowledgeItem[] = []
 const all_knowledges: KnowledgeItem[] = knowledgeStore.getAllKnowledges()
 const current = ref(0)
 all_knowledges.forEach(knowledge => {
-    current.value += hashTitleToSize(knowledge.title, min_size, max_size);
+    used_space.value += hashTitleToSize(knowledge.title, min_size, max_size);
 })
 const max = ref(knowledges.value.length)
 const currentKnowledge = ref<KnowledgeItem | null>(knowledges.value[0])
