@@ -17,6 +17,7 @@
 </template>
 
 <script setup lang="ts">
+import { useGameStore } from '@/stores/game';
 import { defineProps, onMounted, onUnmounted, ref } from 'vue';
 
 const { sizeX, sizeY, startX, startY, startDirection, speed, map } = defineProps<{
@@ -347,6 +348,7 @@ const onKeydown = (event: KeyboardEvent) => {
 }
 
 let laserUpdateId: number | undefined = undefined;
+const gameStore = useGameStore()
 
 const onLaserUpdate = (interval: number) => {
     if (running && !gameEnd && laserPolyline.value) {
@@ -382,11 +384,11 @@ const onLaserUpdate = (interval: number) => {
         if (lastPoint.x < 0 || lastPoint.x >= sizeX || lastPoint.y < 0 || lastPoint.y >= sizeY) {
             gameEnd = true;
             running = false;
-            alert('out of map');
+            gameStore.setMinigameWin(true);
         } else if (grid[Math.floor(lastPoint.x)][Math.floor(lastPoint.y)] == 1) {
             gameEnd = true;
             running = false;
-            alert('bonk wall');
+            gameStore.setMinigameWin(false);
         } else if (points.length >= 4) {
             const linesCollide = (p1: Point, p2: Point, p3: Point, p4: Point): boolean => {
                 const crossProduct = (a: Point, b: Point): number => {
@@ -416,7 +418,7 @@ const onLaserUpdate = (interval: number) => {
                 if (linesCollide(startPoint, endPoint, lastStartPoint, lastPoint)) {
                     gameEnd = true;
                     running = false;
-                    alert('bonk self');
+                    gameStore.setMinigameWin(false);
                     break;
                 }
             }

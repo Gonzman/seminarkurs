@@ -49,10 +49,10 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                 },
                 label: {
                     visible: true,
-                    fontSize: isCreator ? 20: 11,
+                    fontSize: isCreator ? 20 : 11,
                     lineHeight: 1.1,
                     color: '#FFFFFF',
-                    fontFamily: isCreator ? 'italic':'Pixel',
+                    fontFamily: isCreator ? 'italic' : 'Pixel',
                 },
             },
             edge: {
@@ -71,18 +71,26 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                         const sourceNode = nodes[edge.source]
                         const targetNode = nodes[edge.target]
 
+                        if (isCreator) {
+                            return edge.dashed ? '6' : '0'
+                        }
+
                         const shouldAnimate =
-                            sourceNode.status === Status.Status.START ||
+                            (sourceNode.status === Status.Status.START &&
+                                targetNode.status === Status.Status.ONLINE) ||
+                            (targetNode.status === Status.Status.START &&
+                                sourceNode.status === Status.Status.ONLINE) ||
                             (sourceNode.status === Status.Status.HACKED &&
-                                (targetNode.status === Status.Status.ONLINE ||
-                                    targetNode.status === Status.Status.HACKED)) ||
-                            isCreator
+                                targetNode.status === Status.Status.ONLINE) ||
+                            (targetNode.status === Status.Status.HACKED &&
+                                sourceNode.status === Status.Status.ONLINE) ||
+                            (sourceNode.status === Status.Status.HACKED &&
+                                targetNode.status === Status.Status.HACKED)
 
                         return shouldAnimate ? '6' : edge.dashed ? '6' : '0'
                     },
                     width: 5,
                     animate: (edge) => {
-                        // Check if source and target nodes exist
                         if (
                             !edge.source ||
                             !edge.target ||
@@ -94,16 +102,38 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
 
                         const sourceNode = nodes[edge.source]
                         const targetNode = nodes[edge.target]
+
                         if (isCreator) {
                             return true
                         }
 
                         return (
-                            sourceNode.status === Status.Status.START ||
+                            (sourceNode.status === Status.Status.START &&
+                                targetNode.status === Status.Status.ONLINE) ||
+                            (targetNode.status === Status.Status.START &&
+                                sourceNode.status === Status.Status.ONLINE) ||
                             (sourceNode.status === Status.Status.HACKED &&
-                                (targetNode.status === Status.Status.ONLINE ||
-                                    targetNode.status === Status.Status.HACKED))
+                                targetNode.status === Status.Status.ONLINE) ||
+                            (targetNode.status === Status.Status.HACKED &&
+                                sourceNode.status === Status.Status.ONLINE) ||
+                            (sourceNode.status === Status.Status.HACKED &&
+                                targetNode.status === Status.Status.HACKED)
                         )
+                    },
+                    animationSpeed: (edge) => {
+                        if (
+                            !edge.source ||
+                            !edge.target ||
+                            !nodes[edge.source] ||
+                            !nodes[edge.target]
+                        ) {
+                            return 40
+                        }
+                        if (isCreator) {
+                            return 40
+                        }
+
+                        return 40
                     },
                 },
                 hover: {
@@ -120,20 +150,20 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
             },
             view: {
                 layoutHandler: new ForceLayout({
-                          positionFixedByDrag: isCreator,
-                          positionFixedByClickWithAltKey: true,
-                          createSimulation: (d3, nodes, edges) => {
-                              const forceLink = d3
-                                  .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
-                                  .id((d: { id: any }) => d.id)
-                              return d3
-                                  .forceSimulation(nodes)
-                                  .force('edge', forceLink.distance(40).strength(0.5))
-                                  .force('charge', d3.forceManyBody().strength(-800))
-                                  .force('center', d3.forceCenter().strength(0.008))
-                                  .alphaMin(0.001)
-                          },
-                      }),
+                    positionFixedByDrag: isCreator,
+                    positionFixedByClickWithAltKey: true,
+                    createSimulation: (d3, nodes, edges) => {
+                        const forceLink = d3
+                            .forceLink<ForceNodeDatum, ForceEdgeDatum>(edges)
+                            .id((d: { id: any }) => d.id)
+                        return d3
+                            .forceSimulation(nodes)
+                            .force('edge', forceLink.distance(40).strength(0.5))
+                            .force('charge', d3.forceManyBody().strength(-800))
+                            .force('center', d3.forceCenter().strength(0.008))
+                            .alphaMin(0.001)
+                    },
+                }),
             },
         }),
     )

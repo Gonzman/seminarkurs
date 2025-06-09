@@ -9,7 +9,7 @@ import type { scenes } from '@/views/scenes/scenes'
 
 export const useGameStore = defineStore('game', () => {
     const escapeState = ref(false)
-    const gameState: Ref<GameStateType> = ref('intro')
+    const gameState: Ref<GameStateType> = ref('scene')
     const watchedIntro = ref(false)
 
     const minigameNode: Ref<string> = ref('')
@@ -18,6 +18,8 @@ export const useGameStore = defineStore('game', () => {
     const knowledgeStore = useKnowledgeStore()
     const stevie = useStevieStore()
     const minigameWin = ref(false)
+
+    const dangerLevel = ref(0)
 
     function toggleEscape() {
         escapeState.value = !escapeState.value
@@ -32,12 +34,8 @@ export const useGameStore = defineStore('game', () => {
 
         switch (value) {
             case 'circuitbreaker':
-            case 'intro':
+            case 'scene':
             case 'wire':
-            case 'outro1':
-            case 'outro2':
-            case 'outro3':
-            case 'outro4':
                 stevie.setVisible(false)
                 break
             default:
@@ -53,11 +51,22 @@ export const useGameStore = defineStore('game', () => {
     function setMinigameWin(value: boolean) {
         minigameWin.value = value
 
+        if (minigameNode.value == '7Fx5i') {
+            router.push('/scenes/outro3')
+            return
+        }
         if (!value) {
             knowledgeStore.gameFailed()
+
+            if (minigameNode.value == 'HrBHB' || minigameNode.value == '8vHeQ') {
+                router.push('/scenes/outro2')
+                return
+            }
+
             router.push('/graph')
             const lossKey = `loss_${minigameNode.value}`
             const losses = localStorage.getItem(lossKey)
+            dangerLevel.value++
             if (losses == null) {
                 localStorage.setItem(lossKey, '1')
             } else {
@@ -66,7 +75,12 @@ export const useGameStore = defineStore('game', () => {
                 localStorage.setItem(lossKey, lossCount.toString())
 
                 if (lossCount >= 3) {
+                    router.push('/scenes/outro1')
                 }
+            }
+
+            if (dangerLevel.value >= 6) {
+                router.push('/scenes/outro1')
             }
         } else {
             const gameKnowledges = knowledgeStore.getGameKnowledges()
@@ -113,11 +127,7 @@ const gameStateArray = [
     'finger',
     'wire',
     'tinder',
-    'intro',
-    'outro1',
-    'outro2',
-    'outro3',
-    'outro4',
+    'scene',
 ] as const
 
 export type GameStateType = (typeof gameStateArray)[number]

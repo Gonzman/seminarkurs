@@ -403,22 +403,22 @@ function checkCompletedMinigames() {
     const win = gameStore.getMinigameWin();
     if (!minigameData) return;
 
-    if (!win) {
-        const lossKey = `loss_${minigameData}`;
-        const losses = localStorage.getItem(lossKey);
-        if (losses == null) {
-            localStorage.setItem(lossKey, "1");
-        } else {
-            let lossCount = Number(losses);
-            lossCount++;
-            localStorage.setItem(lossKey, lossCount.toString());
+    // if (!win) {
+    //     const lossKey = `loss_${minigameData}`;
+    //     const losses = localStorage.getItem(lossKey);
+    //     if (losses == null) {
+    //         localStorage.setItem(lossKey, "1");
+    //     } else {
+    //         let lossCount = Number(losses);
+    //         lossCount++;
+    //         localStorage.setItem(lossKey, lossCount.toString());
 
-            if (lossCount >= 3) {
-                alert("You've failed this node challenge 3 times");
-            }
-        }
-        return;
-    }
+    //         if (lossCount >= 3) {
+    //             alert("You've failed this node challenge 3 times");
+    //         }
+    //     }
+    //     return;
+    // }
 
     try {
         const node = nodes[minigameData];
@@ -748,7 +748,7 @@ defineExpose({ addRandomNode })
         <!-- Node Interaction Panel -->
         <div v-if="showNodeInteraction && interactionNode" class="panel node-interaction">
             <div class="panel-section">
-                <h3>{{ filteredNodes[interactionNode]?.name }} Interaction
+                <h3>{{ filteredNodes[interactionNode]?.name }} Interaktion
                     <span class="status-badge"
                         :style="{ backgroundColor: Status.getColor(filteredNodes[interactionNode]?.status) }">
                         {{ Status.getStatusString(filteredNodes[interactionNode]?.status) }}
@@ -759,7 +759,7 @@ defineExpose({ addRandomNode })
                 <div class="interaction-content">
                     <p class="ip-address">IP: {{ nameToIP(filteredNodes[interactionNode]?.name || '') }}</p>
                     <p v-if="filteredNodes[interactionNode]?.difficulty !== undefined" class="difficulty-info">
-                        Difficulty: {{ Level[filteredNodes[interactionNode]?.difficulty!] }}
+                        Schwierigkeit: {{ Level[filteredNodes[interactionNode]?.difficulty!] }}
                     </p>
 
                     <div v-if="availableMinigames.length > 0" class="minigames-list">
@@ -768,14 +768,12 @@ defineExpose({ addRandomNode })
                             <div class="minigame-info">
                                 <h5>{{ minigame.title }}</h5>
                                 <p>{{ minigame.description }}</p>
-                                <p class="minigame-difficulty">Difficulty: {{ minigame.difficulty !== undefined ?
+                                <p class="minigame-difficulty">Schwierigkeit: {{ minigame.difficulty !== undefined ?
                                     Level[minigame.difficulty] : 'Default' }}</p>
                             </div>
-                            <button class="btn primary play-btn" @click="startMinigame(minigame)">Start</button>
+                            <button class="btn primary play-btn" @click="startMinigame(minigame)"
+                                :disabled="filteredNodes[interactionNode].status != Status.Status.ONLINE">Start</button>
                         </div>
-                    </div>
-                    <div v-else class="no-minigames">
-                        <p>No actions available for this node.</p>
                     </div>
                 </div>
             </div>
