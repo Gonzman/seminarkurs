@@ -122,13 +122,6 @@ const getImageSrc = (fingerIndex: number, partIndex: number) => {
 
     const actualFingerIndex = activeFingers.value[fingerIndex];
 
-    if ((props.level === Level.HARD || props.level === Level.SUPER_HARD) && partIndex % 2 === 1) {
-        const differentFingerIndex = (actualFingerIndex + 1) % imagesArray.value.length;
-        return imagesArray.value[differentFingerIndex] && imagesArray.value[differentFingerIndex][selectedValue]
-            ? imagesArray.value[differentFingerIndex][selectedValue]
-            : '';
-    }
-
     return imagesArray.value[actualFingerIndex] && imagesArray.value[actualFingerIndex][selectedValue]
         ? imagesArray.value[actualFingerIndex][selectedValue]
         : ''
@@ -240,43 +233,22 @@ const checkSolution = () => {
     gameWon.value = allCorrect
 
     if (allCorrect) {
-        gameStore.setMinigameWin(true)
 
         if (currentFingerIndex.value === activeFingers.value.length - 1) {
             setTimeout(() => {
-                completeGame()
+                gameStore.setMinigameWin(true)
             }, 2000)
         }
     }
 }
 
-const completeGame = () => {
-    const currentMinigame = localStorage.getItem('current-minigame')
-    if (currentMinigame) {
-        try {
-            const minigameData = JSON.parse(currentMinigame)
-
-            const completedData = {
-                nodeId: minigameData.nodeId,
-                minigame: minigameData.minigame,
-                success: true,
-                timestamp: Date.now()
-            }
-
-            localStorage.setItem('completed-minigame', JSON.stringify(completedData))
-            localStorage.removeItem('current-minigame')
-        } catch (e) {
-            console.error('Error processing minigame completion:', e)
-        }
-    }
-}
 
 const nextFinger = () => {
     if (currentFingerIndex.value < activeFingers.value.length - 1) {
         currentFingerIndex.value++
         gameWon.value = false
     } else {
-        completeGame()
+        gameStore.setMinigameWin(true)
     }
 }
 
