@@ -7,58 +7,94 @@ import Level from '../level'
 import { useKnowledgeStore } from '@/stores/knowledge';
 import { useGameStore } from '@/stores/game';
 
+interface LeftItem {
+    displayText: string;
+    actualColor: string;
+    displayColor: string;
+}
+
+const germanColorNames: Record<string, string> = {
+    'red': 'Rot',
+    'green': 'Grün',
+    'blue': 'Blau',
+    'purple': 'Lila',
+    'yellow': 'Gelb',
+    'teal': 'Türkis',
+};
+
 const props = defineProps<{ level: Level }>()
 
-let colors: string[] = []
+let gameColors: string[] = []
 let start: number
+let leftRenderItems: Array<string | LeftItem>
+let rightRenderItems: string[]
 
 switch (props.level) {
     default:
     case Level.EASY:
-        colors = ['red', 'green', 'blue', 'purple']
+        gameColors = ['red', 'green', 'blue', 'purple']
         start = 25
+        leftRenderItems = [...gameColors]
         break
 
     case Level.MEDIUM:
-        colors = ['red', 'green', 'blue', 'purple']
+        gameColors = ['red', 'green', 'blue', 'purple']
         start = 20
+        leftRenderItems = [...gameColors]
         break
 
     case Level.HARD:
-        colors = ['red', 'green', 'blue', 'purple', 'yellow']
+        gameColors = ['red', 'green', 'blue', 'purple', 'yellow']
         start = 15
+        leftRenderItems = [...gameColors]
         break
 
     case Level.SUPER_HARD:
-    case Level.IMPOSSIBLE:
-        colors = ['red', 'green', 'blue', 'purple', 'yellow', 'teal']
+        gameColors = ['red', 'green', 'blue', 'purple', 'yellow']
         start = 15
+        {
+            const shuffledDisplayColors = [...gameColors];
+            fisherYatesShuffle(shuffledDisplayColors);
+            leftRenderItems = gameColors.map((color, index) => ({
+                displayText: germanColorNames[color] || color.toUpperCase(),
+                actualColor: color,
+                displayColor: shuffledDisplayColors[index % shuffledDisplayColors.length]
+            }));
+        }
+        break
+    case Level.IMPOSSIBLE:
+        gameColors = ['red', 'green', 'blue', 'purple', 'yellow', 'teal']
+        start = 15
+        {
+            const shuffledDisplayColors = [...gameColors];
+            fisherYatesShuffle(shuffledDisplayColors);
+            leftRenderItems = gameColors.map((color, index) => ({
+                displayText: germanColorNames[color] || color.toUpperCase(),
+                actualColor: color,
+                displayColor: shuffledDisplayColors[index % shuffledDisplayColors.length]
+            }));
+        }
         break
 }
 
-const space = 100 / (colors.length + 1)
+rightRenderItems = [...gameColors]
+
+const space = 100 / (gameColors.length + 1)
 
 const rect = '4dvh'
 const spacing = (index: number) => (index + 1) * space
 
-const spacingLine = (index: number) => (index + 1) * space
-
-// Calculate center coordinates for boxes
-function getBoxCenter(xPosition: string, yPosition: number) {
-    // Assuming rect is in 'dvh' units and needs to be converted approximately for calculations
-    // This is an approximation as exact pixel values would depend on actual rendering
-    const rectNumeric = parseInt(rect)
+// Calculate center coordinates for boxes/texts
+function getBoxCenter(xPosition: string, yPositionPercentage: number) {
+    const rectNumeric = parseInt(rect) // e.g., 4 from '4dvh'
     return {
         x: xPosition,
-        y: `${yPosition + rectNumeric / 2}%`
+        y: `${yPositionPercentage + rectNumeric / 2}%`
     }
 }
 
-const colorsL = [...colors]
-const colorsR = [...colors]
-
-fisherYatesShuffle(colorsL)
-fisherYatesShuffle(colorsR)
+fisherYatesShuffle(leftRenderItems)
+fisherYatesShuffle(rightRenderItems)
 
 function fisherYatesShuffle(array: unknown[]): void {
     for (let i = array.length - 1; i > 0; i--) {
@@ -98,8 +134,8 @@ function updateSvgMousePosition() {
 }
 
 function selectLeftBox(index: number, color: string) {
-    // Get center of the left box
-    const leftCenter = getBoxCenter('10%', spacingLine(index))
+    // Get center of the left box/text
+    const leftCenter = getBoxCenter('10%', spacing(index))
 
     selectedBox.value = {
         x: leftCenter.x,
@@ -125,7 +161,7 @@ function connectToRightBox(index: number, color: string) {
     useTemp.value = false
 
     // Get center of the right box
-    const rightCenter = getBoxCenter('90%', spacingLine(index))
+    const rightCenter = getBoxCenter('90%', spacing(index))
 
     if (
         !selectedBox.value ||
@@ -136,7 +172,7 @@ function connectToRightBox(index: number, color: string) {
         // Reset temporary line when connection fails
         tempLine.value = {
             x1: '10%',
-            y1: spacingLine(index) + '%',
+            y1: spacing(index) + '%',
             x2: '0',
             y2: '0',
             color: 'none',
@@ -156,14 +192,14 @@ function connectToRightBox(index: number, color: string) {
     // Reset the temporary line
     tempLine.value = {
         x1: '10%',
-        y1: spacingLine(index) + '%',
+        y1: spacing(index) + '%',
         x2: '0',
         y2: '0',
         color: 'none',
     }
     selectedBox.value = null
 
-    if (lines.value.length === colors.length) {
+    if (lines.value.length === gameColors.length) {
         useGameStore().setMinigameWin(true);
 
     }
@@ -198,11 +234,21 @@ function timerFertig() {
             <line key="temp" :x1="tempLine?.x1" :y1="tempLine?.y1" :x2="tempLine?.x2" :y2="tempLine?.y2"
                 :stroke="tempLine?.color" stroke-width="3" />
 
-            <rect v-for="(color, index) in colorsL" :key="'L-' + index" @click="selectLeftBox(index, color)" x="10%"
-                :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="color" class="clickable" />
+            <!-- Left side items -->
+            <template v-for="(item, index) in leftRenderItems" :key="'L-' + index">
+                <rect v-if="typeof item === 'string'" @click="selectLeftBox(index, item)" x="10%"
+                    :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="item" class="clickable" />
+                <text v-else @click="selectLeftBox(index, item.actualColor)" x="10%"
+                    :y="`${spacing(index) + parseInt(rect) / 2}%`" :fill="item.displayColor" font-size="2dvh"
+                    text-anchor="start" dominant-baseline="middle" class="clickable">
+                    {{ item.displayText }}
+                </text>
+            </template>
 
-            <rect v-for="(color, index) in colorsR" :key="'R-' + index" @click="connectToRightBox(index, color)" x="90%"
-                :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="color" class="clickable" />
+            <!-- Right side items -->
+            <rect v-for="(color, index) in rightRenderItems" :key="'R-' + index"
+                @click="connectToRightBox(index, color)" x="90%" :y="`${spacing(index)}%`" :width="rect" :height="rect"
+                :fill="color" class="clickable" />
         </svg>
     </div>
 </template>
