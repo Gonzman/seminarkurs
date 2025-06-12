@@ -13,7 +13,7 @@ import router from './router';
 
 const game = useGameStore()
 
-game.setGameState('intro');
+game.setGameState('scene');
 
 onBeforeMount(() => {
     const watched = localStorage.getItem("intro");
@@ -76,5 +76,12 @@ body {
     color: #fff;
     border-color: #4dff4d;
     transform: scale(1.05);
+}
+
+p{
+    color: white;
+    font-size: 40px;
+    font-weight: bold;
+    font-family: Pixel, monospace;
 }
 </style>

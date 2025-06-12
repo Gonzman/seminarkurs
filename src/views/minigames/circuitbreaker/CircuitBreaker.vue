@@ -18,7 +18,8 @@
 
 <script setup lang="ts">
 import { useGameStore } from '@/stores/game';
-import { defineProps, onMounted, onUnmounted, ref } from 'vue';
+import { games } from '@/stores/knowledge';
+import { defineProps, onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
 
 const { sizeX, sizeY, startX, startY, startDirection, speed, map } = defineProps<{
     sizeX: number
@@ -425,6 +426,10 @@ const onLaserUpdate = (interval: number) => {
         }
     }
 }
+
+onBeforeMount(() =>{
+    gameStore.setGameState('circuitbreaker');
+})
 
 onMounted(() => {
     createGrid();

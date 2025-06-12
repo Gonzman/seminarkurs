@@ -47,15 +47,17 @@ function handleEnd() {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    width: auto;
+    width: 100vw;
     overflow: hidden;
     position: fixed;
     top: 0;
     left: 0;
+    background-color: black;
 }
 
 video {
     height: 100vh;
+    width: 100%;
     object-fit: contain;
 }
 </style>

@@ -28,9 +28,10 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref } from 'vue';
+import { defineProps, onBeforeMount, onMounted, ref } from 'vue';
 import { useKnowledgeStore, type KnowledgeItem } from '@/stores/knowledge';
 import { useRouter } from 'vue-router';
+import { useGameStore } from '@/stores/game';
 
 const size_bar_div = ref<HTMLElement | null>(null);
 const is_disabled = ref(false);
@@ -122,6 +123,11 @@ function hashTitleToSize(str: string, min_size: number, max_size: number): numbe
 onMounted(() => {
     update_bar();
 })
+
+onBeforeMount(() =>{
+    useGameStore().setGameState('tinder');
+})
+
 </script>
 
 <style scoped>
