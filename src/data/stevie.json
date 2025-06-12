@@ -1,26 +1,132 @@
 {
-    "ideen":[
+  "ideen": [
+    {
+      "message": "Hallo, ich bin Stevie! Ich liebe es, Menschen bei ihren Programmierproblemen zu helfen. Womit kann ich Ihnen heute helfen?",
+      "gameState": "graph",
+      "stevieState": "normal",
+      "duration": 3
+    }
+  ],
+  "monolog": [
+    {
+      "title": "Einführung",
+      "stevieState": "normal",
+      "messages": [
         {
-            "message": "Hallo, ich bin Stevie! Ich liebe es, Menschen bei ihren Programmierproblemen zu helfen. Womit kann ich Ihnen heute helfen?",
-            "gameState": "graph",
-            "stevieState": "normal",
-            "duration": 3
-        }
-    ],
-    "monolog": [
+          "message": "Hallo, ich bin Stevie!",
+          "duration": 0.5
+        },
         {
-            "title": "test",
-            "stevieState": "normal",
-            "messages": [
-                {
-                    "message": "Hallo, ich bin Stevie! Ich liebe es, Menschen bei ihren Programmierproblemen zu helfen. Womit kann ich Ihnen heute helfen?",
-                    "duration": 3
-                },
-                {
-                    "message": "Ich kann Ihnen bei einer Vielzahl von Programmierproblemen helfen, von der Fehlersuche bis hin zum Entwurf von Algorithmen. Lassen Sie mich einfach wissen, was Sie brauchen!",
-                    "duration": 3
-                }
-            ]
+          "message": "Ich bin da um dir zu helfen.",
+          "duration": 0.5
+        },
+        {
+          "message": "Das ist der Hacker Oberfläche. Hier können wir die Geräte hacken.",
+          "duration": 1
+        },
+        {
+          "message": "Fangen wir an und halten wir das Uranprogramm auf!",
+          "duration": 1
+        },
+        {
+          "message": "Wenn du fragen hast dann klick auf mich.  ",
+          "duration": 1
         }
-    ]
+      ]
+    },
+    {
+      "title": "Happy1",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Super mach weiter so!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Happy2",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Wenn du so weiter machst ist das programm bald Geschichte!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Happy3",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Klasse, du bist auf dem richtigen Weg!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Happy4",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Das läuft ja wie am Schnürchen – weiter so!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Happy5",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Ich bin begeistert! Du bringst das richtig gut voran!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Sad1",
+      "stevieState": "sad",
+      "messages": [
+        {
+          "message": "Oh nein, das hat diesmal nicht geklappt...",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Sad2",
+      "stevieState": "sad",
+      "messages": [
+        {
+          "message": "Kopf hoch, das nächste Mal schaffst du es bestimmt!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Sad3",
+      "stevieState": "sad",
+      "messages": [
+        {
+          "message": "Das war knapp... Versuch’s gleich nochmal!",
+          "duration": 1
+        }
+      ]
+    },
+    {
+      "title": "Krankenhaus",
+      "stevieState": "mad",
+      "messages": [
+        {
+          "message": "Das kannst du doch nicht machen!!!",
+          "duration": 1
+        },
+        {
+          "message": "Das sind unschuldige Menschen!!!",
+          "duration": 1
+        }
+      ]
+    }
+  ]
 }

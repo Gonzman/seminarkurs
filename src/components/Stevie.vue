@@ -1,16 +1,10 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <template>
-    <div
-        @click="handleClick()"
-        class="stevie">
-        <speechBubble v-if="speeachText != ''" class="speech-bubble-container"><p>{{ speeachText }}</p></speechBubble>
-        <img
-            :src="imagePath"
-            class="pixel-art"
-            width="auto"
-            height="200px"
-            draggable="false"
-            @dragstart.prevent />
+    <div @click="handleClick()" class="stevie">
+        <speechBubble v-if="speeachText != ''" class="speech-bubble-container">
+            <p>{{ speeachText }}</p>
+        </speechBubble>
+        <img :src="imagePath" class="pixel-art" width="auto" height="200px" draggable="false" @dragstart.prevent />
     </div>
 </template>
 
@@ -124,7 +118,7 @@ function anim(sec: number, folder: string) {
     return new Promise<void>((resolve) => {
         let currentCount = 0;
         const imageCount = getFrameCount(folder);
-        
+
         if (imageCount === 0) {
             console.error(`No images found for folder: ${folder}`);
             resolve();
@@ -179,7 +173,7 @@ defineExpose({
     image-rendering: pixelated;
 }
 
-.stevie{
+.stevie {
     user-select: none;
     position: relative;
 }

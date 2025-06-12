@@ -238,7 +238,7 @@ function timerFertig() {
             <template v-for="(item, index) in leftRenderItems" :key="'L-' + index">
                 <rect v-if="typeof item === 'string'" @click="selectLeftBox(index, item)" x="10%"
                     :y="`${spacing(index)}%`" :width="rect" :height="rect" :fill="item" class="clickable" />
-                <text v-else @click="selectLeftBox(index, item.actualColor)" x="10%"
+                <text v-else @click="selectLeftBox(index, item.actualColor)" x="2%"
                     :y="`${spacing(index) + parseInt(rect) / 2}%`" :fill="item.displayColor" font-size="2dvh"
                     text-anchor="start" dominant-baseline="middle" class="clickable">
                     {{ item.displayText }}
