@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeMount } from 'vue'
 import Level from '../level'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/game'
@@ -259,6 +259,11 @@ const resetGame = () => {
 onMounted(() => {
     initializeGame()
 })
+
+onBeforeMount(() =>{
+    gameStore.setGameState('finger');
+})
+
 
 watch(selected, () => {
     checkSolution()

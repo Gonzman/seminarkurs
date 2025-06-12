@@ -83,6 +83,7 @@ export const useGameStore = defineStore('game', () => {
                 router.push('/scenes/outro1')
             }
         } else {
+            //TODO: losscount to localstorage
             const gameKnowledges = knowledgeStore.getGameKnowledges()
             if (gameKnowledges.length == 0) {
                 setTimeout(() => {
@@ -123,7 +124,7 @@ export const useGameStore = defineStore('game', () => {
 const gameStateArray = [
     'graph',
     'circuitbreaker',
-    'ceaser',
+    'ceasar',
     'finger',
     'wire',
     'tinder',

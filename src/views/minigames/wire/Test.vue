@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <script setup lang="ts">
 import { useMouse } from '@vueuse/core'
-import { ref, watch, useTemplateRef } from 'vue'
+import { ref, watch, useTemplateRef, onBeforeMount } from 'vue'
 import Timer from '../Timer.vue'
 import Level from '../level'
 import { useKnowledgeStore } from '@/stores/knowledge';
@@ -222,6 +222,11 @@ watch([mouse.x, mouse.y], () => {
 function timerFertig() {
     alert('Verloren')
 }
+
+onBeforeMount(() =>{
+    useGameStore().setGameState('wire');
+})
+
 </script>
 
 <template>

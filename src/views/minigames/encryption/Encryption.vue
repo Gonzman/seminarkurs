@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onBeforeMount, onMounted, ref } from 'vue'
 import Timer from '../Timer.vue'
 import { useGameStore } from '@/stores/game'
 import { useRouter } from 'vue-router'
@@ -107,6 +107,12 @@ switch (props.level) {
 }
 
 const encryptSelectedWord = caesarCipher(selectedWord, Math.floor(Math.random() * 25))
+
+
+onBeforeMount(() =>{
+    gameStore.setGameState('ceasar');
+})
+
 </script>
 
 <style scoped>
