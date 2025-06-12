@@ -14,23 +14,23 @@
       "messages": [
         {
           "message": "Hallo, ich bin Stevie!",
-          "duration": 0.5
+          "duration": 1
         },
         {
           "message": "Ich bin da um dir zu helfen.",
-          "duration": 0.5
+          "duration": 1
         },
         {
           "message": "Das ist der Hacker Oberfläche. Hier können wir die Geräte hacken.",
-          "duration": 1
+          "duration": 2
         },
         {
           "message": "Fangen wir an und halten wir das Uranprogramm auf!",
-          "duration": 1
+          "duration": 2
         },
         {
           "message": "Wenn du fragen hast dann klick auf mich.  ",
-          "duration": 1
+          "duration": 2
         }
       ]
     },

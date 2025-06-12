@@ -20,6 +20,9 @@ import knowledgeData from '@/data/knowledge.json'
 
 import defaultGraphData from '@/data/graph.json'
 import Knowledge from '@/components/overlays/Knowledge.vue'
+import Stevie from '@/components/Stevie.vue'
+import { useStevieStore } from '@/stores/stevie'
+import DangerBar from '../../components/overlays/DangerBar.vue'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -681,17 +684,27 @@ onMounted(() => {
     }
 
     checkCompletedMinigames()
+
+    if (localStorage.getItem("firstTime") == null) {
+        useStevieStore().triggerMonolog('Einführung');
+        localStorage.setItem("firstTime", "1")
+    }
 })
 
 defineExpose({ addRandomNode })
 </script>
 
 <template>
-    <button @click="toggleGraphLoader" class="btn primary">
-        {{ showGraphLoader ? 'Hide Loader' : 'Load Graph' }}
-    </button>
-    <div class="graph">
 
+    <div class="graph">
+        <div class="graph-header">
+            <button @click="toggleGraphLoader" class="btn primary">
+                {{ showGraphLoader ? 'Hide Loader' : 'Load Graph' }}
+            </button>
+            <div class="dangerbar">
+                <DangerBar :value="8" :max="9" />
+            </div>
+        </div>
         <div class="content">
             <!-- Graph Container -->
             <div class="graph-container">
@@ -786,11 +799,11 @@ defineExpose({ addRandomNode })
 
 <style lang="css" scoped>
 .graph {
+    position: relative;
     display: flex;
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
-    position: relative;
 }
 
 .header {
@@ -1086,5 +1099,22 @@ h3 {
     margin-top: 8px;
     font-size: 12px;
     color: var(--color-text-muted);
+}
+
+.dangerbar {
+    min-width: 200px;
+    width: 10%;
+    max-width: 400px;
+}
+
+.graph-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 </style>

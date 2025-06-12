@@ -10,9 +10,9 @@
 
 <script lang="ts" setup>
 import { useGameStore } from '@/stores/game';
-import { useStevieStore } from '@/stores/stevie';
+import { useStevieStore, type Monolog } from '@/stores/stevie';
 import speechBubble from '@/components/stevie/speechBubble.vue';
-import { ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import stevie from '@/data/stevie.json';
 
 const gameStore = useGameStore();
@@ -26,6 +26,10 @@ const folder = ref('idle');
 const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
 function handleClick() {
+
+    if (monolog.value != null) {
+        return;
+    }
 
     speeachText.value = 'You clicked me!';
 
@@ -140,17 +144,7 @@ function anim(sec: number, folder: string) {
     });
 }
 
-async function triggerMonolog(title: string) {
-    const monolog = stevie.monolog.find((item) => {
-        if (item.title == title) {
-            return item;
-        }
-    });
-
-    if (!monolog) {
-        console.error('Monolog not found!');
-        return;
-    }
+async function triggerMonolog(monolog: Monolog) {
 
     for (let i = 0; i < monolog.messages.length; i++) {
         speeachText.value = monolog.messages[i].message;
@@ -158,12 +152,24 @@ async function triggerMonolog(title: string) {
     }
 
     speeachText.value = '';
+    stevieStore.clearMonolog()
 }
 
-startCounter()
+onMounted(() => {
+    startCounter()
+})
+
+const monolog = stevieStore.getMonolog()
+
+watch(monolog, async (newVal) => {
+    if (newVal == null) {
+        speeachText.value = ''
+    } else {
+        await triggerMonolog(newVal)
+    }
+})
 
 defineExpose({
-    triggerMonolog,
     startCounter,
 });
 </script>
