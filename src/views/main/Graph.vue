@@ -207,14 +207,14 @@ const filteredNodes = computed(() => {
 
 const filteredEdges = computed(() => {
     const filtered: Record<string, Edge> = {};
-    
+
     for (const [edgeId, edge] of Object.entries(edges)) {
         const sourceNode = nodes[edge.source];
         if (sourceNode && (sourceNode.status === Status.Status.HACKED || sourceNode.status === Status.Status.START)) {
             filtered[edgeId] = edge;
         }
     }
-    
+
     return filtered;
 });
 
@@ -730,7 +730,7 @@ defineExpose({ addRandomNode })
                 {{ showGraphLoader ? 'Hide Loader' : 'Load Graph' }}
             </button>
             <div class="dangerbar">
-                <DangerBar :value="8" :max="9" />
+                <DangerBar :value="gameStore.dangerLevel" :max="9" />
             </div>
         </div>
         <div class="content">

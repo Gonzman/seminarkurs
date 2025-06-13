@@ -1,4 +1,5 @@
 <template>
+    <Timer :sekunden="timerDuration" @timeOver="handleTimeOver" ref="timerRef"></Timer>
     <div class="finger-game">
         <div class="game-container">
             <h2>Match The Finger</h2>
@@ -8,7 +9,7 @@
             </div>
 
             <div v-else class="game-won">
-                <p>Herzlichen Glückwunsch! Ihr Finger stimmt mit dem Zielfinger überein!</p>
+                <p>Die Finger Stimmen über ein</p>
             </div>
 
             <div class="game-area">
@@ -40,9 +41,11 @@
             </div>
 
             <div class="game-controls">
-                <button @click="resetGame" class="reset-btn">Reset</button>
-                <button @click="checkSolution" class="check-btn">Check Solution</button>
-                <button v-if="gameWon" @click="nextFinger" class="next-btn">Next Finger</button>
+                <button @click="resetGame" class="reset-btn">Neuer Versuch</button>
+                <button @click="checkSolution" class="check-btn">Überprüfen</button>
+                <button v-if="gameWon" @click="nextFinger" class="next-btn">
+                    {{ hasNextFinger ? 'Next Finger' : 'zu Infotinder' }}
+                </button>
             </div>
         </div>
     </div>
@@ -53,6 +56,7 @@ import { ref, computed, onMounted, watch, onBeforeMount } from 'vue'
 import Level from '../level'
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/game'
+import Timer from '../Timer.vue'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -154,8 +158,43 @@ const isImageAvailable = (fingerIndex: number, partIndex: number) => {
     return !!imagesArray.value[actualFingerIndex] && !!imagesArray.value[actualFingerIndex][selectedValue]
 }
 
+const timerRef = ref<InstanceType<typeof Timer> | null>(null)
+const timerDuration = ref(60)
+
+const calculateTimerDuration = () => {
+    const fingersCount = getFingersCountByLevel()
+    let baseDuration = 20
+
+    switch (props.level) {
+        case Level.EASY:
+            baseDuration = 30
+            break
+        case Level.MEDIUM:
+            baseDuration = 40
+            break
+        case Level.HARD:
+            baseDuration = 50
+            break
+        case Level.SUPER_HARD:
+            baseDuration = 60
+            break
+        case Level.IMPOSSIBLE:
+            baseDuration = 70
+            break
+        default:
+            baseDuration = 30
+    }
+
+    return baseDuration + (fingersCount * 10)
+}
+
+const handleTimeOver = () => {
+    gameStore.setMinigameWin(false)
+}
+
 const initializeGame = () => {
     const fingersCount = getFingersCountByLevel();
+    timerDuration.value = calculateTimerDuration()
 
     const totalFingerOptions = Object.keys(groupedImages).length;
     activeFingers.value = [];
@@ -217,6 +256,10 @@ const checkCorrect = (fingerIndex: number, partIndex: number) => {
     return false
 }
 
+const hasNextFinger = computed(() => {
+    return currentFingerIndex.value < activeFingers.value.length - 1
+})
+
 const checkSolution = () => {
     if (!selected.value || !correctPositions.value) return
 
@@ -233,7 +276,6 @@ const checkSolution = () => {
     gameWon.value = allCorrect
 
     if (allCorrect) {
-
         if (currentFingerIndex.value === activeFingers.value.length - 1) {
             setTimeout(() => {
                 gameStore.setMinigameWin(true)
@@ -252,7 +294,13 @@ const nextFinger = () => {
     }
 }
 
+const restetCount = ref(0);
 const resetGame = () => {
+    if (restetCount.value >= 3) {
+        gameStore.setMinigameWin(false)
+        return
+    }
+    restetCount.value++;
     initializeGame()
 }
 
@@ -260,14 +308,9 @@ onMounted(() => {
     initializeGame()
 })
 
-onBeforeMount(() =>{
+onBeforeMount(() => {
     gameStore.setGameState('finger');
 })
-
-
-watch(selected, () => {
-    checkSolution()
-}, { deep: true })
 </script>
 
 <style lang="css" scoped>

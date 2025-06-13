@@ -13,13 +13,22 @@ export const useGameStore = defineStore('game', () => {
     const watchedIntro = ref(false)
 
     const minigameNode: Ref<string> = ref('')
+    const dangerLevel = ref(getDangerLevel())
 
     const router = useRouter()
     const knowledgeStore = useKnowledgeStore()
     const stevie = useStevieStore()
     const minigameWin = ref(false)
 
-    const dangerLevel = ref(0)
+    function setDangerLevel(value: number) {
+        localStorage.setItem('dangerLevel', value.toString())
+        dangerLevel.value = value
+    }
+
+    function getDangerLevel(): number {
+        const stored = localStorage.getItem('dangerLevel')
+        return stored ? Number(stored) : 0
+    }
 
     function toggleEscape() {
         escapeState.value = !escapeState.value
@@ -66,7 +75,7 @@ export const useGameStore = defineStore('game', () => {
             router.push('/graph')
             const lossKey = `loss_${minigameNode.value}`
             const losses = localStorage.getItem(lossKey)
-            dangerLevel.value++
+            setDangerLevel(dangerLevel.value + 1)
             if (losses == null) {
                 localStorage.setItem(lossKey, '1')
             } else {
@@ -79,11 +88,10 @@ export const useGameStore = defineStore('game', () => {
                 }
             }
 
-            if (dangerLevel.value >= 6) {
+            if (dangerLevel.value >= 9) {
                 router.push('/scenes/outro1')
             }
         } else {
-            //TODO: losscount to localstorage
             const gameKnowledges = knowledgeStore.getGameKnowledges()
             if (gameKnowledges.length == 0) {
                 setTimeout(() => {
@@ -119,6 +127,8 @@ export const useGameStore = defineStore('game', () => {
         getMinigameWin,
         setLastMinigameNode,
         getLastMinigameNode,
+        getDangerLevel,
+        dangerLevel,
     }
 })
 const gameStateArray = [

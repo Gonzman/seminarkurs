@@ -75,7 +75,8 @@ const onDragEnd = () => {
         <router-view></router-view>
     </transition>
     <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
-        <Stevie v-if="gameStore.gameState != 'intro'" />
+        <Stevie
+            v-if="gameStore.gameState != 'scene' && gameStore.gameState != 'circuitbreaker' && gameStore.gameState != 'wire'" />
     </div>
 </template>
 
