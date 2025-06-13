@@ -23,6 +23,7 @@ import Knowledge from '@/components/overlays/Knowledge.vue'
 import Stevie from '@/components/Stevie.vue'
 import { useStevieStore } from '@/stores/stevie'
 import DangerBar from '../../components/overlays/DangerBar.vue'
+import type { firstTime } from '@/utils/Data'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -686,9 +687,22 @@ onMounted(() => {
 
     checkCompletedMinigames()
 
-    if (localStorage.getItem("firstTime") == null) {
+    const firstTime = localStorage.getItem("firstTime")
+    if ( firstTime == null ) {
+
         useStevieStore().triggerMonolog('Einführung');
-        localStorage.setItem("firstTime", "1")
+        const first: firstTime = {
+            graph: true,
+            krankenhaus: false,
+        }
+        localStorage.setItem("firstTime", JSON.stringify(first));
+    }else{
+        const first: firstTime = JSON.parse(firstTime);
+        if (!first.graph) {
+            useStevieStore().triggerMonolog('Einführung');
+            first.graph = true;
+            localStorage.setItem("firstTime", JSON.stringify(first));
+        }
     }
 })
 
