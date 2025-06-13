@@ -49,6 +49,7 @@ interface NodeMinigame {
     difficulty?: Level
 }
 
+//filter edges where the hacked or start node is the source not the target
 
 const nodeMinigames: Record<Status.Status, NodeMinigame[]> = {
     [Status.Status.START]: [],
