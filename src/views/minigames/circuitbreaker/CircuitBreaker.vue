@@ -20,16 +20,74 @@
 import { useGameStore } from '@/stores/game';
 import { games } from '@/stores/knowledge';
 import { defineProps, onBeforeMount, onMounted, onUnmounted, ref } from 'vue';
+import Level from '../level';
 
-const { sizeX, sizeY, startX, startY, startDirection, speed, map } = defineProps<{
-    sizeX: number
-    sizeY: number
-    startX: number
-    startY: number
-    startDirection: Direction
-    speed: number
-    map: string
+const { level } = defineProps<{
+    level: Level
 }>()
+
+enum Direction {
+    Up,
+    Left,
+    Down,
+    Right,
+}
+
+let sizeX: number = 0;
+let sizeY: number = 0;
+let startX: number = 0;
+let startY: number = 0;
+let startDirection: Direction = Direction.Left;
+let speed: number = 0;
+let map: string;
+
+switch (level) {
+    case Level.EASY:
+        sizeX = 50;
+        sizeY = 26;
+        startX = 2;
+        startY = 21;
+        startDirection = Direction.Right;
+        speed = 0.13;
+        map = "///4/////4f+P////+H/j+AP//h///gD//4f//4A/////8AAAf////AAAH+P/8AAAB/j//AA/4Hg//wAP+B4MAAA//geDAAAP/4HgwAA///h4MAAP//4f/AAD/8eH/wAH//HgP8AB//x4D/AAfwAfg8AAH8AH4PAD//AB/+AA//wAf/gD//8AB/4A//gAAf////4AAH////+AAB/////gAAf8A==";
+        break;
+    case Level.MEDIUM:
+        sizeX = 66;
+        sizeY = 36;
+        startX = 9;
+        startY = 3;
+        startDirection = Direction.Down;
+        speed = 0.16;
+        map = "/////B//////h///B//////h///B/D////h///B/D////gD//BgD////gD//BgD////gD//BgD4Af/g///B/D4Af/g///B/D4Af/g///H/D4Af/g/wfH//4Af/g/wfH///8f/g/wfH///8f/x/wfA//+Af/x+AfA//+H//x+Afg//+H//x+AfgwH+H//x/wfgAAAH//x/wfgAAAH//x//////+B//w//////+B//w///////5//w///////5//4///////5//4///////5//4+AAAf/+B//4+AAAf/+B//4AH/gAfgB//4AH/gAAAB//4AAAAAAAf///+AAPAAAf///////+P///Af////+P///Af////+P///AAH////////AAH////////";
+        break;
+    case Level.HARD:
+        sizeX = 66;
+        sizeY = 36;
+        startX = 4;
+        startY = 19;
+        startDirection = Direction.Up;
+        speed = 0.18;
+        map = "////////////8A/APGf/+Z/8AAAPGf/+Z/88ADAGf/+Z/8//zAAeMYB/8f//4AeMYB/8YA/7geMAB/8AA//geAAH///8APj+A4H///8APj+A4H/////Pj+P/H/////Pj+P/BgD///PgeP/BgD///PgAP/BgAB/gPgAP/xgAB/gP+AGfxgAB/n/+AGfxgPwAH/+AGfxgPwAH/hz4fBgPwAH/hz4fBgP//8AB/4fP/8f/4AB/4fP/8f4Abx/4fP/8D5gbx/4HP8MD/gbh+BwB8AD/gYD+B/BAH4/h7j+B/BAH4/x7j4B/BAH4/x7g4B/5AH8Px7A4B/58H8AADA4AGB8AAA8DABwGB8OBj/7+B+AH8OBj/7+B/wf//x7/7+B/wf///////////";
+        break;
+    case Level.SUPER_HARD:
+        sizeX = 70;
+        sizeY = 42;
+        startX = 7;
+        startY = 2;
+        startDirection = Direction.Down;
+        speed = 0.20;
+        map = "////h///////8f/+H///////x4A4f/////j/HgDh4AHgf+P8AAOHgAeADA/wB8+OAAAAMD/AHz44/gAAB////P/j+APgH///8/+P/4+Af///z/4P/j/B8//HPnw/+P8fwD8c+fD/4/h/APxj58P//+H/4/GDnwD//4//j8YOfwAA/j/+MBg5/AAD+P/4wGDn/8AB4B/jAYOH//8HgH+MZgAf//wfwH4xmAAD//B/AfjGYAAP//H/x4MZ//A//8f/Hgxn/8AB/xgAeDGf/wAH/GAB48Z///8AAfwGDxn///wAB/8YPGAH///AH/xg8YAf////+AGPx+B+AAf/4A4/H+H4AB//gDj8P4Pj8AP+B+Pw/g+PwA/5/4/D+D4//APn/g+A8Pj/8AGf/j4Dw+P//gY/+Pj/D4//+Bj/4+P8Pj/B/GP/gA/wAAAH8A/+AD/AAAAfwD4///wD/+B/APj///H//////+P//////////4A=";
+        break;
+    case Level.IMPOSSIBLE:
+        sizeX = 70;
+        sizeY = 42;
+        startX = 67;
+        startY = 12;
+        startDirection = Direction.Left;
+        speed = 0.23;
+        map = "j//////j///+P/////+P//w4//wD/A4wHgD7//Hh8BjGAAPv4B+Dzmc4B4+/gH/POZz//j4//f+85/P/+fz/8f7zn8//5/P/x/vOfz+AH8//Aw84DPx//4P/jbzgM/P//g/+NvP4z8wB/7/+w8/zDzAH/gf7Lj/MPE4efx/PuP84+T/5/39+4/zj5P/n/P37znGPkB+OA/fnOcB+QH44D9+eB4P7+fjjPz55///v5//8/PP3//wwH//z88/f/8DAf/+fz79/hw8///5/Dvx+Afz//gv/O/A/xgMPw4/85/z/eAw/P//zn/B97/L+//Aef9H3v8vD/wPx40De/y9//fgfifN4ALmB9+f/J83//uYHxh/8Hzf/+5gfGf/9/N/Ab388Z//H8x95vHzxngB/Dn3mcfPGeAH8+PeZ4cR4D+Pz495nh5HwP4/HzwGfgAf//gAfAeD+P////wB8B4P///////////////////////A=";
+        break;
+}
 
 const shadowPercentage = 0.2;
 
@@ -288,13 +346,6 @@ const createBackground = () => {
     }
 };
 
-enum Direction {
-    Up,
-    Left,
-    Down,
-    Right,
-}
-
 let currentDirection: Direction = startDirection;
 let lastDirection: Direction = currentDirection;
 
@@ -427,7 +478,7 @@ const onLaserUpdate = (interval: number) => {
     }
 }
 
-onBeforeMount(() =>{
+onBeforeMount(() => {
     gameStore.setGameState('circuitbreaker');
 })
 
