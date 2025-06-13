@@ -205,6 +205,19 @@ const filteredNodes = computed(() => {
     return filterNodes(nodes);
 });
 
+const filteredEdges = computed(() => {
+    const filtered: Record<string, Edge> = {};
+    
+    for (const [edgeId, edge] of Object.entries(edges)) {
+        const sourceNode = nodes[edge.source];
+        if (sourceNode && (sourceNode.status === Status.Status.HACKED || sourceNode.status === Status.Status.START)) {
+            filtered[edgeId] = edge;
+        }
+    }
+    
+    return filtered;
+});
+
 const configs = computed(() => config(filteredNodes.value, false));
 
 const targetNodePos = computed(() => {
@@ -266,7 +279,7 @@ function filterNodes(nodes: Record<string, Node>): Record<string, Node> {
 
     function getConnectedNodes(nodeId: string): string[] {
         const connectedNodeIds: string[] = [];
-        for (const edge of Object.values(edges)) {
+        for (const edge of Object.values(filteredEdges.value)) {
             if (edge.source === nodeId) {
                 connectedNodeIds.push(edge.target);
             }
@@ -688,7 +701,7 @@ onMounted(() => {
     checkCompletedMinigames()
 
     const firstTime = localStorage.getItem("firstTime")
-    if ( firstTime == null ) {
+    if (firstTime == null) {
 
         useStevieStore().triggerMonolog('Einführung');
         const first: firstTime = {
@@ -696,7 +709,7 @@ onMounted(() => {
             krankenhaus: false,
         }
         localStorage.setItem("firstTime", JSON.stringify(first));
-    }else{
+    } else {
         const first: firstTime = JSON.parse(firstTime);
         if (!first.graph) {
             useStevieStore().triggerMonolog('Einführung');
@@ -723,7 +736,7 @@ defineExpose({ addRandomNode })
         <div class="content">
             <!-- Graph Container -->
             <div class="graph-container">
-                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="filteredNodes" :edges="edges"
+                <v-network-graph ref="graph" v-model:layouts="layouts" :nodes="filteredNodes" :edges="filteredEdges"
                     :configs="configs" :event-handlers="eventHandlers" />
                 <div ref="tooltip" class="tooltip" :style="{ ...tooltipPos, opacity: tooltipOpacity }">
                     <div>Name: {{ filteredNodes[targetNodeId]?.name ?? '' }}</div>
