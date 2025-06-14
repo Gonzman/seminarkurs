@@ -85,6 +85,8 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                             (targetNode.status === Status.Status.HACKED &&
                                 sourceNode.status === Status.Status.ONLINE) ||
                             (sourceNode.status === Status.Status.HACKED &&
+                                targetNode.status === Status.Status.HACKED) ||
+                            (sourceNode.status === Status.Status.START &&
                                 targetNode.status === Status.Status.HACKED)
 
                         return shouldAnimate ? '6' : edge.dashed ? '6' : '0'
@@ -117,6 +119,8 @@ export const config = (nodes: Record<string, Node>, isCreator: boolean) =>
                             (targetNode.status === Status.Status.HACKED &&
                                 sourceNode.status === Status.Status.ONLINE) ||
                             (sourceNode.status === Status.Status.HACKED &&
+                                targetNode.status === Status.Status.HACKED) ||
+                            (sourceNode.status === Status.Status.START &&
                                 targetNode.status === Status.Status.HACKED)
                         )
                     },

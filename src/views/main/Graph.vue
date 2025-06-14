@@ -703,6 +703,7 @@ onMounted(() => {
     const firstTime = localStorage.getItem("firstTime")
     if (firstTime == null) {
 
+        console.log("Test1")
         useStevieStore().triggerMonolog('Einführung');
         const first: firstTime = {
             graph: true,
@@ -710,6 +711,7 @@ onMounted(() => {
         }
         localStorage.setItem("firstTime", JSON.stringify(first));
     } else {
+        console.log("Test2")
         const first: firstTime = JSON.parse(firstTime);
         if (!first.graph) {
             useStevieStore().triggerMonolog('Einführung');
@@ -1143,6 +1145,6 @@ h3 {
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 1000;
+    z-index: 1;
 }
 </style>
