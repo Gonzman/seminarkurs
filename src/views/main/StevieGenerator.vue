@@ -55,10 +55,10 @@ const newMonologMessage = ref<MonologMessage>({
 })
 
 const gameStates: GameStateType[] = [
-    'intro',
+    'scene',
     'graph',
     'circuitbreaker',
-    'ceaser',
+    'ceasar',
     'finger',
     'wire',
     'tinder',
