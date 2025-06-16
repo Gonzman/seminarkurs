@@ -1,5 +1,5 @@
 <template>
-    <Timer :sekunden="timerDuration" @timeOver="handleTimeOver" ref="timerRef"></Timer>
+    <Timer :sekunden="timerDuration" ref="timerRef"></Timer>
     <div class="finger-game">
         <div class="game-container">
             <h2>Match The Finger</h2>
@@ -188,9 +188,6 @@ const calculateTimerDuration = () => {
     return baseDuration + (fingersCount * 10)
 }
 
-const handleTimeOver = () => {
-    gameStore.setMinigameWin(false)
-}
 
 const initializeGame = () => {
     const fingersCount = getFingersCountByLevel();

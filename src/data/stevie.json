@@ -40,7 +40,7 @@
       "messages": [
         {
           "message": "Super mach weiter so!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -50,7 +50,7 @@
       "messages": [
         {
           "message": "Wenn du so weiter machst ist das programm bald Geschichte!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -60,7 +60,7 @@
       "messages": [
         {
           "message": "Klasse, du bist auf dem richtigen Weg!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -70,7 +70,7 @@
       "messages": [
         {
           "message": "Das läuft ja wie am Schnürchen – weiter so!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -80,7 +80,7 @@
       "messages": [
         {
           "message": "Ich bin begeistert! Du bringst das richtig gut voran!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -90,7 +90,7 @@
       "messages": [
         {
           "message": "Oh nein, das hat diesmal nicht geklappt...",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -100,7 +100,7 @@
       "messages": [
         {
           "message": "Kopf hoch, das nächste Mal schaffst du es bestimmt!",
-          "duration": 1
+          "duration": 2
         }
       ]
     },
@@ -110,7 +110,27 @@
       "messages": [
         {
           "message": "Das war knapp... Versuch’s gleich nochmal!",
-          "duration": 1
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "Sad4",
+      "stevieState": "sad",
+      "messages": [
+        {
+          "message": "Nicht entmutigen lassen – jeder Fehler bringt dich weiter!",
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "Sad5",
+      "stevieState": "sad",
+      "messages": [
+        {
+          "message": "Du bist nah dran – gib nicht auf!",
+          "duration": 2
         }
       ]
     },
@@ -120,11 +140,11 @@
       "messages": [
         {
           "message": "Das kannst du doch nicht machen!!!",
-          "duration": 1
+          "duration": 2
         },
         {
           "message": "Das sind unschuldige Menschen!!!",
-          "duration": 1
+          "duration": 2
         }
       ]
     }

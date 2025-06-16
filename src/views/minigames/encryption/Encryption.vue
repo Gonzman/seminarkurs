@@ -6,7 +6,8 @@
         <fieldset>
             <div v-for="(char, index) in encryptSelectedWord.length" :key="index">
                 <div>
-                    <input ref="inputs" type="text" maxlength="1" autofocus @input="onInputChange($event, index)" />
+                    <input ref="inputs" type="text" maxlength="1" autofocus @input="onInputChange($event, index)"
+                        @keydown="onKeyDown($event, index)" />
                 </div>
             </div>
         </fieldset>
@@ -68,6 +69,15 @@ function onInputChange(event: Event, index: number) {
     }
 }
 
+function onKeyDown(event: KeyboardEvent, index: number) {
+    if (event.key === 'Backspace' || event.key === 'Delete') {
+        const input = event.target as HTMLInputElement
+        if (input.value === '' && index > 0) {
+            inputs.value[index - 1].focus()
+        }
+    }
+}
+
 function checkAnswer() {
     let userInput: string = ''
     for (const inputElement of inputs.value) {
@@ -106,10 +116,16 @@ switch (props.level) {
 
 }
 
-const encryptSelectedWord = caesarCipher(selectedWord, Math.floor(Math.random() * 25))
+let random = 0
+
+while (random == 0) {
+    random = Math.floor(Math.random() * 25)
+}
+
+const encryptSelectedWord = caesarCipher(selectedWord, random)
 
 
-onBeforeMount(() =>{
+onBeforeMount(() => {
     gameStore.setGameState('ceasar');
 })
 

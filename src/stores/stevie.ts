@@ -15,8 +15,16 @@ export const useStevieStore = defineStore('stevie', () => {
             console.log(searchMonolog)
             monolog.value = searchMonolog
         } else {
-            alert('Wrong monolog Title')
+            alert('Fehler: Monolog')
         }
+    }
+
+    function triggerSad() {
+        triggerMonolog('Sad' + Math.floor(Math.random() * 4 + 1))
+    }
+
+    function triggerHappy() {
+        triggerMonolog('Happy' + Math.floor(Math.random() * 4 + 1))
     }
 
     function getMonolog() {
@@ -54,6 +62,8 @@ export const useStevieStore = defineStore('stevie', () => {
         getVisible,
         triggerMonolog,
         clearMonolog,
+        triggerHappy,
+        triggerSad,
     }
 })
 

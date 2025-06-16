@@ -419,7 +419,9 @@ function startMinigame(minigame: NodeMinigame) {
 function checkCompletedMinigames() {
     const minigameData = gameStore.getLastMinigameNode();
     const win = gameStore.getMinigameWin();
-    if (!minigameData) return;
+    if (!minigameData) {
+        return;
+    };
 
     // if (!win) {
     //     const lossKey = `loss_${minigameData}`;
@@ -442,6 +444,12 @@ function checkCompletedMinigames() {
         const node = nodes[minigameData];
         node.status = win ? Status.Status.HACKED : Status.Status.ONLINE;
         saveCurrentGraph();
+
+        if (win) {
+            useStevieStore().triggerHappy()
+        } else {
+            useStevieStore().triggerSad()
+        }
 
     } catch (e) {
         console.error('Error processing completed minigame:', e);

@@ -4,7 +4,6 @@ import { useGameStore } from '@/stores/game'
 import { onUnmounted, ref, computed, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router';
 const props = defineProps<{ sekunden: number; fertig?: boolean }>()
-const emits = defineEmits(['timeOver'])
 const timer = ref<number>(props.sekunden)
 let interval: number
 const max: number = props.sekunden
@@ -30,8 +29,7 @@ function clickEvent() {
 
             if (timer.value <= -1) {
                 clearInterval(interval)
-                emits('timeOver');
-                router.push("/graph")
+                useGameStore().setMinigameWin(false)
             }
         }, 1000)
     }

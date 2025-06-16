@@ -1,7 +1,7 @@
 <template>
 
     <MinigameWrapper :onComplete="() => finished">
-        <Timer :sekunden="start" :fertig="finished" @time-over="timeOver" />
+        <Timer :sekunden="start" :fertig="finished" />
         <div>
             <canvas ref="canvasRef" @mousedown="handleMouseDown" @mouseup="handleMouseUp"
                 @mousemove="handleMouseMove"></canvas>
@@ -41,10 +41,6 @@ switch (props.level) {
         break
     default:
         break
-}
-
-function timeOver() {
-    alert('Test')
 }
 
 type Box = {

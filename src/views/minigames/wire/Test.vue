@@ -219,18 +219,14 @@ watch([mouse.x, mouse.y], () => {
     }
 })
 
-function timerFertig() {
-    alert('Verloren')
-}
-
-onBeforeMount(() =>{
+onBeforeMount(() => {
     useGameStore().setGameState('wire');
 })
 
 </script>
 
 <template>
-    <Timer :sekunden="start" @time-over="timerFertig"></Timer>
+    <Timer :sekunden="start" @time-over=""></Timer>
     <div class="svg-container">
         <svg ref="svg">
             <line v-for="(line, index) in lines" :key="'line-' + index" :x1="line.x1" :y1="line.y1" :x2="line.x2"
