@@ -10,12 +10,9 @@ export const useStevieStore = defineStore('stevie', () => {
     const monolog: Ref<Monolog | null> = ref(null)
 
     function triggerMonolog(title: string) {
-        const searchMonolog = stevie.monolog.find((item) => {
-            if (item.title == title) {
-                return item
-            }
-        })
-        if (searchMonolog != undefined) {
+        const searchMonolog = stevie.monolog.find((item) => item.title === title)
+        if (searchMonolog) {
+            console.log(searchMonolog)
             monolog.value = searchMonolog
         } else {
             alert('Wrong monolog Title')
@@ -48,12 +45,13 @@ export const useStevieStore = defineStore('stevie', () => {
 
     return {
         stevieState,
+        monolog,
+        getMonolog,
         setStevieMood,
         getStevie,
         watchedIntro,
         setVisible,
         getVisible,
-        getMonolog,
         triggerMonolog,
         clearMonolog,
     }

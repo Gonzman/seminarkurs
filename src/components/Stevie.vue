@@ -18,7 +18,7 @@ import stevie from '@/data/stevie.json';
 const gameStore = useGameStore();
 const stevieStore = useStevieStore();
 
-const speeachText = ref('Hello, I am Stevie!');
+const speeachText = ref('Hello, Ich bin Stevie');
 
 const count = ref(0);
 const folder = ref('idle');
@@ -26,12 +26,11 @@ const folder = ref('idle');
 const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
 function handleClick() {
-
-    if (monolog.value != null) {
+    if (stevieStore.monolog != null) {
         return;
     }
 
-    speeachText.value = 'You clicked me!';
+    speeachText.value = 'Click mich an!';
 
     const stevieState = stevieStore.getStevie();
     const gameState = gameStore.getGameState();
@@ -145,7 +144,6 @@ function anim(sec: number, folder: string) {
 }
 
 async function triggerMonolog(monolog: Monolog) {
-
     for (let i = 0; i < monolog.messages.length; i++) {
         speeachText.value = monolog.messages[i].message;
         await new Promise((resolve) => setTimeout(resolve, monolog.messages[i].duration * 1000));
@@ -159,15 +157,14 @@ onMounted(() => {
     startCounter()
 })
 
-const monolog = stevieStore.getMonolog()
-
-watch(monolog, async (newVal) => {
+watch(() => stevieStore.monolog, async (newVal) => {
+    console.log(newVal)
     if (newVal == null) {
         speeachText.value = ''
     } else {
         await triggerMonolog(newVal)
     }
-})
+}, { immediate: true })
 
 defineExpose({
     startCounter,
