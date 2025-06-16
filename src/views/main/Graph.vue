@@ -540,6 +540,22 @@ function loadGraphFromFile(event: any) {
     reader.readAsText(file);
 }
 
+function translateLevel(level: Level): string {
+    switch (level) {
+        case Level.EASY:
+            return 'Einfach';
+        case Level.MEDIUM:
+            return 'Mittel';
+        case Level.HARD:
+            return 'Schwer';
+        case Level.SUPER_HARD:
+            return 'Sehr Schwer';
+        case Level.IMPOSSIBLE:
+            return 'Unmöglich';
+        default:
+            return 'Unbekannt';
+    }
+}
 
 function saveCurrentGraph() {
     const graphData: GraphData = {
@@ -800,7 +816,7 @@ defineExpose({ addRandomNode })
                 <div class="interaction-content">
                     <p class="ip-address">IP: {{ nameToIP(filteredNodes[interactionNode]?.name || '') }}</p>
                     <p v-if="filteredNodes[interactionNode]?.difficulty !== undefined" class="difficulty-info">
-                        Schwierigkeit: {{ Level[filteredNodes[interactionNode]?.difficulty!] }}
+                        Schwierigkeit: {{ translateLevel(filteredNodes[interactionNode]?.difficulty!) }}
                     </p>
 
                     <div v-if="availableMinigames.length > 0" class="minigames-list">
@@ -808,9 +824,7 @@ defineExpose({ addRandomNode })
                         <div v-for="(minigame, index) in availableMinigames" :key="index" class="minigame-item">
                             <div class="minigame-info">
                                 <h5>{{ minigame.title }}</h5>
-                                <p>{{ minigame.description }}</p>
-                                <p class="minigame-difficulty">Schwierigkeit: {{ minigame.difficulty !== undefined ?
-                                    Level[minigame.difficulty] : 'Default' }}</p>
+                                <p class="minigame-difficulty">Schwierigkeit: {{translateLevel(filteredNodes[interactionNode]?.difficulty!) }}</p>
                             </div>
                             <button class="btn primary play-btn" @click="startMinigame(minigame)"
                                 :disabled="filteredNodes[interactionNode].status != Status.Status.ONLINE">Start</button>
