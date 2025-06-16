@@ -820,11 +820,9 @@ defineExpose({ addRandomNode })
                     </p>
 
                     <div v-if="availableMinigames.length > 0" class="minigames-list">
-                        <h4>Available Actions</h4>
                         <div v-for="(minigame, index) in availableMinigames" :key="index" class="minigame-item">
                             <div class="minigame-info">
                                 <h5>{{ minigame.title }}</h5>
-                                <p class="minigame-difficulty">Schwierigkeit: {{translateLevel(filteredNodes[interactionNode]?.difficulty!) }}</p>
                             </div>
                             <button class="btn primary play-btn" @click="startMinigame(minigame)"
                                 :disabled="filteredNodes[interactionNode].status != Status.Status.ONLINE">Start</button>
