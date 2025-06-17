@@ -22,6 +22,11 @@ const speeachText = ref('Hello, Ich bin Stevie');
 
 const count = ref(0);
 const folder = ref('idle');
+const isInMonolog = ref(false);
+const animationStopped = ref(false);
+const currentAnimationInterval = ref<number | null>(null);
+const animationQueue = ref<{ folder: string, duration: number }[]>([]);
+const isAnimating = ref(false);
 
 const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
@@ -51,10 +56,16 @@ function handleClick() {
 
 async function startCounter() {
     try {
-        while (true) {
-            await anim(1000, 'idle');
-            await anim(2000, 'handy');
-            await anim(1000, 'idle');
+        while (!animationStopped.value) {
+            if (!isInMonolog.value && !isAnimating.value) {
+                await playAnimation('idle', 1000);
+                if (animationStopped.value || isInMonolog.value) break;
+                await playAnimation('handy', 2000);
+                if (animationStopped.value || isInMonolog.value) break;
+                await playAnimation('idle', 1000);
+            } else {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
         }
     } catch (error) {
         console.error('Animation error:', error);
@@ -68,14 +79,87 @@ function getFrameCount(folderName: string): number {
         case 'handy':
             return 12;
         case 'exclamation':
-            return 10;
+            return 24;
+        case 'happy':
+            return 6;
+        case 'mad':
+            return 6;
+        case 'sad':
+            return 6;
         default:
             return 6;
     }
 }
 
+function getAnimationFolder(stevieState: StevieStateType): string {
+    switch (stevieState) {
+        case 'happy':
+            return 'happy';
+        case 'angry':
+            return 'mad';
+        case 'sad':
+            return 'sad';
+        case 'scared':
+        case 'confused':
+            return 'exclamation';
+        case 'normal':
+        default:
+            return 'idle';
+    }
+}
+
+function playAnimation(folderName: string, duration: number) {
+    return new Promise<void>((resolve) => {
+        if (animationStopped.value || isAnimating.value) {
+            resolve();
+            return;
+        }
+
+        isAnimating.value = true;
+        let currentCount = 0;
+        const imageCount = getFrameCount(folderName);
+
+        if (imageCount === 0) {
+            console.error(`No images found for folder: ${folderName}`);
+            isAnimating.value = false;
+            resolve();
+            return;
+        }
+
+        const interval = duration / imageCount;
+        const counterInterval = setInterval(() => {
+            if (animationStopped.value || isInMonolog.value) {
+                clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
+                isAnimating.value = false;
+                resolve();
+                return;
+            }
+
+            count.value = currentCount;
+            imagePath.value = `/stevie/${folderName}/frame_${String(currentCount).padStart(2, '0')}.png`;
+
+            if (currentCount >= (imageCount - 1)) {
+                clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
+                isAnimating.value = false;
+                resolve();
+            } else {
+                currentCount++;
+            }
+        }, interval);
+
+        currentAnimationInterval.value = counterInterval;
+    });
+}
+
 function anim(sec: number, folder: string) {
     return new Promise<void>((resolve) => {
+        if (animationStopped.value) {
+            resolve();
+            return;
+        }
+
         let currentCount = 0;
         const imageCount = getFrameCount(folder);
 
@@ -87,28 +171,113 @@ function anim(sec: number, folder: string) {
 
         const interval = sec / imageCount;
         const counterInterval = setInterval(() => {
+            if (animationStopped.value) {
+                clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
+                resolve();
+                return;
+            }
+
             count.value = currentCount;
             imagePath.value = `/stevie/${folder}/frame_${String(currentCount).padStart(2, '0')}.png`;
 
             if (currentCount >= (imageCount - 1)) {
                 clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
                 resolve();
             } else {
                 currentCount++;
             }
         }, interval);
+
+        currentAnimationInterval.value = counterInterval;
     });
 }
 
 async function triggerMonolog(monolog: Monolog) {
+    if (currentAnimationInterval.value) {
+        clearInterval(currentAnimationInterval.value);
+        currentAnimationInterval.value = null;
+    }
+    
+    isInMonolog.value = true;
+    isAnimating.value = false;
     stevieState.value = monolog.stevieState as StevieStateType;
+
+    const animationFolder = getAnimationFolder(monolog.stevieState as StevieStateType);
+
     for (let i = 0; i < monolog.messages.length; i++) {
+        if (animationStopped.value) break;
+
         speeachText.value = monolog.messages[i].message;
-        await new Promise((resolve) => setTimeout(resolve, monolog.messages[i].duration * 1000));
+
+        const messageDuration = monolog.messages[i].duration * 1000;
+        await playMonologAnimation(animationFolder, messageDuration);
     }
 
     speeachText.value = '';
-    stevieStore.clearMonolog()
+    isInMonolog.value = false;
+    stevieStore.clearMonolog();
+}
+
+async function playMonologAnimation(folderName: string, duration: number) {
+    return new Promise<void>((resolve) => {
+        if (animationStopped.value) {
+            resolve();
+            return;
+        }
+
+        let currentCount = 0;
+        const imageCount = getFrameCount(folderName);
+
+        if (imageCount === 0) {
+            console.error(`No images found for folder: ${folderName}`);
+            resolve();
+            return;
+        }
+
+        const interval = duration / imageCount;
+        const counterInterval = setInterval(() => {
+            if (animationStopped.value || !isInMonolog.value) {
+                clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
+                resolve();
+                return;
+            }
+
+            count.value = currentCount;
+            imagePath.value = `/stevie/${folderName}/frame_${String(currentCount).padStart(2, '0')}.png`;
+
+            if (currentCount >= (imageCount - 1)) {
+                clearInterval(counterInterval);
+                currentAnimationInterval.value = null;
+                resolve();
+            } else {
+                currentCount++;
+            }
+        }, interval);
+
+        currentAnimationInterval.value = counterInterval;
+    });
+}
+
+function stopAnimations() {
+    animationStopped.value = true;
+    if (currentAnimationInterval.value) {
+        clearInterval(currentAnimationInterval.value);
+        currentAnimationInterval.value = null;
+    }
+    isInMonolog.value = false;
+    isAnimating.value = false;
+    speeachText.value = '';
+    animationQueue.value = [];
+}
+
+function startAnimations() {
+    animationStopped.value = false;
+    isAnimating.value = false;
+    isInMonolog.value = false;
+    startCounter();
 }
 
 onMounted(() => {
@@ -126,6 +295,8 @@ watch(() => stevieStore.monolog, async (newVal) => {
 
 defineExpose({
     startCounter,
+    stopAnimations,
+    startAnimations,
 });
 </script>
 
