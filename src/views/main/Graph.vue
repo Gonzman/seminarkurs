@@ -38,6 +38,7 @@ const selectedGraph = ref<string>('')
 const showGraphLoader = ref(false)
 const showNodeInteraction = ref(false)
 const interactionNode = ref<string | null>(null)
+const stevieStore = useStevieStore()
 
 let timeout: null | number = null
 
@@ -264,6 +265,10 @@ const eventHandlers: vNG.EventHandlers = {
 
         interactionNode.value = node
         showNodeInteraction.value = true
+
+        if(node == "7Fx5i"){
+            stevieStore.triggerMonolog("Krankenhaus");
+        }
     },
     'view:click': () => {
 
@@ -452,9 +457,9 @@ function checkCompletedMinigames() {
         saveCurrentGraph();
 
         if (win) {
-            useStevieStore().triggerHappy()
+            stevieStore.triggerHappy()
         } else {
-            useStevieStore().triggerSad()
+            stevieStore.triggerSad()
         }
 
     } catch (e) {
@@ -700,6 +705,8 @@ function loadGraphData(graphData: GraphData) {
     ) + 1;
 }
 
+
+
 onMounted(() => {
     gameStore.gameState = 'graph'
     loadSavedGraphs()
@@ -734,7 +741,7 @@ onMounted(() => {
     if (firstTime == null) {
 
         console.log("Test1")
-        useStevieStore().triggerMonolog('Einführung');
+        stevieStore.triggerMonolog('Einführung');
         const first: firstTime = {
             graph: true,
             krankenhaus: false,
@@ -744,13 +751,14 @@ onMounted(() => {
         console.log("Test2")
         const first: firstTime = JSON.parse(firstTime);
         if (!first.graph) {
-            useStevieStore().triggerMonolog('Einführung');
+            stevieStore.triggerMonolog('Einführung');
             first.graph = true;
             localStorage.setItem("firstTime", JSON.stringify(first));
         }
     }
 
-    if(nodes['SEDzG'].status === Status.Status.ONLINE) {
+    if(nodes['SEDzG'].status === Status.Status.HACKED) {
+        stevieStore.triggerMonolog("Ende?");
         timeout = setTimeout(() => {
             router.push('/scenes/outro4')
         }, 20000);

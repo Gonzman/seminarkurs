@@ -147,6 +147,24 @@
           "duration": 2
         }
       ]
+    },
+    {
+        "title": "Ende?",
+        "stevieState": "normal",
+        "messages": [
+          {
+            "message": "Wir haben die Mission erfolgreich abgeschlossen!",
+            "duration": 2
+          },
+          {
+            "message": "Jetzt kann die Welt wieder in ruhe schlafen.",
+            "duration": 2
+          },
+            {
+                "message": "Danke für deine Hilfe!",
+                "duration": 2
+            }
+        ]
     }
   ]
 }

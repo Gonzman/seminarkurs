@@ -10,7 +10,7 @@
 
 <script lang="ts" setup>
 import { useGameStore } from '@/stores/game';
-import { useStevieStore, type Monolog } from '@/stores/stevie';
+import { useStevieStore, type Monolog, type StevieStateType } from '@/stores/stevie';
 import speechBubble from '@/components/stevie/speechBubble.vue';
 import { onMounted, ref, watch } from 'vue';
 import stevie from '@/data/stevie.json';
@@ -52,52 +52,13 @@ function handleClick() {
 async function startCounter() {
     try {
         while (true) {
-            await idleAnim();
+            await anim(1000, 'idle');
             await anim(2000, 'handy');
-            await idleAnim();
+            await anim(1000, 'idle');
         }
     } catch (error) {
         console.error('Animation error:', error);
     }
-}
-
-function handyAnim() {
-    return new Promise<void>((resolve) => {
-        let currentCount = 0;
-        const interval = 2000 / 12;
-        folder.value = 'handy';
-        const counterInterval = setInterval(() => {
-            count.value = currentCount;
-            imagePath.value = `/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
-
-            if (currentCount >= 11) {
-                clearInterval(counterInterval);
-                resolve();
-            } else {
-                currentCount++;
-            }
-        }, interval);
-    });
-}
-
-function idleAnim() {
-    return new Promise<void>((resolve) => {
-        let currentCount = 0;
-
-        const interval = 1000 / 6;
-        folder.value = 'idle';
-        const counterInterval = setInterval(() => {
-            count.value = currentCount;
-            imagePath.value = `/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`;
-
-            if (currentCount >= 5) {
-                clearInterval(counterInterval);
-                resolve();
-            } else {
-                currentCount++;
-            }
-        }, interval);
-    });
 }
 
 function getFrameCount(folderName: string): number {
@@ -140,6 +101,7 @@ function anim(sec: number, folder: string) {
 }
 
 async function triggerMonolog(monolog: Monolog) {
+    stevieState.value = monolog.stevieState as StevieStateType;
     for (let i = 0; i < monolog.messages.length; i++) {
         speeachText.value = monolog.messages[i].message;
         await new Promise((resolve) => setTimeout(resolve, monolog.messages[i].duration * 1000));
