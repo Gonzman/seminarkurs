@@ -69,10 +69,6 @@ export const useGameStore = defineStore('game', () => {
     function setMinigameWin(value: boolean) {
         minigameWin.value = value
 
-        if (minigameNode.value == '7Fx5i') {
-            router.push('/scenes/outro3')
-            return
-        }
         if (!value) {
             knowledgeStore.gameFailed()
 
@@ -145,6 +141,7 @@ export const useGameStore = defineStore('game', () => {
         dangerLevel,
         audioMute,
         setAudioMute,
+        minigameNode
     }
 })
 const gameStateArray = [

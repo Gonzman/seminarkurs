@@ -31,3 +31,5 @@ coverage
 
 bun.lockb
 package-lock.json
+
+bericht.md

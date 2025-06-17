@@ -25,6 +25,9 @@ const folder = ref('idle');
 
 const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padStart(2, '0')}.png`);
 
+const stevieState = stevieStore.getStevie();
+const gameState = gameStore.getGameState();
+
 function handleClick() {
     if (stevieStore.monolog != null) {
         return;
@@ -32,14 +35,7 @@ function handleClick() {
 
     speeachText.value = 'Click mich an!';
 
-    const stevieState = stevieStore.getStevie();
-    const gameState = gameStore.getGameState();
-
-    const message = stevie.ideen.find((item) => {
-        if (item.gameState == gameState.value && item.stevieState == stevieState.value) {
-            return item;
-        }
-    });
+    const message = stevie.ideen.find((item) => item.gameState == gameState.value && item.stevieState == stevieState.value);
 
     if (!message) {
         console.error('Message not found!');

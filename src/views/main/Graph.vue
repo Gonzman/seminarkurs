@@ -39,6 +39,8 @@ const showGraphLoader = ref(false)
 const showNodeInteraction = ref(false)
 const interactionNode = ref<string | null>(null)
 
+let timeout: null | number = null
+
 
 interface NodeMinigame {
     title: string
@@ -412,6 +414,10 @@ function startMinigame(minigame: NodeMinigame) {
 
     gameStore.setLastMinigameNode(interactionNode.value);
 
+    if(timeout !== null){
+        clearTimeout(timeout);
+    }
+
     router.push(minigame.route);
     showNodeInteraction.value = false;
 }
@@ -742,6 +748,12 @@ onMounted(() => {
             first.graph = true;
             localStorage.setItem("firstTime", JSON.stringify(first));
         }
+    }
+
+    if(nodes['SEDzG'].status === Status.Status.ONLINE) {
+        timeout = setTimeout(() => {
+            router.push('/scenes/outro4')
+        }, 20000);
     }
 })
 

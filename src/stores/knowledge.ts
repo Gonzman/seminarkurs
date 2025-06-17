@@ -3,6 +3,7 @@ import { defineStore } from 'pinia'
 import { parse, stringify } from 'zipson/lib'
 import router from '@/router'
 import knowledgeData from '@/data/knowledge.json'
+import { useGameStore } from './game'
 
 export interface KnowledgeItem {
     id: number
@@ -140,6 +141,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         return gameKnowledges.value
     }
 
+    const gameStore = useGameStore()
     function moveGameKnowledgeToKnowledges(knowledge: KnowledgeItem[]) {
         knowledge.forEach((item) => {
             const existingIndex = gameKnowledges.value.findIndex((k) => k.id === item.id)
@@ -149,6 +151,11 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
             }
         })
         gameKnowledges.value = []
+
+        if (gameStore.minigameNode == '7Fx5i') {
+            router.push('/scenes/outro3')
+            return
+        }
     }
 
     function getKnowledgeImagePath(imagePath: string): string {

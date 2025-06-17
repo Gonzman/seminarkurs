@@ -58,7 +58,7 @@
       "draggable": true,
       "minigame": 0,
       "difficulty": 2,
-      "knowledgeIds": [11, 13, 33]
+      "knowledgeIds": [11, 13, 19, 33]
     },
     "z2oKM": {
       "name": "PC",

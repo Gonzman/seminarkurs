@@ -49,7 +49,7 @@
                 </button>
                 <button v-if="gameWon" @click="nextFinger" class="next-btn">
                     <p style="font-family: 'Pixel'; color: white;">
-                        {{ hasNextFinger ? 'Next Finger' : 'zu Infotinder' }}
+                        {{ hasNextFinger ? 'nächster Finger' : 'zum Infotinder' }}
                     </p>
                 </button>
             </div>
