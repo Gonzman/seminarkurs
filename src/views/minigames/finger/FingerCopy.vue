@@ -2,7 +2,7 @@
     <Timer :sekunden="timerDuration" ref="timerRef"></Timer>
     <div class="finger-game">
         <div class="game-container">
-            <h2>Match The Finger</h2>
+            <h2>Copy The Finger</h2>
 
             <div v-if="!gameWon" class="game-status">
                 <p>Passen Sie Ihren Finger auf der linken Seite dem Zielfinger auf der rechten Seite an!</p>

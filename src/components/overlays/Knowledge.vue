@@ -32,7 +32,6 @@
                 <div class="knowledge-content">
                     <img :src="useKnowledgeStore().getKnowledgeImagePath(knowledgeStore.selectedKnowledge.image)"
                         alt="Knowledge Image" />
-                    <p class="description">{{ knowledgeStore.selectedKnowledge.description }}</p>
                     <div class="source" v-if="knowledgeStore.selectedKnowledge.sources?.length">
                         <span v-if="knowledgeStore.selectedKnowledge.sources.length === 1">
                             Vom: {{ knowledgeStore.selectedKnowledge.sources[0] }}

@@ -131,7 +131,7 @@ function anim(sec: number, folder: string) {
         const interval = sec / imageCount;
         const counterInterval = setInterval(() => {
             count.value = currentCount;
-            imagePath.value = ` ss${folder}/frame_${String(currentCount).padStart(2, '0')}.png`;
+            imagePath.value = `/stevie/${folder}/frame_${String(currentCount).padStart(2, '0')}.png`;
 
             if (currentCount >= (imageCount - 1)) {
                 clearInterval(counterInterval);
