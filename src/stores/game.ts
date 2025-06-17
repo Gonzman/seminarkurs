@@ -20,6 +20,8 @@ export const useGameStore = defineStore('game', () => {
     const stevie = useStevieStore()
     const minigameWin = ref(false)
 
+    const audioMute = ref(false)
+
     function setDangerLevel(value: number) {
         localStorage.setItem('dangerLevel', value.toString())
         dangerLevel.value = value
@@ -39,6 +41,7 @@ export const useGameStore = defineStore('game', () => {
     }
 
     function setGameState(value: GameStateType) {
+        console.log('setGameState', value)
         gameState.value = value
 
         switch (value) {
@@ -50,6 +53,12 @@ export const useGameStore = defineStore('game', () => {
             default:
                 stevie.setVisible(true)
                 break
+        }
+
+        if(value == 'scene') {
+            audioMute.value = true
+        }else {
+            audioMute.value = false
         }
     }
 
@@ -115,6 +124,11 @@ export const useGameStore = defineStore('game', () => {
         return minigameNode.value
     }
 
+    function setAudioMute(value: boolean) {
+        audioMute.value = value
+    }
+
+
     return {
         escapeState,
         toggleEscape,
@@ -129,6 +143,8 @@ export const useGameStore = defineStore('game', () => {
         getLastMinigameNode,
         getDangerLevel,
         dangerLevel,
+        audioMute,
+        setAudioMute,
     }
 })
 const gameStateArray = [
@@ -139,6 +155,7 @@ const gameStateArray = [
     'wire',
     'tinder',
     'scene',
+    'start'
 ] as const
 
 export type GameStateType = (typeof gameStateArray)[number]

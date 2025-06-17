@@ -14,10 +14,10 @@
 
         <div class="button-container">
             <button class="reset-button" @click="reset">
-                <p style="font-family: 'Pixel'; color: white;">Reset</p>
+                <p style="font-family: 'Pixel'; color: white;">Neuer Versuch</p>
             </button>
             <button class="confirm-button" @click="checkAnswer">
-                <p style="font-family: 'Pixel'; color: black;">Confirm</p>
+                <p style="font-family: 'Pixel'; color: black;">Überprüfen</p>
             </button>
         </div>
     </div>
@@ -234,7 +234,7 @@ button {
 }
 
 .confirm-button {
-    background-color: var(--green);
+    background-color: #4CAF50;
     color: black;
 }
 

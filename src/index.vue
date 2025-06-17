@@ -13,7 +13,7 @@ import router from './router';
 
 const game = useGameStore()
 
-game.setGameState('scene');
+game.setGameState('start');
 
 onBeforeMount(() => {
     const watched = localStorage.getItem("intro");

@@ -1,6 +1,6 @@
 <!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import EscapeView from './views/overlays/EscapeView.vue'
 import { useGameStore } from './stores/game'
 import { RouterView, useRoute, useRouter } from 'vue-router'
@@ -63,7 +63,42 @@ const onDragEnd = () => {
         animationFrameId = null
     }
 }
+const audioSrc = ref('/audio/game.mp3')
 
+const bgAudio = ref<HTMLAudioElement | null>(null)
+
+onMounted(() => {
+  document.addEventListener('click', () => {
+
+    if(gameStore.getGameState().value == 'scene'){
+        return
+    }
+
+    if (!bgAudio.value) {
+      return
+    }
+    bgAudio.value.play().catch((err) => {
+      console.warn('Autoplay blocked:', err)
+    })
+
+    bgAudio.value.volume = 0.2
+  }, { once: true })
+})
+
+watch(() => gameStore.audioMute, (newVal) => {
+    console.log('Audio muted')
+    if (!bgAudio.value) {
+        return
+    }
+    if(newVal) {
+        bgAudio.value.pause()
+        console.log('Audio muted')
+    } else {
+        bgAudio.value.play().catch((err) => {
+            console.warn('Autoplay blocked:', err)
+        })
+    }
+  }, { immediate: true })
 
 </script>
 
@@ -71,13 +106,12 @@ const onDragEnd = () => {
     <div v-if="gameStore.escapeState" class="overlay">
         <EscapeView></EscapeView>
     </div>
-    <transition name="fade" mode="out-in">
-        <router-view></router-view>
-    </transition>
+    <router-view></router-view>
     <div ref="stevieRef" class="stevie" @mousedown="onDragStart" :style="{ top: posY + 'px', left: posX + 'px' }">
         <Stevie
-            v-if="gameStore.gameState != 'scene' && gameStore.gameState != 'circuitbreaker' && gameStore.gameState != 'wire'" />
+            v-if="gameStore.gameState != 'scene' && gameStore.gameState != 'circuitbreaker' && gameStore.gameState != 'wire' && gameStore.gameState != 'start'" />
     </div>
+    <audio ref="bgAudio" :src="audioSrc" loop></audio>
 </template>
 
 <style scoped>

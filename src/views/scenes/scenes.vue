@@ -1,9 +1,14 @@
 <script setup lang="ts">
 import router from '@/router';
 import { scenes } from './scenes';
+import { onBeforeMount, onMounted } from 'vue';
+import { useGameStore } from '@/stores/game';
+import { useMounted } from '@vueuse/core';
 
 
 const props = defineProps<{ scene?: scenes, debug?: boolean }>();
+
+const gameStore = useGameStore();
 
 
 const sceneNames = ['intro', 'outro1', 'outro2', 'outro3', 'outro4'] as const;
@@ -30,6 +35,10 @@ function handleEnd() {
             break;
     }
 }
+
+onMounted(()=>{
+    gameStore.setGameState("scene");
+})
 
 </script>
 

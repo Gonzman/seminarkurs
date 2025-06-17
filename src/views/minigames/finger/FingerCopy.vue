@@ -41,10 +41,16 @@
             </div>
 
             <div class="game-controls">
-                <button @click="resetGame" class="reset-btn">Neuer Versuch</button>
-                <button @click="checkSolution" class="check-btn">Überprüfen</button>
+                <button @click="resetGame" class="reset-btn">
+                    <p style="font-family: 'Pixel'; color: white;">Neuer Versuch</p>
+                </button>
+                <button @click="checkSolution" class="check-btn">
+                    <p style="font-family: 'Pixel'; color: black;">Überprüfen</p>
+                </button>
                 <button v-if="gameWon" @click="nextFinger" class="next-btn">
-                    {{ hasNextFinger ? 'Next Finger' : 'zu Infotinder' }}
+                    <p style="font-family: 'Pixel'; color: white;">
+                        {{ hasNextFinger ? 'Next Finger' : 'zu Infotinder' }}
+                    </p>
                 </button>
             </div>
         </div>
@@ -452,16 +458,20 @@ h3 {
 }
 
 .game-controls button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .reset-btn {
-    background-color: #f44336;
+    background-color: red;
     color: white;
 }
 
@@ -476,14 +486,18 @@ h3 {
 }
 
 .reset-btn:hover {
-    background-color: #e53935;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .check-btn:hover {
-    background-color: #43a047;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
 }
 
 .next-btn:hover {
-    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
 }
+
 </style>
