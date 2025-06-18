@@ -31,12 +31,13 @@ function handleEnd() {
         case "outro2":
         case "outro3":
         case "outro4":
-            router.push("/ende")
+            localStorage.clear();
+            router.push("/")
             break;
     }
 }
 
-onMounted(()=>{
+onMounted(() => {
     gameStore.setGameState("scene");
 })
 

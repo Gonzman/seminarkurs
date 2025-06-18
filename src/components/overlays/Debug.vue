@@ -23,6 +23,7 @@
                     <button @click="jumpToScene('OUTRO4')" class="scene-btn outro-btn">
                         Outro 4
                     </button>
+                    <button @click="clearLocalstorage()" class="scene-btn outro-btn">LocalStorage löschen</button>
                 </div>
             </div>
         </div>
@@ -39,6 +40,11 @@ const gameStore = useGameStore()
 function jumpToScene(sceneName: string) {
     gameStore.escapeState = false
     router.push(`/scenes/${sceneName}/true`)
+}
+
+function clearLocalstorage() {
+    localStorage.clear()
+    router.push("/")
 }
 </script>
 

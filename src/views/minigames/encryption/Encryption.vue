@@ -107,7 +107,7 @@ switch (props.level) {
         break;
 
     case Level.SUPER_HARD:
-        selectedWord = "PHISHI1312"
+        selectedWord = "PISHI1312"
         break;
 
     case Level.IMPOSSIBLE:

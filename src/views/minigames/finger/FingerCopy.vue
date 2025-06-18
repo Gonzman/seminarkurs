@@ -211,10 +211,6 @@ const initializeGame = () => {
 
     activeFingers.value = allFingerIndices.slice(0, fingersCount);
 
-    selected.value = Array.from({ length: fingersCount }, () =>
-        Array.from({ length: 5 }, () => Math.floor(Math.random() * 4) + 1)
-    )
-
     correctPositions.value = [];
     for (let i = 0; i < fingersCount; i++) {
         const fingerParts = [];
@@ -223,6 +219,17 @@ const initializeGame = () => {
         }
         correctPositions.value.push(fingerParts);
     }
+
+    selected.value = Array.from({ length: fingersCount }, (_, fingerIndex) =>
+        Array.from({ length: 5 }, (_, partIndex) => {
+            const correctValue = correctPositions.value[fingerIndex][partIndex];
+            let randomValue;
+            do {
+                randomValue = Math.floor(Math.random() * 4) + 1;
+            } while (randomValue === correctValue);
+            return randomValue;
+        })
+    )
 
     currentFingerIndex.value = 0;
     gameWon.value = false;
@@ -499,5 +506,4 @@ h3 {
     transform: translateY(-2px);
     box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.15);
 }
-
 </style>

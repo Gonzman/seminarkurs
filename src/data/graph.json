@@ -87,13 +87,6 @@
       "difficulty": 2,
       "knowledgeIds": [4, 12, 1]
     },
-    "6T5c7": {
-      "name": "Ende 1",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
     "zpP7r": {
       "name": "Steuereinheit",
       "icon": "&#xe328",
@@ -157,13 +150,6 @@
       "difficulty": 1,
       "knowledgeIds": [32]
     },
-    "vnned": {
-      "name": "Ende 2",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
-    },
     "SEDzG": {
       "name": "Internet",
       "icon": "&#xe328",
@@ -190,13 +176,6 @@
       "minigame": 0,
       "difficulty": 1,
       "knowledgeIds": [17, 16, 15]
-    },
-    "9hY3i": {
-      "name": "Ende 3",
-      "icon": "&#xe328",
-      "status": 2,
-      "draggable": true,
-      "knowledgeIds": []
     }
   },
   "edges": {
@@ -266,12 +245,6 @@
       "color": "#4466cc",
       "dashed": false
     },
-    "edgeJtk48": {
-      "source": "moUHp",
-      "target": "6T5c7",
-      "color": "#4466cc",
-      "dashed": false
-    },
     "edgetFylK": {
       "source": "z2oKM",
       "target": "zpP7r",
@@ -338,12 +311,6 @@
       "color": "#4466cc",
       "dashed": false
     },
-    "edgektw7C": {
-      "source": "HrBHB",
-      "target": "vnned",
-      "color": "#4466cc",
-      "dashed": false
-    },
     "edgeM25LN": {
       "source": "HrBHB",
       "target": "SEDzG",
@@ -359,12 +326,6 @@
     "edge3XhO9": {
       "source": "SEDzG",
       "target": "7Fx5i",
-      "color": "#4466cc",
-      "dashed": false
-    },
-    "edgelRHFH": {
-      "source": "7Fx5i",
-      "target": "9hY3i",
       "color": "#4466cc",
       "dashed": false
     },
