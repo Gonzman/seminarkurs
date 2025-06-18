@@ -266,7 +266,7 @@ const eventHandlers: vNG.EventHandlers = {
         interactionNode.value = node
         showNodeInteraction.value = true
 
-        if(node == "7Fx5i"){
+        if (node == "7Fx5i") {
             stevieStore.triggerMonolog("Krankenhaus");
         }
     },
@@ -419,7 +419,7 @@ function startMinigame(minigame: NodeMinigame) {
 
     gameStore.setLastMinigameNode(interactionNode.value);
 
-    if(timeout !== null){
+    if (timeout !== null) {
         clearTimeout(timeout);
     }
 
@@ -757,11 +757,14 @@ onMounted(() => {
         }
     }
 
-    if(nodes['SEDzG'].status === Status.Status.HACKED) {
-        stevieStore.triggerMonolog("Ende?");
+    if (nodes['SEDzG'].status === Status.Status.HACKED) {
+        stevieStore.setStevieMood('angry');
+        setTimeout(() => {
+            stevieStore.triggerMonolog("Ende?");
+        }, 1000)
         timeout = setTimeout(() => {
             router.push('/scenes/outro4')
-        }, 20000);
+        }, 200000);
     }
 })
 

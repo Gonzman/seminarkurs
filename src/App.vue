@@ -21,12 +21,9 @@ const handleKeyPress = (e: KeyboardEvent) => {
 
 const isDarkMode = ref(window.matchMedia('(prefers-color-scheme: dark)').matches)
 
-onMounted(() => {
-    document.addEventListener('keydown', handleKeyPress)
-})
-
 onUnmounted(() => {
     document.removeEventListener('keydown', handleKeyPress)
+    window.removeEventListener('resize', handleResize)
 })
 
 const stevieRef = ref<HTMLElement | null>(null)
@@ -35,6 +32,61 @@ const posY = ref(100)
 let offsetX = 0
 let offsetY = 0
 let animationFrameId: number | null = null
+
+const constrainPosition = () => {
+    if (stevieRef.value) {
+        const stevieWidth = 200
+        const stevieHeight = 200
+        const speechBubblePadding = 80
+
+        const speechBubbleElement = stevieRef.value.querySelector('.speech-bubble-container') as HTMLElement
+        let speechBubbleWidth = 0
+        let speechBubbleHeight = 0
+        let isBubbleVisible = false
+
+        if (speechBubbleElement) {
+            const bubbleRect = speechBubbleElement.getBoundingClientRect()
+            const computedStyle = window.getComputedStyle(speechBubbleElement)
+            isBubbleVisible = bubbleRect.width > 0 && bubbleRect.height > 0 && computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden'
+
+            if (isBubbleVisible) {
+                speechBubbleWidth = bubbleRect.width
+                speechBubbleHeight = bubbleRect.height
+            }
+        }
+
+        const maxX = window.innerWidth - stevieWidth
+        const maxY = window.innerHeight - stevieHeight
+
+        let minX = 0
+        let maxXWithBubble = maxX
+        let minY = 0
+
+        if (isBubbleVisible) {
+            const speechBubbleHalfWidth = speechBubbleWidth / 2
+            minX = Math.max(0, speechBubbleHalfWidth - (stevieWidth / 2))
+            maxXWithBubble = Math.min(maxX, window.innerWidth - speechBubbleHalfWidth - (stevieWidth / 2))
+            minY = Math.max(speechBubblePadding, speechBubbleHeight)
+        }
+
+        posX.value = Math.max(minX, Math.min(posX.value, maxXWithBubble))
+        posY.value = Math.max(minY, Math.min(posY.value, maxY))
+    }
+}
+
+const handleResize = () => {
+    constrainPosition()
+}
+
+onMounted(() => {
+    document.addEventListener('keydown', handleKeyPress)
+    window.addEventListener('resize', handleResize)
+    setTimeout(constrainPosition, 500)
+})
+
+watch(() => gameStore.gameState, () => {
+    setTimeout(constrainPosition, 100)
+}, { immediate: true })
 
 const onDragStart = (e: MouseEvent) => {
     if (stevieRef.value) {
@@ -48,8 +100,50 @@ const onDragStart = (e: MouseEvent) => {
 const onDrag = (e: MouseEvent) => {
     if (animationFrameId === null) {
         animationFrameId = requestAnimationFrame(() => {
-            posX.value = e.clientX - offsetX
-            posY.value = e.clientY - offsetY
+            if (stevieRef.value) {
+                const stevieWidth = 200
+                const stevieHeight = 200
+                const speechBubblePadding = 80
+
+                const speechBubbleElement = stevieRef.value.querySelector('.speech-bubble-container') as HTMLElement
+                let speechBubbleWidth = 0
+                let speechBubbleHeight = 0
+                let isBubbleVisible = false
+
+                if (speechBubbleElement) {
+                    const bubbleRect = speechBubbleElement.getBoundingClientRect()
+                    const computedStyle = window.getComputedStyle(speechBubbleElement)
+                    isBubbleVisible = bubbleRect.width > 0 && bubbleRect.height > 0 && computedStyle.display !== 'none' && computedStyle.visibility !== 'hidden'
+
+                    if (isBubbleVisible) {
+                        speechBubbleWidth = bubbleRect.width
+                        speechBubbleHeight = bubbleRect.height
+                    }
+                }
+
+                const maxX = window.innerWidth - stevieWidth
+                const maxY = window.innerHeight - stevieHeight
+
+                let minX = 0
+                let maxXWithBubble = maxX
+                let minY = 0
+
+                if (isBubbleVisible) {
+                    const speechBubbleHalfWidth = speechBubbleWidth / 2
+                    minX = Math.max(0, speechBubbleHalfWidth - (stevieWidth / 2))
+                    maxXWithBubble = Math.min(maxX, window.innerWidth - speechBubbleHalfWidth - (stevieWidth / 2))
+                    minY = Math.max(speechBubblePadding, speechBubbleHeight)
+                }
+
+                let newX = e.clientX - offsetX
+                let newY = e.clientY - offsetY
+
+                newX = Math.max(minX, Math.min(newX, maxXWithBubble))
+                newY = Math.max(minY, Math.min(newY, maxY))
+
+                posX.value = newX
+                posY.value = newY
+            }
             animationFrameId = null
         })
     }
@@ -68,21 +162,21 @@ const audioSrc = ref('/audio/game.mp3')
 const bgAudio = ref<HTMLAudioElement | null>(null)
 
 onMounted(() => {
-  document.addEventListener('click', () => {
+    document.addEventListener('click', () => {
 
-    if(gameStore.getGameState().value == 'scene'){
-        return
-    }
+        if (gameStore.getGameState().value == 'scene') {
+            return
+        }
 
-    if (!bgAudio.value) {
-      return
-    }
-    bgAudio.value.play().catch((err) => {
-      console.warn('Autoplay blocked:', err)
-    })
+        if (!bgAudio.value) {
+            return
+        }
+        bgAudio.value.play().catch((err) => {
+            console.warn('Autoplay blocked:', err)
+        })
 
-    bgAudio.value.volume = 0.2
-  }, { once: true })
+        bgAudio.value.volume = 0.2
+    }, { once: true })
 })
 
 watch(() => gameStore.audioMute, (newVal) => {
@@ -90,7 +184,7 @@ watch(() => gameStore.audioMute, (newVal) => {
     if (!bgAudio.value) {
         return
     }
-    if(newVal) {
+    if (newVal) {
         bgAudio.value.pause()
         console.log('Audio muted')
     } else {
@@ -98,7 +192,7 @@ watch(() => gameStore.audioMute, (newVal) => {
             console.warn('Autoplay blocked:', err)
         })
     }
-  }, { immediate: true })
+}, { immediate: true })
 
 </script>
 

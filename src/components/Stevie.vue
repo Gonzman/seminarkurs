@@ -33,36 +33,51 @@ const imagePath = ref(`/stevie/${folder.value}/frame_${String(count.value).padSt
 const stevieState = stevieStore.getStevie();
 const gameState = gameStore.getGameState();
 
+
 function handleClick() {
     if (stevieStore.monolog != null) {
         return;
     }
 
-    speeachText.value = 'Click mich an!';
+    const currentGameState = gameState.value;
+    console.log("Current game state:", currentGameState);
 
-    const message = stevie.ideen.find((item) => item.gameState == gameState.value && item.stevieState == stevieState.value);
+    const tipMapping: Record<string, string[]> = {
+        'graph': ['Graph1', 'Graph2', 'Graph3'],
+        'caesar': ['Encryption1', 'Encryption2', 'Encryption3', 'Encryption4'],
+        'finger': ['FingerGame1', 'FingerGame2', 'FingerGame3', 'FingerGame4'],
+        'tinder': ['InfoTinder1', 'InfoTinder2', 'InfoTinder3', 'InfoTinder4']
+    };
 
-    if (!message) {
-        console.error('Message not found!');
-        return;
+    const availableTips = tipMapping[currentGameState];
+
+    if (availableTips && availableTips.length > 0) {
+        const randomTip = availableTips[Math.floor(Math.random() * availableTips.length)];
+        console.log("Triggering tip:", randomTip);
+        stevieStore.triggerMonolog(randomTip);
+    } else {
+        console.log("No tips available for game state:", currentGameState);
+        stevieStore.triggerMonolog('Happy1');
     }
-
-    speeachText.value = message.message;
-
-    setTimeout(() => {
-        speeachText.value = '';
-    }, message.duration * 1000);
 }
 
 async function startCounter() {
     try {
         while (!animationStopped.value) {
             if (!isInMonolog.value && !isAnimating.value) {
-                await playAnimation('idle', 1000);
-                if (animationStopped.value || isInMonolog.value) break;
-                await playAnimation('handy', 2000);
-                if (animationStopped.value || isInMonolog.value) break;
-                await playAnimation('idle', 1000);
+                const currentState = stevieState.value;
+
+                if (currentState === 'normal') {
+                    await playAnimation('idle', 1000);
+                    if (animationStopped.value || isInMonolog.value) break;
+                    await playAnimation('handy', 2000);
+                    if (animationStopped.value || isInMonolog.value) break;
+                    await playAnimation('idle', 1000);
+                } else {
+                    const animationFolder = getAnimationFolder(currentState);
+                    await playAnimation(animationFolder, 3000);
+                    if (animationStopped.value || isInMonolog.value) break;
+                }
             } else {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
@@ -79,7 +94,7 @@ function getFrameCount(folderName: string): number {
         case 'handy':
             return 12;
         case 'exclamation':
-            return 24;
+            return 6;
         case 'happy':
             return 6;
         case 'mad':
@@ -100,7 +115,7 @@ function getAnimationFolder(stevieState: StevieStateType): string {
         case 'sad':
             return 'sad';
         case 'scared':
-        case 'confused':
+        case 'exclamation':
             return 'exclamation';
         case 'normal':
         default:
@@ -195,14 +210,17 @@ function anim(sec: number, folder: string) {
 }
 
 async function triggerMonolog(monolog: Monolog) {
+    const oldStateValue = stevieStore.getStevie().value;
+    console.log("oldState before monolog:", oldStateValue);
+
     if (currentAnimationInterval.value) {
         clearInterval(currentAnimationInterval.value);
         currentAnimationInterval.value = null;
     }
-    
+
     isInMonolog.value = true;
     isAnimating.value = false;
-    stevieState.value = monolog.stevieState as StevieStateType;
+    stevieStore.setStevieMood(monolog.stevieState as StevieStateType);
 
     const animationFolder = getAnimationFolder(monolog.stevieState as StevieStateType);
 
@@ -218,6 +236,17 @@ async function triggerMonolog(monolog: Monolog) {
     speeachText.value = '';
     isInMonolog.value = false;
     stevieStore.clearMonolog();
+
+    console.log("restoring state to:", oldStateValue);
+    if (monolog.stevieState as StevieStateType === 'angry') {
+        stevieStore.setStevieMood(monolog.stevieState as StevieStateType)
+    } else {
+        stevieStore.setStevieMood(oldStateValue);
+    }
+    if (!animationStopped.value) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+        startCounter();
+    }
 }
 
 async function playMonologAnimation(folderName: string, duration: number) {

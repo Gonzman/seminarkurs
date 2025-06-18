@@ -165,6 +165,146 @@
           "duration": 2
         }
       ]
+    },
+    {
+      "title": "Encryption1",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Diese Zeichen sehen verschlüsselt aus...",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "Encryption2",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Alte Verschlüsselungsmethoden sind manchmal die einfachsten.",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "Encryption3",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Das Alphabet hat eine bestimmte Reihenfolge - vielleicht wurde sie verändert?",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "Encryption4",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Probiere systematisch verschiedene Möglichkeiten aus.",
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "FingerGame1",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Das scheint ein Nachahmungsspiel zu sein...",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "FingerGame2",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Beobachte das Zielbild genau - jedes Detail zählt.",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "FingerGame3",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Manchmal musst du die Perspektive wechseln um alles zu verstehen.",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "FingerGame4",
+      "stevieState": "exclamation",
+      "messages": [
+        {
+          "message": "Geduld bringt oft bessere Ergebnisse als Hektik.",
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "InfoTinder1",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "So viele Informationen... aber welche sind wirklich wichtig?",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "InfoTinder2",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "Ressourcen sind begrenzt - überlege gut was du behalten willst.",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "InfoTinder3",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "Manchmal ist weniger mehr.",
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "InfoTinder4",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "Was könnte später noch nützlich sein?",
+          "duration": 2
+        }
+      ]
+    },
+    {
+      "title": "Graph1",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "Wir sollen alle Geräte hacken um alle Informationen zu bekommen",
+          "duration": 3
+        }
+      ]
+    },
+    {
+      "title": "Graph2",
+      "stevieState": "normal",
+      "messages": [
+        {
+          "message": "Klicke auf die Geräte um mehr Informationen zu sehen!",
+          "duration": 3
+        }
+      ]
     }
   ]
 }

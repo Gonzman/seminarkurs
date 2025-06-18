@@ -67,7 +67,7 @@ export const useStevieStore = defineStore('stevie', () => {
     }
 })
 
-const stevieStateArray = ['normal', 'angry', 'happy', 'sad', 'confused', 'scared'] as const
+const stevieStateArray = ['normal', 'angry', 'happy', 'sad', 'exclamation', 'scared'] as const
 
 export type StevieStateType = (typeof stevieStateArray)[number]
 
