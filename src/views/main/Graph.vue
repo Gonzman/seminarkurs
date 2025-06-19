@@ -761,7 +761,7 @@ onMounted(() => {
         }
     }
 
-    if (nodes['HrBHB'].status === Status.Status.HACKED && nodes['SEDzG'].status === Status.Status.ONLINE && localStorage.getItem("HrBHB") == null) {
+    if (nodes['HrBHB'].status === Status.Status.HACKED && nodes['SEDzG'].status === Status.Status.ONLINE && localStorage.getItem("loss_SEDzG") == null) {
         stevieStore.triggerMonolog("Internet");
     }
 
