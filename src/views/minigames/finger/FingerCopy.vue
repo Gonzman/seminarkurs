@@ -14,7 +14,7 @@
 
             <div class="game-area">
                 <div class="finger-section user-finger">
-                    <h3>Your Finger</h3>
+                    <h3>Kopierter Finger</h3>
                     <div class="finger-parts">
                         <div v-for="partIndex in 5" :key="`part-${partIndex - 1}`" class="finger-part"
                             :class="{ 'correct': checkCorrect(currentFingerIndex, partIndex - 1) }"
@@ -32,7 +32,7 @@
                 </div>
 
                 <div class="finger-section target-finger">
-                    <h3>Target Finger</h3>
+                    <h3>Ziel Finger</h3>
                     <div class="finger-parts target-container">
                         <img v-if="isTargetImageAvailable()" :src="getTargetImageSrc()" :alt="'Target finger'"
                             class="target-image" />

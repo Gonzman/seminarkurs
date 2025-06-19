@@ -23,7 +23,8 @@
                     <button @click="jumpToScene('OUTRO4')" class="scene-btn outro-btn">
                         Outro 4
                     </button>
-                    <button @click="clearLocalstorage()" class="scene-btn outro-btn">LocalStorage löschen</button>
+                    <button @click="useKnowledgeStore().clearLocalstorage()" class="scene-btn outro-btn">LocalStorage
+                        löschen</button>
                 </div>
             </div>
         </div>
@@ -33,6 +34,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useGameStore } from '@/stores/game'
+import { useKnowledgeStore } from '@/stores/knowledge'
 
 const router = useRouter()
 const gameStore = useGameStore()
@@ -42,10 +44,6 @@ function jumpToScene(sceneName: string) {
     router.push(`/scenes/${sceneName}/true`)
 }
 
-function clearLocalstorage() {
-    localStorage.clear()
-    router.push("/")
-}
 </script>
 
 <style lang="css" scoped>

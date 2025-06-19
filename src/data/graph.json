@@ -83,8 +83,8 @@
       "icon": "&#xe328",
       "status": 2,
       "draggable": true,
-      "minigame": 0,
-      "difficulty": 2,
+      "minigame": 3,
+      "difficulty": 1,
       "knowledgeIds": [4, 12, 1]
     },
     "zpP7r": {

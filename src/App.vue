@@ -28,7 +28,7 @@ onUnmounted(() => {
 
 const stevieRef = ref<HTMLElement | null>(null)
 const posX = ref(100)
-const posY = ref(100)
+const posY = ref(window.innerHeight - 220)
 let offsetX = 0
 let offsetY = 0
 let animationFrameId: number | null = null
@@ -37,7 +37,7 @@ const constrainPosition = () => {
     if (stevieRef.value) {
         const stevieWidth = 200
         const stevieHeight = 200
-        const speechBubblePadding = 80
+        const speechBubblePadding = 400
 
         const speechBubbleElement = stevieRef.value.querySelector('.speech-bubble-container') as HTMLElement
         let speechBubbleWidth = 0
@@ -75,12 +75,14 @@ const constrainPosition = () => {
 }
 
 const handleResize = () => {
+    posY.value = window.innerHeight - 220
     constrainPosition()
 }
 
 onMounted(() => {
     document.addEventListener('keydown', handleKeyPress)
     window.addEventListener('resize', handleResize)
+    posY.value = window.innerHeight - 220
     setTimeout(constrainPosition, 500)
 })
 
@@ -103,7 +105,7 @@ const onDrag = (e: MouseEvent) => {
             if (stevieRef.value) {
                 const stevieWidth = 200
                 const stevieHeight = 200
-                const speechBubblePadding = 80
+                const speechBubblePadding = 400
 
                 const speechBubbleElement = stevieRef.value.querySelector('.speech-bubble-container') as HTMLElement
                 let speechBubbleWidth = 0

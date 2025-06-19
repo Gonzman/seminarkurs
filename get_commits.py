@@ -10,9 +10,9 @@ import re
 
 # Configuration Variables
 REPORT_FILENAME = 'bericht.md'
-DEFAULT_FIRST_COMMIT_MINUTES = 110
-DEFAULT_SUBSEQUENT_COMMIT_MINUTES = 40
-MAX_TIME_BETWEEN_COMMITS_MINUTES = 110
+DEFAULT_FIRST_COMMIT_MINUTES = 70
+DEFAULT_SUBSEQUENT_COMMIT_MINUTES = 45
+MAX_TIME_BETWEEN_COMMITS_MINUTES = 60
 
 def get_script_directory():
     return os.path.dirname(os.path.abspath(__file__))
@@ -174,7 +174,8 @@ def write_commits_to_file(grouped_commits, filename=REPORT_FILENAME, author_filt
             f.write(f'**Commits:** {commit_count} | **Ungefähre Zeit:** {format_hours(hours)}\n\n')
             
             for commit in commits:
-                f.write(f'- `{commit["hash"][:8]}` {commit["message"]}\n')
+                time_str = commit['datetime'].strftime('%H:%M')
+                f.write(f'- `{commit["hash"][:8]}` {time_str} - {commit["message"]}\n')
             
             f.write("\n")
         

@@ -43,7 +43,7 @@ function handleClick() {
     console.log("Current game state:", currentGameState);
 
     const tipMapping: Record<string, string[]> = {
-        'graph': ['Graph1', 'Graph2', 'Graph3'],
+        'graph': ['Graph1', 'Graph2'],
         'caesar': ['Encryption1', 'Encryption2', 'Encryption3', 'Encryption4'],
         'finger': ['FingerGame1', 'FingerGame2', 'FingerGame3', 'FingerGame4'],
         'tinder': ['InfoTinder1', 'InfoTinder2', 'InfoTinder3', 'InfoTinder4']
@@ -229,7 +229,7 @@ async function triggerMonolog(monolog: Monolog) {
 
         speeachText.value = monolog.messages[i].message;
 
-        const messageDuration = monolog.messages[i].duration * 1000;
+        const messageDuration = monolog.messages[i].duration * 1500;
         await playMonologAnimation(animationFolder, messageDuration);
     }
 

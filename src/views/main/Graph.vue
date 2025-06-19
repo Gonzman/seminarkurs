@@ -764,7 +764,12 @@ onMounted(() => {
         }, 1000)
         timeout = setTimeout(() => {
             router.push('/scenes/outro4')
-        }, 200000);
+        }, 60000);
+    }
+
+    if (nodes['7Fx5i'].status === Status.Status.HACKED) {
+        router.push('/scenes/outro3');
+        return
     }
 })
 

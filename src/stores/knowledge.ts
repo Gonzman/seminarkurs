@@ -151,11 +151,6 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
             }
         })
         gameKnowledges.value = []
-
-        if (gameStore.minigameNode == '7Fx5i') {
-            router.push('/scenes/outro3')
-            return
-        }
     }
 
     function getKnowledgeImagePath(imagePath: string): string {
@@ -178,6 +173,13 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         return new URL(`/src/assets/images/${fileName}`, import.meta.url).href
     }
 
+    function clearLocalstorage() {
+        localStorage.clear()
+        setTimeout(() => {
+            router.push('/')
+        }, 100)
+    }
+
     loadKnowledges()
 
     return {
@@ -192,6 +194,7 @@ export const useKnowledgeStore = defineStore('knowledge', () => {
         getGameKnowledges,
         moveGameKnowledgeToKnowledges,
         getKnowledgeImagePath,
+        clearLocalstorage,
     }
 })
 

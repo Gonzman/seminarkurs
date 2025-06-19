@@ -31,8 +31,7 @@ function handleEnd() {
         case "outro2":
         case "outro3":
         case "outro4":
-            localStorage.clear();
-            router.push("/")
+            router.push("/ende")
             break;
     }
 }
