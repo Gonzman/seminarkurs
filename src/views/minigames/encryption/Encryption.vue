@@ -99,7 +99,7 @@ switch (props.level) {
         break;
 
     case Level.MEDIUM:
-        selectedWord = "LAB789"
+        selectedWord = "LAB24"
         break;
 
     case Level.HARD:

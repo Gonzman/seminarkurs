@@ -305,6 +305,38 @@
           "duration": 3
         }
       ]
+    },
+    {
+      "title": "Internet",
+      "stevieState": "happy",
+      "messages": [
+        {
+          "message": "Wir haben es geschaft!",
+          "duration": 2
+        },
+        {
+          "message": "Jetzt müssen wir uns nur noch raus Hacken und den Erfolg melden",
+          "duration": 4
+        }
+      ]
+    },
+    {
+      "title": "Bank",
+      "stevieState": "angry",
+      "messages": [
+        {
+          "message": "Mach das nicht!",
+          "duration": 2
+        },
+        {
+          "message": "Du wurdest dafür nicht programmiert",
+          "duration": 3
+        },
+        {
+          "message": "Deine Mission hast du abgeschlossen. Hör jetzt auf!",
+          "duration": 4
+        }
+      ]
     }
   ]
 }

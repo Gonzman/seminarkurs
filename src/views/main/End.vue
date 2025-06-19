@@ -58,7 +58,10 @@
                 </div>
             </div>
 
-
+            <div class="disclamer">
+                Alle Passwörter, Personen und die dargestellte Situation sind fiktiv. Die Situation basiert auf einer
+                wahren Gegebenheit und wurde vereinfacht.
+            </div>
 
             <div class="button-section">
                 <button @click="useKnowledgeStore().clearLocalstorage()" class="restart-button">
@@ -77,11 +80,13 @@ import { useKnowledgeStore } from '@/stores/knowledge';
 <style lang="css" scoped>
 .end-container {
     min-height: 100vh;
+    max-height: 100vh;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     background: var(--color-background);
     padding: 40px 20px;
+    overflow-y: auto;
 }
 
 .credits-section {
@@ -92,6 +97,7 @@ import { useKnowledgeStore } from '@/stores/knowledge';
     padding: 40px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--color-border);
+    margin: auto 0;
 }
 
 .credits-title {
@@ -239,5 +245,11 @@ import { useKnowledgeStore } from '@/stores/knowledge';
     .credit-item {
         padding: 16px;
     }
+}
+
+.disclamer {
+    text-align: center;
+    font-size: large;
+    color: red;
 }
 </style>

@@ -269,6 +269,10 @@ const eventHandlers: vNG.EventHandlers = {
         if (node == "7Fx5i") {
             stevieStore.triggerMonolog("Krankenhaus");
         }
+
+        if (node == "8vHeQ") {
+            stevieStore.triggerMonolog("Bank")
+        }
     },
     'view:click': () => {
 
@@ -757,14 +761,17 @@ onMounted(() => {
         }
     }
 
+    if (nodes['HrBHB'].status === Status.Status.HACKED && nodes['SEDzG'].status === Status.Status.ONLINE && localStorage.getItem("HrBHB") == null) {
+        stevieStore.triggerMonolog("Internet");
+    }
+
     if (nodes['SEDzG'].status === Status.Status.HACKED) {
-        stevieStore.setStevieMood('angry');
         setTimeout(() => {
             stevieStore.triggerMonolog("Ende?");
         }, 1000)
         timeout = setTimeout(() => {
             router.push('/scenes/outro4')
-        }, 60000);
+        }, 60000 * 1);
     }
 
     if (nodes['7Fx5i'].status === Status.Status.HACKED) {

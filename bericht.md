@@ -2,6 +2,11 @@
 
 *Gefiltert nach Autor: 'yuki'*
 
+### 2025.06.19
+**Commits:** 1 | **Ungefähre Zeit:** 1.2 Stunden
+
+- `59e636ca` 13:28 - Refactor game state management, enhance Stevie component, and update UI elements: - Adjust positioning and padding for Stevie animations - Implement local storage clearing functionality in multiple components - Update graph data and difficulty levels for minigames - Add credits section to End view and improve localization in FingerCopy - Modify scene navigation logic
+
 ### 2025.06.18
 **Commits:** 2 | **Ungefähre Zeit:** 1.9 Stunden
 
@@ -236,5 +241,5 @@
 ---
 
 ### Zusammenfassung
-**Commits Gesamt:** 87
-**Ungefähre Zeit Gesamt:** 60.9 Stunden
+**Commits Gesamt:** 88
+**Ungefähre Zeit Gesamt:** 62.0 Stunden

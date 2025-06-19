@@ -1,25 +1,32 @@
 [
   {
     "id": 0,
-    "title": "Ceasar",
-    "description": "Dieses Rätsel ...",
-    "imageSrc": ""
+    "title": "Match the Wire",
+    "description": "Im Minispiel „Match the Wire“ ist es deine Aufgabe, farbige Kabelblöcke auf der linken Seite mit den gleichfarbigen Blöcken auf der rechten Seite zu verbinden. Ziehe dazu mit gedrückter Maustaste (ein Kabel von einem Block auf der linken Seite zum passenden Block auf der rechten Seite. Achte darauf, dass die Farben passen. Oben auf dem Bildschirm befindet sich ein Timer, der anzeigt, wie viel Zeit dir noch bleibt. Verbinde alle Kabel richtig, bevor die Zeit abläuft, (um Informationen zu sammeln und das Spiel erfolgreich abzuschließen. Je schneller und fehlerfreier du arbeitest, desto besser dein Ergebnis.)",
+    "imageSrc": "/images/wire.png"
   },
   {
     "id": 1,
-    "title": "Circuit Breaker",
-    "description": "Führe das Signal zum Ausgang der Platine. Drücke SPACE um das Signal zu senden. Nutze WASD oder die Pfeiltasten zum steuern des Signales ohne die Wände oder das Signal selber zu berühren.",
-    "imageSrc": ""
+    "title": "Ceasar",
+    "description": "Im Minispiel „Caesar“ ist es deine Aufgabe, einen verschlüsselten Code zu entschlüsseln. Dir wird oben eine Buchstabenfolge angezeigt. Diese stellt einen verschlüsselten Text dar. Deine Aufgabe ist es, den ursprünglichen Klartext zu finden. Gib den entschlüsselten Text Buchstabe für Buchstabe in die weißen Felder ein. Wenn du dich vertippst, kannst du mit „RESET“ alles zurücksetzen. Bist du mit deiner Lösung zufrieden, klickst du auf „Überprüfen“, um zu überprüfen, ob sie korrekt ist. Achte dabei auf den Countdown – du hast nur begrenzt Zeit, um den Code richtig zu entschlüsseln! Eventuell helfen dir die Informationen.",
+    "imageSrc": "/images/caesar.png"
   },
   {
     "id": 2,
-    "title": "Finger",
-    "description": "Versuche mit den Auswahlfeldern den Finger auf der rechten Seite zu kopieren."
+    "title": "Circuit Breaker",
+    "description": "Im Minispiel „Circuitbreaker“ ist es deine Aufgabe, ein digitales Signal durch ein verwinkeltes Labyrinth auf einer Platine zu steuern. Ziel des Spiels ist es, das Signal sicher bis zum Ausgang der Platine zu führen. Du bewegst das Signal durch enge Leiterbahnen und musst dabei Hindernissen, Wänden und dem eigenen Signalverlauf ausweichen – eine Kollision führt zum Neustart. Zur Steuerung kannst du die Tasten W, A, S, D oder die Pfeiltasten verwenden. Hast du den richtigen Weg gefunden, drücke SPACE, um das Signal zu senden. Doch Vorsicht: Nicht jeder Pfad führt zum Ziel – finde den korrekten Weg, ohne Fehler zu machen.",
+    "imageSrc": "/images/circuit.png"
   },
   {
     "id": 3,
+    "title": "Copy The Finger",
+    "description": "Im Minispiel „Copy The Finger“ ist es deine Aufgabe, den Fingerabdruck auf der rechten Seite mit einem der Abdrücke auf der linken Seite abzugleichen. Du kannst jeden Fingerabdruck auf der linken Seite durch Drücken der Pfeile drehen, bis er möglichst genau mit dem Zielabdruck rechts übereinstimmt. Vergleiche dabei sorgfältig die Finger abschnitte. Sobald du denkst, dass alle Abdrücke korrekt angepasst sind, klickst du auf „Überprüfen“, um deine Lösung zu testen. Falls du dich vertan hast, kannst du mit „Neuer Versuch“ von vorne beginnen. Denk dran du hast 3 Versuche pro minispiel. Auch hier läuft oben ein Timer – du musst also schnell und präzise arbeiten!",
+    "imageSrc": "/images/finger.png"
+  },
+  {
+    "id": 4,
     "title": "Info Tinder",
-    "description": "Wähle relevante Informationen zum speichern aus. Du hast nur begrenzt Speicherplatz, deswegen musst du entscheiden was wichtig ist und was nicht. Unten wird Dir dein verfügbarer Speicher angezeigt, sowie die Größe der Information und die Anzahl an Informationen die gespeichert werden können.",
-    "imageSrc": ""
+    "description": "Nach jedem Spiel erhältst du Daten, die du von der entsprechenden Maschine erbeutet hast. Diese werden in einer kleinen Übersicht nach jedem Spiel angezeigt. Aber Achtung! Du hast nur begrenzt Speicherplatz, um diese Daten zu speichern, also wähle klug und bedacht, welche Daten dir vielleicht heimliche Informationen über das abgeschottete Komplex geben. (Vielleicht werden dir diese Informationen bei späteren hacks helfen).",
+    "imageSrc": "/images/info.png"
   }
 ]
