@@ -6,7 +6,7 @@ import {
     type ForceNodeDatum,
     type ForceEdgeDatum,
 } from 'v-network-graph/lib/force-layout'
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import * as Status from './status'
 import { useMouse } from '@vueuse/core'
 import { useGameStore } from '@/stores/game'
@@ -478,7 +478,7 @@ function loadGraphFromFile(event: any) {
 
 
     if (!file.name.toLowerCase().endsWith('.json')) {
-        alert('Please select a JSON file');
+        alert('Bitte wählen Sie eine JSON-Datei aus');
         return;
     }
 
@@ -492,7 +492,7 @@ function loadGraphFromFile(event: any) {
 
 
             if (!jsonData.nodes || !jsonData.edges) {
-                alert('Invalid graph file format. File must contain nodes and edges objects.');
+                alert('Ungültiges Graph-Dateiformat. Die Datei muss Knoten- und Kanten-Objekte enthalten.');
                 return;
             }
 
@@ -549,15 +549,15 @@ function loadGraphFromFile(event: any) {
             showGraphLoader.value = false;
 
 
-            alert(`Graph "${graphName}" has been loaded successfully.`);
+            alert(`Graph "${graphName}" wurde erfolgreich geladen.`);
         } catch (error) {
             console.error('Error loading graph from file:', error);
-            alert('Failed to parse the JSON file. Please check the file format.');
+            alert('Fehler beim Parsen der JSON-Datei. Bitte überprüfen Sie das Dateiformat.');
         }
     };
 
     reader.onerror = () => {
-        alert('Failed to read the file. Please try again.');
+        alert('Fehler beim Lesen der Datei. Bitte versuchen Sie es erneut.');
     };
 
     reader.readAsText(file);
@@ -780,6 +780,12 @@ onMounted(() => {
     }
 })
 
+onUnmounted(() => {
+    if (timeout !== null) {
+        clearTimeout(timeout)
+    }
+})
+
 defineExpose({ addRandomNode })
 </script>
 
@@ -788,7 +794,7 @@ defineExpose({ addRandomNode })
     <div class="graph">
         <div class="graph-header">
             <button @click="toggleGraphLoader" class="btn primary">
-                {{ showGraphLoader ? 'Hide Loader' : 'Load Graph' }}
+                {{ showGraphLoader ? 'Loader verstecken' : 'Graph laden' }}
             </button>
             <div class="dangerbar">
                 <DangerBar :value="gameStore.dangerLevel" :max="9" />
@@ -810,11 +816,11 @@ defineExpose({ addRandomNode })
         <!-- Graph Loader Panel -->
         <div v-if="showGraphLoader" class="panel graph-loader">
             <div class="panel-section">
-                <h3>Load Graph</h3>
+                <h3>Graph laden</h3>
                 <div class="form-group">
-                    <label for="graph-select">Select Graph:</label>
+                    <label for="graph-select">Graph auswählen:</label>
                     <select id="graph-select" v-model="selectedGraph">
-                        <option value="">-- Select a Graph --</option>
+                        <option value="">-- Graph auswählen --</option>
                         <option v-for="graph in savedGraphs" :key="graph.name" :value="graph.name">
                             {{ graph.name }}
                         </option>
@@ -822,27 +828,27 @@ defineExpose({ addRandomNode })
                 </div>
 
                 <div class="button-row">
-                    <button @click="loadGraph" :disabled="!selectedGraph" class="btn primary">Load Graph</button>
-                    <button @click="showGraphLoader = false" class="btn secondary">Cancel</button>
+                    <button @click="loadGraph" :disabled="!selectedGraph" class="btn primary">Graph laden</button>
+                    <button @click="showGraphLoader = false" class="btn secondary">Abbrechen</button>
                 </div>
 
                 <!-- File upload section -->
                 <div class="form-group upload-section">
-                    <h4>Import Graph from File</h4>
+                    <h4>Graph aus Datei importieren</h4>
                     <label for="graph-file" class="file-label">
-                        Choose JSON file
+                        JSON-Datei auswählen
                         <input type="file" id="graph-file" accept=".json" @change="loadGraphFromFile"
                             class="file-input" />
                     </label>
                     <div class="file-format-info">
-                        <small>File must be a JSON containing nodes and edges objects</small>
+                        <small>Datei muss eine JSON sein, die Knoten- und Kanten-Objekte enthält</small>
                     </div>
                 </div>
                 <div class="info-text">
-                    <p>Create graphs using the Graph Creator tool!</p>
-                    <router-link to="/graph-creator" class="creator-link">Open Graph Creator</router-link>
-                    <p>Customize Stevie with the Stevie Generator tool!</p>
-                    <router-link to="/stevie-generator" class="creator-link">Open Stevie Generator</router-link>
+                    <p>Erstellen Sie Graphen mit dem Graph-Creator-Tool!</p>
+                    <router-link to="/graph-creator" class="creator-link">Graph Creator öffnen</router-link>
+                    <p>Passen Sie Stevie mit dem Stevie-Generator-Tool an!</p>
+                    <router-link to="/stevie-generator" class="creator-link">Stevie Generator öffnen</router-link>
                 </div>
             </div>
         </div>

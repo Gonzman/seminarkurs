@@ -101,10 +101,10 @@ const newNode = reactive({
 })
 
 function makeid(length: number): string {
-    var result = '';
-    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var charactersLength = characters.length;
-    for (var i = 0; i < length; i++) {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < length; i++) {
         result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
     return result;
@@ -250,7 +250,7 @@ function addNode() {
 
 
     if (!newNode.name.trim()) {
-        errorMessage.value = 'Node name is required';
+        errorMessage.value = 'Knotenname ist erforderlich';
         return;
     }
 
@@ -304,7 +304,7 @@ function addEdge() {
     errorMessage.value = '';
 
     if (!newEdge.source.trim() || !newEdge.target.trim()) {
-        errorMessage.value = 'Source and target nodes are required';
+        errorMessage.value = 'Quell- und Zielknoten sind erforderlich';
         return;
     }
 
@@ -360,7 +360,7 @@ function resetEdgeForm() {
 
 function removeNode(nodeId: string) {
     if (nodeId === 'start' && nodes[nodeId].status === Status.Status.START) {
-        errorMessage.value = "Cannot delete the start node";
+        errorMessage.value = "Startknoten kann nicht gelöscht werden";
         return;
     }
 
@@ -394,7 +394,7 @@ function saveGraph() {
     errorMessage.value = '';
 
     if (!graphName.value.trim()) {
-        errorMessage.value = 'Please enter a name for your graph';
+        errorMessage.value = 'Bitte geben Sie einen Namen für Ihren Graphen ein';
         return;
     }
 
@@ -425,7 +425,7 @@ function saveGraph() {
     }
 
     localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value));
-    alert(`Graph "${graphName.value}" saved successfully!`);
+    alert(`Graph "${graphName.value}" erfolgreich gespeichert!`);
 }
 
 function loadGraph() {
@@ -433,13 +433,13 @@ function loadGraph() {
     errorMessage.value = '';
 
     if (!selectedGraph.value) {
-        errorMessage.value = 'Please select a graph to load';
+        errorMessage.value = 'Bitte wählen Sie einen Graphen zum Laden aus';
         return;
     }
 
     const graph = savedGraphs.value.find(g => g.name === selectedGraph.value);
     if (!graph) {
-        errorMessage.value = 'Graph not found';
+        errorMessage.value = 'Graph nicht gefunden';
         return;
     }
 
@@ -472,7 +472,7 @@ function loadGraph() {
         initializeStartNode();
     }
 
-    alert(`Graph "${selectedGraph.value}" loaded successfully!`);
+    alert(`Graph "${selectedGraph.value}" erfolgreich geladen!`);
 }
 
 
@@ -481,17 +481,17 @@ function deleteGraph() {
     errorMessage.value = '';
 
     if (!selectedGraph.value) {
-        errorMessage.value = 'Please select a graph to delete';
+        errorMessage.value = 'Bitte wählen Sie einen Graphen zum Löschen aus';
         return;
     }
 
-    const confirmDelete = confirm(`Are you sure you want to delete the graph "${selectedGraph.value}"?`)
+    const confirmDelete = confirm(`Sind Sie sicher, dass Sie den Graphen "${selectedGraph.value}" löschen möchten?`)
     if (!confirmDelete) return
 
     savedGraphs.value = savedGraphs.value.filter(graph => graph.name !== selectedGraph.value)
     localStorage.setItem('saved-graphs', JSON.stringify(savedGraphs.value))
     selectedGraph.value = ''
-    alert('Graph deleted successfully')
+    alert('Graph erfolgreich gelöscht')
 }
 
 
@@ -564,9 +564,9 @@ function importGraph(event: Event) {
                 initializeStartNode();
             }
 
-            alert('Graph imported successfully!')
+            alert('Graph erfolgreich importiert!')
         } catch (error) {
-            errorMessage.value = 'Failed to import graph. Invalid JSON format.'
+            errorMessage.value = 'Import des Graphen fehlgeschlagen. Ungültiges JSON-Format.'
             console.error('Import error:', error)
         }
 
@@ -581,7 +581,7 @@ function importGraph(event: Event) {
 <template>
     <div class="graph-creator">
         <div class="header">
-            <h1>Graph Creator</h1>
+            <h1>Graph Ersteller</h1>
         </div>
 
         <div class="content">
@@ -596,7 +596,7 @@ function importGraph(event: Event) {
                 </div>
 
                 <div class="panel-section">
-                    <h3>Nodes</h3>
+                    <h3>Knoten</h3>
                     <form ref="nodeForm" @submit.prevent="addNode" class="form">
                         <div class="form-group">
                             <p>ID: {{ newNode.id }}</p>
@@ -608,7 +608,7 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group">
-                            <label for="node-icon">Icon:</label>
+                            <label for="node-icon">Symbol:</label>
                             <input type="text" id="node-icon" v-model="newNode.icon" />
                         </div>
 
@@ -623,7 +623,7 @@ function importGraph(event: Event) {
 
                         <div class="form-group checkbox">
                             <input type="checkbox" id="node-draggable" v-model="newNode.draggable" />
-                            <label for="node-draggable">Draggable</label>
+                            <label for="node-draggable">Ziehbar</label>
                         </div>
 
                         <div class="form-group">
@@ -637,9 +637,9 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group">
-                            <label for="node-minigame">Minigame:</label>
+                            <label for="node-minigame">Minispiel:</label>
                             <select id="node-minigame" v-model="newNode.minigame">
-                                <option :value="undefined">-- No Minigame --</option>
+                                <option :value="undefined">-- Kein Minispiel --</option>
                                 <option v-for="option in minigameOptions" :key="option.value" :value="option.value">
                                     {{ option.label }}
                                 </option>
@@ -647,9 +647,9 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group">
-                            <label for="node-difficulty">Difficulty:</label>
+                            <label for="node-difficulty">Schwierigkeit:</label>
                             <select id="node-difficulty" v-model="newNode.difficulty">
-                                <option :value="undefined">-- No Difficulty --</option>
+                                <option :value="undefined">-- Keine Schwierigkeit --</option>
                                 <option v-for="option in difficultyOptions" :key="option.value" :value="option.value">
                                     {{ option.label }}
                                 </option>
@@ -657,7 +657,7 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group">
-                            <label>Knowledge: <span class="hint">(Independent from minigames)</span></label>
+                            <label>Wissen: <span class="hint">(Unabhängig von Minispielen)</span></label>
                             <div class="knowledge-selector">
                                 <div v-for="item in knowledgeItems" :key="item.id" class="knowledge-item"
                                     :class="{ selected: selectedKnowledgeIds.includes(item.id) }"
@@ -665,22 +665,23 @@ function importGraph(event: Event) {
                                     <div class="knowledge-title">{{ item.title }}</div>
                                 </div>
                             </div>
-                            <div class="hint-text">Select multiple knowledge items that this node will make available to
-                                the player.</div>
+                            <div class="hint-text">Wählen Sie mehrere Wissenselemente aus, die dieser Knoten dem Spieler
+                                zur Verfügung stellen wird.</div>
                         </div>
 
                         <div class="button-row">
-                            <button type="submit" class="btn primary">{{ newNode.id in nodes ? 'Update' : 'Add' }}
-                                Node</button>
-                            <button type="button" class="btn secondary" @click="resetNodeForm">Clear</button>
+                            <button type="submit" class="btn primary">{{ newNode.id in nodes ? 'Aktualisieren' :
+                                'Hinzufügen' }}
+                                Knoten</button>
+                            <button type="button" class="btn secondary" @click="resetNodeForm">Löschen</button>
                             <button type="button" class="btn danger"
                                 v-if="newNode.id in nodes && !(newNode.id === 'node1' && nodes[newNode.id].status === Status.Status.START)"
-                                @click="removeNode(newNode.id)">Delete</button>
+                                @click="removeNode(newNode.id)">Entfernen</button>
                         </div>
                     </form>
 
                     <div class="node-list">
-                        <h4>Node List</h4>
+                        <h4>Knotenliste</h4>
                         <ul>
                             <li v-for="(node, id) in nodes" :key="id" @click="() => {
                                 newNode.id = id;
@@ -704,9 +705,9 @@ function importGraph(event: Event) {
                                 <span v-if="node.minigame !== undefined" class="minigame-tag">{{
                                     Object.keys(games).find(key => games[key as keyof typeof games] === node.minigame)
                                     || 'Game'
-                                }}</span>
+                                    }}</span>
                                 <span v-if="node.knowledgeIds && node.knowledgeIds.length > 0" class="knowledge-tag">
-                                    {{ node.knowledgeIds.length }} knowledge items
+                                    {{ node.knowledgeIds.length }} Wissenselemente
                                 </span>
                             </li>
                         </ul>
@@ -714,17 +715,17 @@ function importGraph(event: Event) {
                 </div>
 
                 <div class="panel-section">
-                    <h3>Edges</h3>
+                    <h3>Kanten</h3>
                     <form ref="edgeForm" @submit.prevent="addEdge" class="form">
                         <div class="form-group">
-                            <label for="edge-id">ID: <span class="hint">(Auto-generated if empty)</span></label>
+                            <label for="edge-id">ID: <span class="hint">(Automatisch generiert wenn leer)</span></label>
                             <input type="text" id="edge-id" v-model="newEdge.id" />
                         </div>
 
                         <div class="form-group required">
-                            <label for="edge-source">Source: <span class="required-mark">*</span></label>
+                            <label for="edge-source">Quelle: <span class="required-mark">*</span></label>
                             <select id="edge-source" v-model="newEdge.source" required>
-                                <option value="">Select Source Node</option>
+                                <option value="">Quellknoten auswählen</option>
                                 <option v-for="option in nodeOptions" :key="option.value" :value="option.value">
                                     {{ option.label }}
                                 </option>
@@ -732,9 +733,9 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group required">
-                            <label for="edge-target">Target: <span class="required-mark">*</span></label>
+                            <label for="edge-target">Ziel: <span class="required-mark">*</span></label>
                             <select id="edge-target" v-model="newEdge.target" required>
-                                <option value="">Select Target Node</option>
+                                <option value="">Zielknoten auswählen</option>
                                 <option v-for="option in nodeOptions" :key="option.value" :value="option.value">
                                     {{ option.label }}
                                 </option>
@@ -742,27 +743,28 @@ function importGraph(event: Event) {
                         </div>
 
                         <div class="form-group">
-                            <label for="edge-color">Color:</label>
+                            <label for="edge-color">Farbe:</label>
                             <input type="color" id="edge-color" v-model="newEdge.color" />
                         </div>
 
                         <div class="form-group checkbox">
                             <input type="checkbox" id="edge-dashed" v-model="newEdge.dashed" />
-                            <label for="edge-dashed">Dashed</label>
+                            <label for="edge-dashed">Gestrichelt</label>
                         </div>
 
                         <div class="button-row">
-                            <button type="submit" class="btn primary">{{ newEdge.id in edges ? 'Update' : 'Add' }}
-                                Edge</button>
-                            <button type="button" class="btn secondary" @click="resetEdgeForm">Clear</button>
+                            <button type="submit" class="btn primary">{{ newEdge.id in edges ? 'Aktualisieren' :
+                                'Hinzufügen' }}
+                                Kante</button>
+                            <button type="button" class="btn secondary" @click="resetEdgeForm">Löschen</button>
                             <button type="button" class="btn danger" v-if="newEdge.id in edges"
-                                @click="removeEdge(newEdge.id)">Delete</button>
+                                @click="removeEdge(newEdge.id)">Entfernen</button>
                         </div>
 
                     </form>
 
                     <div class="edge-list">
-                        <h4>Edge List</h4>
+                        <h4>Kantenliste</h4>
                         <ul>
                             <li v-for="(edge, id) in edges" :key="id"
                                 @click="() => { newEdge.id = id; newEdge.source = edge.source; newEdge.target = edge.target; newEdge.color = edge.color ?? '#4466cc'; newEdge.dashed = edge.dashed ?? false; }">
@@ -773,22 +775,22 @@ function importGraph(event: Event) {
                 </div>
 
                 <div class="panel-section save-load">
-                    <h3>Save & Load</h3>
+                    <h3>Speichern & Laden</h3>
 
                     <div class="form-group required">
-                        <label for="graph-name">Graph Name: <span class="required-mark">*</span></label>
+                        <label for="graph-name">Graphname: <span class="required-mark">*</span></label>
                         <input type="text" id="graph-name" v-model="graphName" required />
                     </div>
 
                     <div class="button-row">
-                        <button class="btn primary" @click="saveGraph">Save Graph</button>
-                        <button class="btn secondary" @click="exportGraph">Export JSON</button>
+                        <button class="btn primary" @click="saveGraph">Graph speichern</button>
+                        <button class="btn secondary" @click="exportGraph">JSON exportieren</button>
                     </div>
 
                     <div class="form-group">
-                        <label for="graph-select">Select Graph:</label>
+                        <label for="graph-select">Graph auswählen:</label>
                         <select id="graph-select" v-model="selectedGraph">
-                            <option value="">-- Select a Graph --</option>
+                            <option value="">-- Graph auswählen --</option>
                             <option v-for="graph in savedGraphs" :key="graph.name" :value="graph.name">
                                 {{ graph.name }}
                             </option>
@@ -796,12 +798,13 @@ function importGraph(event: Event) {
                     </div>
 
                     <div class="button-row">
-                        <button class="btn primary" @click="loadGraph" :disabled="!selectedGraph">Load Graph</button>
-                        <button class="btn danger" @click="deleteGraph" :disabled="!selectedGraph">Delete Graph</button>
+                        <button class="btn primary" @click="loadGraph" :disabled="!selectedGraph">Graph laden</button>
+                        <button class="btn danger" @click="deleteGraph" :disabled="!selectedGraph">Graph
+                            löschen</button>
                     </div>
 
                     <div class="form-group">
-                        <label for="import-file">Import JSON:</label>
+                        <label for="import-file">JSON importieren:</label>
                         <input type="file" id="import-file" accept=".json" @change="importGraph" />
                     </div>
                 </div>

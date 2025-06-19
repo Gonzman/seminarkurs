@@ -125,7 +125,7 @@ const createGrid = () => {
 
         gridResizeObserver = new ResizeObserver((entries) => {
             if (gridContainer.value && laserSvg.value) {
-                for (let entry of entries) {
+                for (const entry of entries) {
                     const cellSize = entry.contentRect.width / sizeX;
                     gridContainer.value.style.setProperty('--shadow-size', `${cellSize * shadowPercentage}px`);
                     laserSvg.value.style.setProperty('--svg-scale', `${cellSize * 100}%`);
@@ -187,7 +187,7 @@ const createBackground = () => {
 
         const getRandomFreeLocation = () => {
             if (freeFields > 0) {
-                let randomIndex = Math.floor(Math.random() * freeFields);
+                const randomIndex = Math.floor(Math.random() * freeFields);
                 let c = 0;
                 for (let x = 0; x < sizeX; x++) {
                     for (let y = 0; y < sizeY; y++) {
@@ -203,7 +203,7 @@ const createBackground = () => {
         };
 
         const grid = Array.from({ length: sizeX }, () => Array(sizeY).fill(0));
-        let paths: Location[][] = [];
+        const paths: Location[][] = [];
         let freeFields = sizeX * sizeY;
 
         let currentLocation;
@@ -216,7 +216,7 @@ const createBackground = () => {
             let otherDir = false;
             const maxLength = Math.floor(Math.random() * 16 + 8);
             for (let i = 0; i < maxLength; i++) {
-                let possibleMoves: Location[] = [];
+                const possibleMoves: Location[] = [];
                 const x = currentLocation.x;
                 const y = currentLocation.y;
                 for (let j = 0; j < simpleOffsets.length; j++) {

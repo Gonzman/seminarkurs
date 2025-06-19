@@ -43,8 +43,8 @@ const { max_space, min_size, max_size } = defineProps<{
     max_size: number,
 }>()
 
-let used_space = ref(0)
-let size = ref(0)
+const used_space = ref(0)
+const size = ref(0)
 
 const knowledgeStore = useKnowledgeStore()
 const knowledges = ref(knowledgeStore.getGameKnowledges())
@@ -116,7 +116,7 @@ function hashTitleToSize(str: string, min_size: number, max_size: number): numbe
         hash = (hash << 5) - hash + str.charCodeAt(i);
         hash |= 0;
     }
-    let norm = (hash >>> 0) / 0xFFFFFFFF;
+    const norm = (hash >>> 0) / 0xFFFFFFFF;
     return Math.round((norm * (max_size - min_size) + min_size) * 100) / 100;
 }
 

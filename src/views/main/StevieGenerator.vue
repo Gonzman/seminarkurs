@@ -64,7 +64,7 @@ const gameStates: GameStateType[] = [
     'tinder',
 ]
 
-const stevieStates: StevieStateType[] = ['normal', 'angry', 'happy', 'sad', 'confused', 'scared']
+const stevieStates: StevieStateType[] = ['normal', 'angry', 'happy', 'sad', 'exclamation', 'scared']
 const selectedMonologIndex = ref<number>(-1)
 const isEditingMonolog = ref(false)
 const editingMonologIndex = ref<number>(-1)
@@ -79,7 +79,8 @@ function addIdea() {
             stevieData.value.ideen[editingIdeaIndex.value] = { ...newIdea.value }
             isEditingIdea.value = false
             editingIdeaIndex.value = -1
-        } else {            stevieData.value.ideen.push({ ...newIdea.value })
+        } else {
+            stevieData.value.ideen.push({ ...newIdea.value })
         }
         newIdea.value = {
             message: '',
@@ -258,7 +259,7 @@ function copyToClipboard() {
 
 function importFromJson() {
     try {
-        const input = prompt('Paste JSON data:')
+        const input = prompt('JSON-Daten einfügen:')
         if (input) {
             const data = JSON.parse(input)
             if (data.ideen && data.monolog) {
@@ -266,11 +267,11 @@ function importFromJson() {
                 selectedMonologIndex.value = -1
                 updateJsonOutput()
             } else {
-                alert('Invalid JSON structure! Must contain ideen and monolog arrays.')
+                alert('Ungültige JSON-Struktur! Muss ideen- und monolog-Arrays enthalten.')
             }
         }
     } catch (error) {
-        alert('Invalid JSON format!')
+        alert('Ungültiges JSON-Format!')
     }
 }
 
@@ -326,7 +327,7 @@ onMounted(() => {
 
 <template>
     <div class="stevie-generator">
-        <h1>Stevie JSON Creator</h1>
+        <h1>Stevie JSON Ersteller</h1>
 
         <div class="container">
             <div class="editor-section">
@@ -334,11 +335,8 @@ onMounted(() => {
                     <h2>Ideen</h2>
                     <div class="form-group">
                         <label>Nachricht:</label>
-                        <textarea
-                            v-model="newIdea.message"
-                            rows="3"
-                            placeholder="Geben Sie die Nachricht ein..."
-                        ></textarea>
+                        <textarea v-model="newIdea.message" rows="3"
+                            placeholder="Geben Sie die Nachricht ein..."></textarea>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -360,13 +358,8 @@ onMounted(() => {
                         </div>
 
                         <div class="form-group">
-                            <label>Duration (seconds):</label>
-                            <input
-                                type="number"
-                                v-model.number="newIdea.duration"
-                                min="1"
-                                step="1"
-                            />
+                            <label>Dauer (Sekunden):</label>
+                            <input type="number" v-model.number="newIdea.duration" min="1" step="1" />
                         </div>
                     </div>
 
@@ -379,17 +372,13 @@ onMounted(() => {
                         </button>
                     </div>
                     <div class="item-list">
-                        <div
-                            v-for="(idea, index) in stevieData.ideen"
-                            :key="index"
-                            class="item"
-                            :class="{ 'item-editing': isEditingIdea && editingIdeaIndex === index }"
-                        >
+                        <div v-for="(idea, index) in stevieData.ideen" :key="index" class="item"
+                            :class="{ 'item-editing': isEditingIdea && editingIdeaIndex === index }">
                             <div class="item-content">
                                 <p><strong>Nachricht:</strong> {{ idea.message }}</p>
                                 <p><strong>Game State:</strong> {{ idea.gameState }}</p>
                                 <p><strong>Stevie State:</strong> {{ idea.stevieState }}</p>
-                                <p><strong>Duration:</strong> {{ idea.duration }}s</p>
+                                <p><strong>Dauer:</strong> {{ idea.duration }}s</p>
                             </div>
                             <div class="item-buttons">
                                 <button @click="editIdea(index)" class="edit-btn">
@@ -409,11 +398,7 @@ onMounted(() => {
                     <div class="section-monologs">
                         <div class="form-group">
                             <label>Titel:</label>
-                            <input
-                                type="text"
-                                v-model="newMonolog.title"
-                                placeholder="Monolog Titel"
-                            />
+                            <input type="text" v-model="newMonolog.title" placeholder="Monolog Titel" />
                         </div>
                         <div class="form-group">
                             <label>Stevie State:</label>
@@ -433,16 +418,11 @@ onMounted(() => {
                         </div>
 
                         <div class="monolog-list">
-                            <div
-                                v-for="(monolog, index) in stevieData.monolog"
-                                :key="index"
-                                class="monolog-item"
+                            <div v-for="(monolog, index) in stevieData.monolog" :key="index" class="monolog-item"
                                 :class="{
                                     selected: selectedMonologIndex === index,
                                     'item-editing': isEditingMonolog && editingMonologIndex === index
-                                }"
-                                @click="selectMonolog(index)"
-                            >
+                                }" @click="selectMonolog(index)">
                                 <span>{{ monolog.title }}</span>
                                 <span class="message-count">
                                     ({{ monolog.messages.length }} Nachrichten)
@@ -467,62 +447,39 @@ onMounted(() => {
 
                         <div class="form-group">
                             <label>Nachricht:</label>
-                            <textarea
-                                v-model="newMonologMessage.message"
-                                rows="3"
-                                placeholder="Geben Sie die Nachricht ein..."
-                            ></textarea>
+                            <textarea v-model="newMonologMessage.message" rows="3"
+                                placeholder="Geben Sie die Nachricht ein..."></textarea>
                         </div>
                         <div class="form-group">
-                            <label>Duration (seconds):</label>
-                            <input
-                                type="number"
-                                v-model.number="newMonologMessage.duration"
-                                min="1"
-                                step="1"
-                            />
+                            <label>Dauer (Sekunden):</label>
+                            <input type="number" v-model.number="newMonologMessage.duration" min="1" step="1" />
                         </div>
 
                         <div class="button-row">
                             <button @click="addMonologMessage" class="add-btn">
                                 {{ isEditingMessage ? 'Speichern' : 'Nachricht hinzufügen' }}
                             </button>
-                            <button
-                                v-if="isEditingMessage"
-                                @click="cancelEditMonologMessage"
-                                class="cancel-btn"
-                            >
+                            <button v-if="isEditingMessage" @click="cancelEditMonologMessage" class="cancel-btn">
                                 Abbrechen
                             </button>
                         </div>
 
                         <div class="item-list">
-                            <div
-                                v-for="(message, messageIndex) in stevieData.monolog[
-                                    selectedMonologIndex
-                                ].messages"
-                                :key="messageIndex"
-                                class="item"
-                                :class="{
-                                    'item-editing':
-                                        isEditingMessage && editingMessageIndex === messageIndex,
-                                }"
-                            >
+                            <div v-for="(message, messageIndex) in stevieData.monolog[
+                                selectedMonologIndex
+                            ].messages" :key="messageIndex" class="item" :class="{
+                                'item-editing':
+                                    isEditingMessage && editingMessageIndex === messageIndex,
+                            }">
                                 <div class="item-content">
                                     <p><strong>Nachricht:</strong> {{ message.message }}</p>
-                                    <p><strong>Duration:</strong> {{ message.duration }}s</p>
+                                    <p><strong>Dauer:</strong> {{ message.duration }}s</p>
                                 </div>
                                 <div class="item-buttons">
-                                    <button
-                                        @click="editMonologMessage(messageIndex)"
-                                        class="edit-btn"
-                                    >
+                                    <button @click="editMonologMessage(messageIndex)" class="edit-btn">
                                         Bearbeiten
                                     </button>
-                                    <button
-                                        @click="removeMonologMessage(messageIndex)"
-                                        class="remove-btn"
-                                    >
+                                    <button @click="removeMonologMessage(messageIndex)" class="remove-btn">
                                         Entfernen
                                     </button>
                                 </div>
@@ -533,7 +490,7 @@ onMounted(() => {
             </div>
 
             <div class="output-section">
-                <h2>JSON Output</h2>
+                <h2>JSON Ausgabe</h2>
                 <div class="action-buttons">
                     <button @click="copyToClipboard" class="action-btn">Kopieren</button>
                     <span v-if="showCopiedMessage" class="copied-message">Kopiert!</span>

@@ -113,7 +113,7 @@ const initBoxes = () => {
     }
 }
 
-let finished = ref(false)
+const finished = ref(false)
 
 const draw = () => {
     const canvas = canvasRef.value
@@ -152,7 +152,7 @@ const draw = () => {
 
         ctx.value.translate(0, -vertOffset.value)
     }
-    if (!finished) {
+    if (!finished.value) {
         requestAnimationFrame(draw)
     }
 }
